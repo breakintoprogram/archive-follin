@@ -39,7 +39,7 @@ I've confirmed with Kevin Edwards, who is using GreaseWeazle / Kryoflux to copy 
 
 Andy Toone had written [an excellent guide](https://feertech.com/legion/retro/computer/2021/06/08/connecting-over-serial.html) on transferring data from a Tatung Einstein to a PC, which proved invaluable.
 
-I was able to procure a serial label from eBay for a reasonable price from [this seller](https://www.ebay.co.uk/str/avyork), though Andy's guide also contains a wiring diagram if you fancy wiring your own.
+I was able to procure a serial cable from eBay for a reasonable price from [this seller](https://www.ebay.co.uk/str/avyork), though Andy's guide also contains a wiring diagram if you fancy wiring your own.
 
 Files are sent as blocks over serial, each block on the disk being 256 bytes. So unless a file's length is an exact multiple of 256, there is a bit of junk at the end to pad it out. The files themselves use the character 0x1A as EOF, so can easily be trimmed.
 
@@ -63,4 +63,4 @@ All pull requests and issues will be ignored.
 
 ## Credits
 
-Thank you to Tim and Geoff Follin for permission to release their music source code, Ste Ruddy for permission to release the Z80 and SID music driver code, and Andy Toone for his excellent guide on transferring data over serial.
+Thank you to Tim and Geoff Follin for permission to release their music source code, Ste Ruddy for permission to release the Z80 and SID music driver code, Andy Toone for his excellent guide on transferring data over serial, and Kevin Edwards for the editor/assembler instructions and advice on 3" floppy formats.
