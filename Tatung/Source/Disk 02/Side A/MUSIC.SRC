@@ -1,0 +1,1645 @@
+; ************************************
+; **................................**
+; **.TIMS.MUSIC.PROGRAM.IN.Z80.6502.**
+; **................................**
+; **.....WRITTEN.IN.MAD.Z80..BY.....**
+; **................................**
+; **...........TIM.FOLLIN...........**
+; **................................**
+; **.REWRITTEN.IN.SENSIBLE.6502..BY.**
+; **................................**
+; **.........STEPHEN..RUDDY.........**
+; **................................**
+; **..OOOOOOOOO.OOOOOOOO.OOOOOOOO...**
+; **..OOO.O.OOO.OOO..OOO.OOO...OOO..**
+; **..OOO.O.OOO.OOOOOOOO.OOO...OOO..**
+; **..OOO.O.OOO.OOO..OOO.OOO...OOO..**
+; **..OOO.O.OOO.OOO..OOO.OOOOOOOO...**
+; **................................**
+; **...<MUSICIANS              >....**
+; **................................**
+; **.PROJECT.].<                  >.**
+; **.DATE....].<10/11/1987>.........**
+; **................................**
+; ************************************
+
+
+                ORG  $2000
+                LOAD $A000
+
+;=====================================
+
+;ZERO PAGE USAGE
+
+ZP:             EQU  2
+PC_A:           EQU  ZP
+PC_B:           EQU  ZP+2
+PC_C:           EQU  ZP+4
+COUNA:          EQU  ZP+6
+COUNB:          EQU  ZP+7
+COUNC:          EQU  ZP+8
+GATEA:          EQU  ZP+9
+GATEB:          EQU  ZP+10
+GATEC:          EQU  ZP+11
+AGAT:           EQU  ZP+12
+BGAT:           EQU  ZP+13
+CGAT:           EQU  ZP+14
+REPA:           EQU  ZP+15
+REPB:           EQU  ZP+16
+REPC:           EQU  ZP+17
+RESA:           EQU  ZP+18
+RESB:           EQU  ZP+20
+RESC:           EQU  ZP+22
+FLAGA:          EQU  ZP+24
+FLAGB:          EQU  ZP+25
+FLAGC:          EQU  ZP+26
+RATEA:          EQU  ZP+27
+RATEB:          EQU  ZP+28
+RATEC:          EQU  ZP+29
+PWMA:           EQU  ZP+30
+PWMB:           EQU  ZP+32
+PWMC:           EQU  ZP+34
+FLRA:           EQU  ZP+36
+FLRB:           EQU  ZP+38
+FLRC:           EQU  ZP+40
+GATERESA:       EQU  ZP+42
+GATERESB:       EQU  ZP+43
+GATERESC:       EQU  ZP+44
+FREQA:          EQU  ZP+45
+FREQB:          EQU  ZP+46
+FREQC:          EQU  ZP+47
+CUTOFF:         EQU  ZP+49
+INITCUT:        EQU  ZP+51
+FILTRATE:       EQU  ZP+53
+FILTCHAN:       EQU  ZP+54
+GOSA:           EQU  ZP+56
+GOSB:           EQU  ZP+58
+GOSC:           EQU  ZP+60
+TRANA:          EQU  ZP+62
+TRANB:          EQU  ZP+63
+TRANC:          EQU  ZP+64
+STOPA:          EQU  ZP+65
+STOPB:          EQU  ZP+66
+STOPC:          EQU  ZP+67
+TUNE_NO:        EQU  ZP+68
+TUNE_STAT:      EQU  ZP+69
+
+;CACKY ZP
+
+TEMP:           EQU  ZP+200
+TEMP1:          EQU  ZP+201
+TEMP2:          EQU  ZP+202
+TEMP3:          EQU  ZP+203
+MAX:            EQU  ZP+204
+TCOL:           EQU  ZP+208
+OLDFS:          EQU  ZP+210
+MINS:           EQU  ZP+216
+SECS:           EQU  ZP+217
+TIM:            EQU  ZP+218
+OLDTS:          EQU  ZP+219
+
+;=====================================
+
+;SYSTEM EQUATES PLUS OTHER CACK
+
+VIC:            EQU  $D000
+SID:            EQU  $D400
+
+BDRCOL:         EQU  VIC+$20
+SCRCOL:         EQU  VIC+$21
+
+;=====================================
+
+;TEST PROGRAM
+
+TESTIT:         SEI  
+                LDA  #0
+                STA  BDRCOL
+                STA  SCRCOL
+                LDX  #2
+LOOP0:          STA  0,X
+                INX  
+                BNE  LOOP0
+                DEX  
+                TXS  
+                LDA  #$17
+                STA  $D018
+                LDX  #0
+LOOP:           LDA  #1
+                STA  $D800,X
+                STA  $D900,X
+                STA  $DA00,X
+                STA  $DB00,X
+                LDA  #32
+                STA  $0400,X
+                STA  $0500,X
+                STA  $0600,X
+                STA  $0700,X
+                INX  
+                BNE  LOOP
+                LDX  #<STARTMES
+                LDY  #>STARTMES
+                JSR  MESS
+                LDA  #<BOT
+                SEC  
+                SBC  #<TOP
+                STA  MAX
+                LDA  #>BOT
+                SBC  #>TOP
+                STA  MAX+1
+                LDX  #15
+                LDY  #1
+                LDA  #MAX
+                JSR  HEXIT
+                LDA  #<BOTDATA
+                SEC  
+                SBC  #<TOPDATA
+                STA  MAX
+                LDA  #>BOTDATA
+                SBC  #>TOPDATA
+                STA  MAX+1
+                LDX  #15
+                LDY  #2
+                LDA  #MAX
+                JSR  HEXIT
+                LDX  #0
+                JSR  TUNE
+                LDA  #0
+                STA  MAX+2
+                STA  MAX+3
+                LDA  #50
+                STA  TIM
+LOOP1:          JSR  WAITRAST
+                JSR  DISPLAY
+                JSR  TESTKEYS
+                JMP  LOOP1
+
+TESTKEYS:       LDX  #$DF
+                LDY  #$FE
+                JSR  KEYS
+                BCS  SPEEDUP
+TK0:            LDY  #$F7
+                JSR  KEYS
+                BCC  TK2
+TK1:            LDA  $D012
+                CMP  #160
+                BNE  TK1
+                BEQ  TK0
+TK2:            RTS  
+
+SPEEDUP:        LDX  #50
+SU1:            DEX  
+                BNE  SU1
+                INC  $D020
+                JSR  CHAN1
+                DEC  $D020
+                JSR  CLOCK
+                JMP  TESTKEYS
+
+KEYS:           STX  $DC00
+                CPY  $DC01
+                CLC  
+                BNE  KEYS1
+                SEC  
+KEYS1:          LDA  #$7F
+                STA  $DC00
+                LDA  #$FF
+                STA  $DC01
+                RTS  
+
+DISPLAY:        LDX  #7
+                LDY  #4
+                LDA  #CUTOFF
+                JSR  HEXIT
+                LDX  #7
+                LDY  #13
+                LDA  AGAT
+                JSR  HEXDIGIT
+                LDX  #13
+                LDY  #13
+                LDA  BGAT
+                JSR  HEXDIGIT
+                LDX  #19
+                LDY  #13
+                LDA  CGAT
+                JSR  HEXDIGIT
+                LDX  #7
+                LDY  #12
+                LDA  OLDTS
+                JSR  HEXDIGIT
+                LDX  #13
+                LDY  #12
+                LDA  OLDTS+1
+                JSR  HEXDIGIT
+                LDX  #19
+                LDY  #12
+                LDA  OLDTS+2
+                JSR  HEXDIGIT
+                LDX  #17
+                LDY  #4
+                LDA  FILTRATE
+                JSR  HEXDIGIT
+                LDX  #25
+                LDY  #4
+                LDA  FILTCHAN
+                JSR  HEXDIGIT
+                LDX  #7
+                LDY  #9
+                LDA  RATEA
+                JSR  HEXDIGIT
+                LDX  #13
+                LDY  #9
+                LDA  RATEB
+                JSR  HEXDIGIT
+                LDX  #19
+                LDY  #9
+                LDA  RATEC
+                JSR  HEXDIGIT
+                LDX  #7
+                LDY  #11
+                LDA  COUNA
+                JSR  HEXDIGIT
+                LDX  #13
+                LDY  #11
+                LDA  COUNB
+                JSR  HEXDIGIT
+                LDX  #19
+                LDY  #11
+                LDA  COUNC
+                JSR  HEXDIGIT
+                LDX  #15
+                LDY  #0
+                LDA  #MAX
+                JSR  HEXIT
+                LDX  #7
+                LDY  #8
+                LDA  #PWMA
+                JSR  HEXIT
+                LDX  #13
+                LDY  #8
+                LDA  #PWMB
+                JSR  HEXIT
+                LDX  #19
+                LDY  #8
+                LDA  #PWMC
+                JSR  HEXIT
+                LDX  #36
+                LDY  #0
+                LDA  #MAX+2
+                JSR  HEXIT
+                LDX  #7
+                LDY  #10
+                LDA  #OLDFS
+                JSR  HEXIT
+                LDX  #13
+                LDY  #10
+                LDA  #OLDFS+2
+                JSR  HEXIT
+                LDX  #19
+                LDY  #10
+                LDA  #OLDFS+4
+                JSR  HEXIT
+                LDX  #7
+                LDY  #7
+                LDA  FREQA
+                JSR  DI1
+                LDX  #13
+                LDY  #7
+                LDA  FREQB
+                JSR  DI1
+                LDX  #19
+                LDY  #7
+                LDA  FREQC
+DI1:            STX  TEMP
+                AND  #4
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                LDY  #0
+DI2:            LDA  N,X
+                STA  (TEMP),Y
+                INX  
+                INY  
+                CPY  #4
+                BNE  DI2
+                RTS  
+
+WAITRAST:       LDA  $D012
+                CMP  #160
+                BNE  WAITRAST
+                LDA  #2
+                STA  $D020
+                JSR  CHAN1
+                LDA  $D012
+                SEC  
+                SBC  #160
+                STA  MAX
+                CMP  MAX+2
+                BCC  WR1
+                STA  MAX+2
+WR1:            LDA  #0
+                STA  $D020
+CLOCK:          DEC  TIM
+                BNE  WR2
+                LDA  #50
+                STA  TIM
+                SED  
+                LDA  SECS
+                CLC  
+                ADC  #1
+                STA  SECS
+                CMP  #$60
+                BNE  CL1
+                LDA  #0
+                STA  SECS
+                LDA  MINS
+                ADC  #0
+                STA  MINS
+CL1:            CLD  
+WR2:            LDX  #29
+                LDY  #2
+                LDA  MINS
+                JSR  HEXDIGIT
+                LDX  #32
+                LDY  #2
+                LDA  SECS
+                JMP  HEXDIGIT
+
+;HEX PRINTING ROUTINE
+
+;ENTER X=xpos,Y=ypos,A=ZP address
+
+HEXIT:          STX  TEMP
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                LDA  1,X
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #0
+                STA  (TEMP),Y
+                LDA  1,X
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #1
+                STA  (TEMP),Y
+                LDA  0,X
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #2
+                STA  (TEMP),Y
+                LDA  0,X
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #3
+                STA  (TEMP),Y
+                RTS  
+
+HEXDIGIT:       STX  TEMP
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                TXA  
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #0
+                STA  (TEMP),Y
+                TXA  
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #1
+                STA  (TEMP),Y
+                RTS  
+
+MESS:           STX  TEMP
+                STY  TEMP1
+                LDY  #0
+MESS1:          LDA  (TEMP),Y
+                CMP  #16
+                BNE  MESS1A
+                RTS  
+MESS1A:         BCS  MESS2
+                STA  TCOL
+                INY  
+                BNE  MESS1
+MESS2:          CMP  #31
+                BNE  MESS3
+                INY  
+                LDA  (TEMP),Y
+                STA  TEMP2
+                INY  
+                LDA  (TEMP),Y
+                ASL  A
+                TAX  
+                LDA  MUL40,X
+                CLC  
+                ADC  TEMP2
+                STA  TEMP2
+                LDA  MUL40+1,X
+                ADC  #4
+                STA  TEMP3
+                INY  
+                BNE  MESS1
+MESS3:          STY  MESS4+1
+                LDY  #0
+                STA  (TEMP2),Y
+                LDA  TEMP3
+                EOR  #$DC
+                STA  TEMP3
+                LDA  TCOL
+                STA  (TEMP2),Y
+                LDA  TEMP3
+                EOR  #$DC
+                STA  TEMP3
+                INC  TEMP2
+                BNE  MESS4
+                INC  TEMP3
+MESS4:          LDY  #0
+                INY  
+                BNE  MESS1
+
+STARTMES:       DB   31,0,0,14
+                DB   "RASTER TIME : $0000"
+                DB   "     "
+                DB   "MAX TIME : $0000"
+                DB   31,0,1,10
+                DB   "PROG LENGTH : $0000"
+                DB   31,0,2
+                DB   "DATA LENGTH : $0000"
+                DB   31,24,2,8
+                DB   "TIME 00:  00"
+                DB   31,0,4,5
+                DB   "CUTOFF"
+                DB   31,12,4
+                DB   "RATE"
+                DB   31,20,4
+                DB   "CHAN"
+                DB   31,7,6,3
+                DB   "CH#0  "
+                DB   "CH#1  "
+                DB   "CH#2"
+                DB   31,0,8,5
+                DB   "PWM"
+                DB   31,0,9
+                DB   "RATES"
+                DB   31,0,10
+                DB   "FREQS"
+                DB   31,0,11
+                DB   "COUNTS"
+                DB   31,0,12
+                DB   "LENGTH"
+                DB   31,0,13
+                DB   "GATES"
+                DB   16
+
+N:              DB "NOTE"
+                DB   "FREQ"
+
+MUL40:          DW   0,40,80,120,160
+                DW   200,240,280,320,360
+                DW   400,440,480,520,560
+                DW   600,640,680,720,760
+                DW   800,840,880,920,960
+
+TAB:            DB   "0123456789ABCDEF"
+
+;=====================================
+
+TOP:            
+TUNE:           STX  TUNE_NO
+                LDA  ATABS_LO,X
+                STA  PC_A
+                LDA  ATABS_HI,X
+                STA  PC_A+1
+                LDA  BTABS_LO,X
+                STA  PC_B
+                LDA  BTABS_HI,X
+                STA  PC_B+1
+                LDA  CTABS_LO,X
+                STA  PC_C
+                LDA  CTABS_HI,X
+                STA  PC_C+1
+                LDX  #1
+                STX  COUNA
+                STX  COUNB
+                STX  COUNC
+                DEX  
+                STX  GATEA
+                STX  GATEB
+                STX  GATEC
+                STX  FREQA
+                STX  FREQB
+                STX  FREQC
+                STX  MUSIC+1
+                STX  TRANA
+                STX  TRANB
+                STX  TRANC
+                DEX  
+                STX  STOPA
+                STX  STOPB
+                STX  STOPC
+                STX  TUNE_STAT
+                LDA  #8
+                STA  SID+4
+                STA  SID+11
+                STA  SID+18
+                LDA  #3
+                STA  PWMA+1
+                STA  PWMB+1
+                STA  PWMC+1
+                LDX  #28
+CLEAR:          LDA  #8
+                STA  SID,X
+                LDA  #0
+                STA  SID,X
+                DEX  
+                BPL  CLEAR
+                RTS  
+
+ATABS_LO:       DB   <TIM_A
+ATABS_HI:       DB   >TIM_A
+
+BTABS_LO:       DB   <TIM_B
+BTABS_HI:       DB   >TIM_B
+
+CTABS_LO:       DB   <TIM_C
+CTABS_HI:       DB   >TIM_C
+
+;=====================================
+;CHANNEL 1'S ROUTINES
+
+CHAN1:          LDA  STOPA
+                BPL  A_FART1
+AMOD:           LDA  #0
+                BNE  PRATTA
+GOA:            LDA  PWMA
+                SEC  
+                SBC  RATEA
+                STA  PWMA
+                LDA  PWMA+1
+                SBC  #0
+                STA  PWMA+1
+                BMI  UPITA
+                BNE  CHAN1A
+                LDA  PWMA
+                CMP  #100
+                BCS  CHAN1A
+UPITA:          DEC  AMOD+1
+PRATTA:         LDA  PWMA
+                CLC  
+                ADC  RATEA
+                STA  PWMA
+                LDA  PWMA+1
+                ADC  #0
+                STA  PWMA+1
+                CMP  #15
+                BEQ  TESTA
+                BCC  CHAN1A
+                BCS  DOWNITA
+TESTA:          LDA  PWMA
+                CMP  #155
+                BCC  CHAN1A
+DOWNITA:        INC  AMOD+1
+                JMP  GOA
+CHAN1A:         LDA  PWMA
+                STA  SID+2
+                LDA  PWMA+1
+                STA  SID+3
+                DEC  COUNA
+                LDA  GATEA
+                BNE  CHAM
+                LDA  AGAT
+                AND  #254
+                STA  SID+4
+                INC  GATEA
+CHAM:           DEC  GATEA
+                LDA  COUNA
+                BEQ  CHAM0
+A_FART1:        JMP  CHAN2
+CHAM0:          LDA  FREQA
+                BPL  ATOP
+                LDY  #0
+CHAMA:          LDA  (PC_A),Y
+                STA  TEMP
+                INY  
+                LDA  (PC_A),Y
+                STA  TEMP1
+                INY  
+                ORA  TEMP
+                BNE  CHAM1
+                INC  FREQA
+                BEQ  ADDYA
+CHAM1:          LDA  TEMP
+                STA  SID
+                STA  OLDFS;REMOVE
+                LDA  TEMP1
+                JMP  ATIN
+ADDYA:          TYA  
+                CLC  
+                ADC  PC_A
+                STA  PC_A
+                BCC  ATOP
+                INC  PC_A+1
+ATOP:           LDY  #0
+                LDA  (PC_A),Y
+                BMI  ATESTS
+                CLC  
+                ADC  TRANA
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID
+                STA  OLDFS;REMOVE
+                LDA  NOTES_HI,X
+                INY  
+ATIN:           STA  SID+1
+                STA  OLDFS+1;REMOVE
+                LDA  (PC_A),Y
+                INY  
+                STA  COUNA
+                STA  OLDTS;REMOVE
+                LDA  GATERESA
+                STA  GATEA
+                TYA  
+                CLC  
+                ADC  PC_A
+                STA  PC_A
+                BCC  AT0
+                INC  PC_A+1
+AT0:            LDA  FLRA
+                ORA  FLRA+1
+                BEQ  AT0C
+                LDA  FLRA
+                STA  PWMA
+                LDA  FLRA+1
+                STA  PWMA+1
+                LDA  #255
+                STA  AMOD+1
+AT0C:           LDA  FILTCHAN
+                BNE  AT0A
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  AT0A
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+ATMOD:          LDA  #0
+                STA  MUSIC+1
+AT0A:           LDA  FLAGA
+                BEQ  AT0B
+                LDA  AGAT
+                ORA  #1
+                STA  SID+4
+AT0B:           JMP  CHAN2
+ATESTS:         AND  #127
+                INY  
+                TAX  
+                LDA  JUMPA_LO,X
+                STA  ATESTS1+1
+                LDA  JUMPA_HI,X
+                STA  ATESTS1+2
+ATESTS1:        JMP  ATOP
+
+A_FOR:          LDA  (PC_A),Y
+                INY  
+                STA  REPA
+                LDA  PC_A
+                CLC  
+                ADC  #2
+                STA  RESA
+                STA  PC_A
+                LDA  PC_A+1
+                ADC  #0
+                STA  RESA+1
+                STA  PC_A+1
+                JMP  ATOP
+
+A_NEXT:         DEC  REPA
+                BEQ  AT1A
+                LDA  RESA
+                STA  PC_A
+                LDA  RESA+1
+                STA  PC_A+1
+                JMP  ATOP
+
+A_GATE:         LDA  #1
+                STA  FLAGA
+                LDA  (PC_A),Y
+                INY  
+                STA  GATERESA
+AT1A:           JMP  ADDYA
+
+A_KILL:         LDA  #0
+                STA  FLAGA
+                JMP  ADDYA
+
+A_SEND:         LDA  (PC_A),Y
+ATT4:           TAX  
+                INY  
+                LDA  (PC_A),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_A),Y
+                CMP  #255
+                BNE  ATT4
+                INY  
+                JMP  ADDYA
+
+A_SETGATE:      LDA  (PC_A),Y
+                STA  SID+4
+                STA  AGAT
+                INY  
+                JMP  ADDYA
+
+A_STOP:         INC  STOPA
+                JMP  CHAN2
+
+A_PULSE:        LDA  (PC_A),Y
+                INY  
+                STA  RATEA
+                LDA  (PC_A),Y
+                INY  
+                STA  FLRA
+                STA  PWMA
+                LDA  (PC_A),Y
+                INY  
+                STA  FLRA+1
+                STA  PWMA+1
+                JMP  ADDYA
+
+A_FREQS:        DEC  FREQA
+                JMP  CHAMA
+
+A_FILTER:       LDA  (PC_A),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_A),Y
+                STA  ATMOD+1
+                INY  
+                LDA  (PC_A),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_A),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                JMP  ADDYA
+
+A_CLAIM:        LDA  #0
+                STA  FILTCHAN
+                JMP  ADDYA
+
+A_GOSUB:        LDA  PC_A
+                CLC  
+                ADC  #3
+                STA  GOSA
+                LDA  PC_A+1
+                ADC  #0
+                STA  GOSA+1
+                LDA  (PC_A),Y
+                TAX  
+                INY  
+                LDA  (PC_A),Y
+                STA  PC_A+1
+                STX  PC_A
+                JMP  ATOP
+
+A_RETURN:       LDA  GOSA
+                STA  PC_A
+                LDA  GOSA+1
+                STA  PC_A+1
+                JMP  ATOP
+
+A_TRANS:        LDA  (PC_A),Y
+                STA  TRANA
+                INY  
+                JMP  ADDYA
+
+JUMPA_LO:       DB   <A_PULSE;      0
+                DB   <A_NEXT;       1
+                DB   <A_FOR;        2
+                DB   <A_GATE;       3
+                DB   <A_KILL;       4
+                DB   <A_SEND;       5
+                DB   <A_STOP;       6
+                DB   <A_FREQS;      7
+                DB   <A_FILTER;     8
+                DB   <A_CLAIM;      9
+                DB   <A_GOSUB;     10
+                DB   <A_RETURN;    11
+                DB   <A_TRANS;     12
+                DB   <A_SETGATE;   13
+
+JUMPA_HI:       DB   >A_PULSE;      0
+                DB   >A_NEXT;       1
+                DB   >A_FOR;        2
+                DB   >A_GATE;       3
+                DB   >A_KILL;       4
+                DB   >A_SEND;       5
+                DB   >A_STOP;       6
+                DB   >A_FREQS;      7
+                DB   >A_FILTER;     8
+                DB   >A_CLAIM;      9
+                DB   >A_GOSUB;     10
+                DB   >A_RETURN;    11
+                DB   >A_TRANS;     12
+                DB   >A_SETGATE;   13
+;=====================================
+;CHANNEL 2'S ROUTINES
+
+CHAN2:          LDA  STOPB
+                BPL  B_FART1
+BMOD:           LDA  #0
+                BNE  PRATTB
+GOB:            LDA  PWMB
+                SEC  
+                SBC  RATEB
+                STA  PWMB
+                LDA  PWMB+1
+                SBC  #0
+                STA  PWMB+1
+                BMI  UPITB
+                BNE  CHAN2A
+                LDA  PWMB
+                CMP  #100
+                BCS  CHAN2A
+UPITB:          DEC  BMOD+1
+PRATTB:         LDA  PWMB
+                CLC  
+                ADC  RATEB
+                STA  PWMB
+                LDA  PWMB+1
+                ADC  #0
+                STA  PWMB+1
+                CMP  #15
+                BEQ  TESTB
+                BCC  CHAN2A
+                BCS  DOWNITB
+TESTB:          LDA  PWMB
+                CMP  #155
+                BCC  CHAN2A
+DOWNITB:        INC  BMOD+1
+                JMP  GOB
+CHAN2A:         LDA  PWMB
+                STA  SID+9
+                LDA  PWMB+1
+                STA  SID+10
+                DEC  COUNB
+                LDA  GATEB
+                BNE  CHBM
+                LDA  BGAT
+                AND  #254
+                STA  SID+11
+                INC  GATEB
+CHBM:           DEC  GATEB
+                LDA  COUNB
+                BEQ  CHBM0
+B_FART1:        JMP  CHAN3
+CHBM0:          LDA  FREQB
+                BPL  BTOP
+                LDY  #0
+CHBMA:          LDA  (PC_B),Y
+                STA  TEMP
+                INY  
+                LDA  (PC_B),Y
+                STA  TEMP1
+                INY  
+                ORA  TEMP
+                BNE  CHBM1
+                INC  FREQB
+                BEQ  ADDYB
+CHBM1:          LDA  TEMP
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                LDA  TEMP1
+                JMP  BTIN
+ADDYB:          TYA  
+                CLC  
+                ADC  PC_B
+                STA  PC_B
+                BCC  BTOP
+                INC  PC_B+1
+BTOP:           LDY  #0
+                LDA  (PC_B),Y
+                BMI  BTESTS
+                CLC  
+                ADC  TRANB
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                LDA  NOTES_HI,X
+                INY  
+BTIN:           STA  SID+8
+                STA  OLDFS+3;REMOVE
+                LDA  (PC_B),Y
+                INY  
+                STA  COUNB
+                STA  OLDTS+1;REMOVE
+                LDA  GATERESB
+                STA  GATEB
+                TYA  
+                CLC  
+                ADC  PC_B
+                STA  PC_B
+                BCC  BT0
+                INC  PC_B+1
+BT0:            LDA  FLRB
+                ORA  FLRB+1
+                BEQ  BT0C
+                LDA  FLRB
+                STA  PWMB
+                LDA  FLRB+1
+                STA  PWMB+1
+                LDA  #255
+                STA  BMOD+1
+BT0C:           LDA  FILTCHAN
+                CMP  #1
+                BNE  BT0A
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  BT0A
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+BTMOD:          LDA  #0
+                STA  MUSIC+1
+BT0A:           LDA  FLAGB
+                BEQ  BT0B
+                LDA  BGAT
+                ORA  #1
+                STA  SID+11
+BT0B:           JMP  CHAN3
+BTESTS:         AND  #127
+                INY  
+                TAX  
+                LDA  JUMPB_LO,X
+                STA  BTESTS1+1
+                LDA  JUMPB_HI,X
+                STA  BTESTS1+2
+BTESTS1:        JMP  BTOP
+
+B_FOR:          LDA  (PC_B),Y
+                INY  
+                STA  REPB
+                LDA  PC_B
+                CLC  
+                ADC  #2
+                STA  RESB
+                STA  PC_B
+                LDA  PC_B+1
+                ADC  #0
+                STA  RESB+1
+                STA  PC_B+1
+                JMP  BTOP
+
+B_NEXT:         DEC  REPB
+                BEQ  BT1A
+                LDA  RESB
+                STA  PC_B
+                LDA  RESB+1
+                STA  PC_B+1
+                JMP  BTOP
+
+B_GATE:         LDA  #1
+                STA  FLAGB
+                LDA  (PC_B),Y
+                INY  
+                STA  GATERESB
+BT1A:           JMP  ADDYB
+
+B_KILL:         LDA  #0
+                STA  FLAGB
+                JMP  ADDYB
+
+B_SEND:         LDA  (PC_B),Y
+BTT4:           TAX  
+                INY  
+                LDA  (PC_B),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_B),Y
+                CMP  #255
+                BNE  BTT4
+                INY  
+                JMP  ADDYB
+
+B_SETGATE:      LDA  (PC_B),Y
+                STA  SID+11
+                STA  BGAT
+                INY  
+                JMP  ADDYB
+
+B_STOP:         INC  STOPB
+                JMP  CHAN3
+
+B_PULSE:        LDA  (PC_B),Y
+                INY  
+                STA  RATEB
+                LDA  (PC_B),Y
+                INY  
+                STA  FLRB
+                STA  PWMB
+                LDA  (PC_B),Y
+                INY  
+                STA  FLRB+1
+                STA  PWMB+1
+                JMP  ADDYB
+
+B_FREQS:        DEC  FREQB
+                JMP  CHBMA
+
+B_FILTER:       LDA  (PC_B),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_B),Y
+                STA  BTMOD+1
+                INY  
+                LDA  (PC_B),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_B),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                JMP  ADDYB
+
+B_CLAIM:        LDA  #1
+                STA  FILTCHAN
+                JMP  ADDYB
+
+B_GOSUB:        LDA  PC_B
+                CLC  
+                ADC  #3
+                STA  GOSB
+                LDA  PC_B+1
+                ADC  #0
+                STA  GOSB+1
+                LDA  (PC_B),Y
+                TAX  
+                INY  
+                LDA  (PC_B),Y
+                STA  PC_B+1
+                STX  PC_B
+                JMP  BTOP
+
+B_RETURN:       LDA  GOSB
+                STA  PC_B
+                LDA  GOSB+1
+                STA  PC_B+1
+                JMP  BTOP
+
+B_TRANS:        LDA  (PC_B),Y
+                STA  TRANB
+                INY  
+                JMP  ADDYB
+
+JUMPB_LO:       DB   <B_PULSE
+                DB   <B_NEXT
+                DB   <B_FOR
+                DB   <B_GATE
+                DB   <B_KILL
+                DB   <B_SEND
+                DB   <B_STOP
+                DB   <B_FREQS
+                DB   <B_FILTER
+                DB   <B_CLAIM
+                DB   <B_GOSUB
+                DB   <B_RETURN
+                DB   <B_TRANS
+                DB   <B_SETGATE
+
+JUMPB_HI:       DB   >B_PULSE
+                DB   >B_NEXT
+                DB   >B_FOR
+                DB   >B_GATE
+                DB   >B_KILL
+                DB   >B_SEND
+                DB   >B_STOP
+                DB   >B_FREQS
+                DB   >B_FILTER
+                DB   >B_CLAIM
+                DB   >B_GOSUB
+                DB   >B_RETURN
+                DB   >B_TRANS
+                DB   >B_SETGATE
+;=====================================
+;CHANNEL 3'S ROUTINES
+
+CHAN3:          LDA  STOPC
+                BPL  C_FART1
+CMOD:           LDA  #0
+                BNE  PRATTC
+GOC:            LDA  PWMC
+                SEC  
+                SBC  RATEC
+                STA  PWMC
+                LDA  PWMC+1
+                SBC  #0
+                STA  PWMC+1
+                BMI  UPITC
+                BNE  CHAN3A
+                LDA  PWMC
+                CMP  #100
+                BCS  CHAN3A
+UPITC:          DEC  CMOD+1
+PRATTC:         LDA  PWMC
+                CLC  
+                ADC  RATEC
+                STA  PWMC
+                LDA  PWMC+1
+                ADC  #0
+                STA  PWMC+1
+                CMP  #15
+                BEQ  TESTC
+                BCC  CHAN3A
+                BCS  DOWNITC
+TESTC:          LDA  PWMC
+                CMP  #155
+                BCC  CHAN3A
+DOWNITC:        INC  CMOD+1
+                JMP  GOC
+CHAN3A:         LDA  PWMC
+                STA  SID+16
+                LDA  PWMC+1
+                STA  SID+17
+                DEC  COUNC
+                LDA  GATEC
+                BNE  CHCM
+                LDA  CGAT
+                AND  #254
+                STA  SID+18
+                INC  GATEC
+CHCM:           DEC  GATEC
+                LDA  COUNC
+                BEQ  CHCM0
+C_FART1:        JMP  MUSIC
+CHCM0:          LDA  FREQC
+                BPL  CTOP
+                LDY  #0
+CHCMA:          LDA  (PC_C),Y
+                STA  TEMP
+                INY  
+                LDA  (PC_C),Y
+                STA  TEMP1
+                INY  
+                ORA  TEMP
+                BNE  CHCM1
+                INC  FREQC
+                BEQ  ADDYC
+CHCM1:          LDA  TEMP
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                LDA  TEMP1
+                JMP  CTIN
+ADDYC:          TYA  
+                CLC  
+                ADC  PC_C
+                STA  PC_C
+                BCC  CTOP
+                INC  PC_C+1
+CTOP:           LDY  #0
+                LDA  (PC_C),Y
+                BMI  CTESTS
+                CLC  
+                ADC  TRANC
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                LDA  NOTES_HI,X
+                INY  
+CTIN:           STA  SID+15
+                STA  OLDFS+5;REMOVE
+                LDA  (PC_C),Y
+                INY  
+                STA  COUNC
+                STA  OLDTS+2;REMOVE
+                LDA  GATERESC
+                STA  GATEC
+                TYA  
+                CLC  
+                ADC  PC_C
+                STA  PC_C
+                BCC  CT0
+                INC  PC_C+1
+CT0:            LDA  FLRC
+                ORA  FLRC+1
+                BEQ  CT0C
+                LDA  FLRC
+                STA  PWMC
+                LDA  FLRC+1
+                STA  PWMC+1
+                LDA  #255
+                STA  CMOD+1
+CT0C:           LDA  FILTCHAN
+                CMP  #1
+                BNE  CT0A
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  CT0A
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+CTMOD:          LDA  #0
+                STA  MUSIC+1
+CT0A:           LDA  FLAGC
+                BEQ  CT0B
+                LDA  CGAT
+                ORA  #1
+                STA  SID+18
+CT0B:           JMP  MUSIC
+CTESTS:         AND  #127
+                INY  
+                TAX  
+                LDA  JUMPC_LO,X
+                STA  CTESTS1+1
+                LDA  JUMPC_HI,X
+                STA  CTESTS1+2
+CTESTS1:        JMP  CTOP
+
+C_FOR:          LDA  (PC_C),Y
+                INY  
+                STA  REPC
+                LDA  PC_C
+                CLC  
+                ADC  #2
+                STA  RESC
+                STA  PC_C
+                LDA  PC_C+1
+                ADC  #0
+                STA  RESC+1
+                STA  PC_C+1
+                JMP  CTOP
+
+C_NEXT:         DEC  REPC
+                BEQ  CT1A
+                LDA  RESC
+                STA  PC_C
+                LDA  RESC+1
+                STA  PC_C+1
+                JMP  CTOP
+
+C_GATE:         LDA  #1
+                STA  FLAGC
+                LDA  (PC_C),Y
+                INY  
+                STA  GATERESC
+CT1A:           JMP  ADDYC
+
+C_KILL:         LDA  #0
+                STA  FLAGC
+                JMP  ADDYC
+
+C_SEND:         LDA  (PC_C),Y
+CTT4:           TAX  
+                INY  
+                LDA  (PC_C),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_C),Y
+                CMP  #255
+                BNE  CTT4
+                INY  
+                JMP  ADDYC
+
+C_SETGATE:      LDA  (PC_C),Y
+                STA  SID+18
+                STA  CGAT
+                INY  
+                JMP  ADDYC
+
+C_STOP:         INC  STOPC
+                JMP  MUSIC
+
+C_PULSE:        LDA  (PC_C),Y
+                INY  
+                STA  RATEC
+                LDA  (PC_C),Y
+                INY  
+                STA  FLRC
+                STA  PWMC
+                LDA  (PC_C),Y
+                INY  
+                STA  FLRC+1
+                STA  PWMC+1
+                JMP  ADDYC
+
+C_FREQS:        DEC  FREQC
+                JMP  CHCMA
+
+C_FILTER:       LDA  (PC_C),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_C),Y
+                STA  CTMOD+1
+                INY  
+                LDA  (PC_C),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_C),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                JMP  ADDYC
+
+C_CLAIM:        LDA  #1
+                STA  FILTCHAN
+                JMP  ADDYC
+
+C_GOSUB:        LDA  PC_C
+                CLC  
+                ADC  #3
+                STA  GOSC
+                LDA  PC_C+1
+                ADC  #0
+                STA  GOSC+1
+                LDA  (PC_C),Y
+                TAX  
+                INY  
+                LDA  (PC_C),Y
+                STA  PC_C+1
+                STX  PC_C
+                JMP  CTOP
+
+C_RETURN:       LDA  GOSC
+                STA  PC_C
+                LDA  GOSC+1
+                STA  PC_C+1
+                JMP  CTOP
+
+C_TRANS:        LDA  (PC_C),Y
+                STA  TRANC
+                INY  
+                JMP  ADDYC
+
+JUMPC_LO:       DB   <C_PULSE
+                DB   <C_NEXT
+                DB   <C_FOR
+                DB   <C_GATE
+                DB   <C_KILL
+                DB   <C_SEND
+                DB   <C_STOP
+                DB   <C_FREQS
+                DB   <C_FILTER
+                DB   <C_CLAIM
+                DB   <C_GOSUB
+                DB   <C_RETURN
+                DB   <C_TRANS
+                DB   <C_SETGATE
+
+JUMPC_HI:       DB   >C_PULSE
+                DB   >C_NEXT
+                DB   >C_FOR
+                DB   >C_GATE
+                DB   >C_KILL
+                DB   >C_SEND
+                DB   >C_STOP
+                DB   >C_FREQS
+                DB   >C_FILTER
+                DB   >C_CLAIM
+                DB   >C_GOSUB
+                DB   >C_RETURN
+                DB   >C_TRANS
+                DB   >C_SETGATE
+;=====================================
+;DO FILTERING THINGS
+
+MUSIC:          LDA  #0
+                BNE  MUS3
+MUS0:           LDA  CUTOFF
+                SEC  
+                SBC  FILTRATE
+                STA  CUTOFF
+                BCS  MUS1
+                DEC  CUTOFF+1
+                BMI  MUS2
+MUS1:           LDA  CUTOFF+1
+                BNE  CHANSTART
+                LDA  CUTOFF
+                CMP  #50
+                BCS  CHANSTART
+MUS2:           DEC  MUSIC+1
+MUS3:           LDA  CUTOFF
+                CLC  
+                ADC  FILTRATE
+                STA  CUTOFF
+                BCC  MUS4
+                INC  CUTOFF+1
+MUS4:           LDA  CUTOFF+1
+                CMP  #4
+                BCC  CHANSTART
+                LDA  CUTOFF
+                CMP  #205
+                BCC  CHANSTART
+                INC  MUSIC+1
+                JMP  MUS0
+CHANSTART:      LDA  CUTOFF
+                STA  SID+21
+                LDA  CUTOFF
+                LSR  A
+                LSR  A
+                LSR  A
+                STA  TEMP
+                LDA  CUTOFF+1
+                LSR  A
+                ROR  A
+                ROR  A
+                ROR  A
+                ORA  TEMP
+                STA  SID+22
+                RTS  
+
+
+NOTES_LO:       DB   12,28,45,62,81,102,123
+                DB   145,169,195,221,250,24
+                DB   56,90,125,163,204,246
+                DB   35,83,134,187,244,48
+                DB   112,180,251,71,152,237
+                DB   71,167,12,119,233,97
+                DB   225,104,247,143,48,218
+                DB   143,78,24,239,210,195
+                DB   195,209,239,31,96,181
+                DB   30,156,49,223,165,135
+                DB   134,162,223,62,193,107
+                DB   60,57,99,190,75,15,12
+                DB   69,191,125,131,214,121
+                DB   115,199,124,151,30,24
+                DB   139,126,250,6,172,243
+                DB   230,143,248,46
+
+NOTES_HI:       DB   1,1,1,1,1,1,1,1,1,1,1,1
+                DB   2,2,2,2,2,2,2,3,3,3,3,3
+                DB   4,4,4,4,5,5,5,6,6
+                DB   7,7,7,8,8,9,9,10,11,11
+                DB   12,13,14,14,15,16,17,18
+                DB   19,21,22,23,25,26,28,29
+                DB   31,33,35,37,39,42,44,47
+                DB   50,53,56,59,63,67,71,75
+                DB   79,84,89,94,100,106,112
+                DB   119,126,134,142,150,159
+                DB   168,179,189,200,212,225
+                DB   238,253
+
+BOT:            
+
+;=====================================
+
+;DATA FOR MUSIC THING         EXTRAS
+
+GATE_CON:       EQU  $83;               <1>
+SEND:           EQU  $85;               <n>
+END:            EQU  $FF;
+FOR:            EQU  $82;               <1>
+NEXT:           EQU  $81;               <0>
+KILL:           EQU  $84;               <0>
+STOP:           EQU  $86;               <0>
+PULSE:          EQU  $80;               <3>
+FREQS:          EQU  $87;               <0>
+NOFREQS:        EQU  0
+FILTER:         EQU  $88;               <3>
+CLAIM:          EQU  $89;               <0>
+GOSUB:          EQU  $8A;               <2>
+GOTO:           EQU  $8A;               <2>
+RETURN:         EQU  $8B;               <0>
+TRANSPOSE:      EQU  $8C;               <1>
+GATE:           EQU  $8D;               <1>
+;.....................................
+
+TOPDATA:        
+
+;.....................................
+
+TIM_A:          DB   GATE_CON,1
+
+                DB   SEND
+                DB   24,%00101111
+                DB   23,%11110111
+                DB   05,$FF
+                DB   06,$FF
+                DB   12,$04
+                DB   13,$04
+                DB   19,$03
+                DB   20,$03
+                DB   END
+
+                DB   GATE,128
+
+                DB   CLAIM
+
+                DB   FILTER,2,0
+                DW   $0
+
+FART:           DB   PULSE,50
+                DW   $0
+
+FOREVER:        DB   GOSUB
+                DW   SUB1
+
+                DB   GOTO
+                DW   FOREVER
+;.....................................
+TIM_B:          DB   GATE_CON,1
+
+                DB   GATE,$40
+
+PINK:           DB   TRANSPOSE,36
+                DB   GOSUB
+                DW   SUB1
+
+                DB   TRANSPOSE,48
+                DB   GOSUB
+                DW   SUB1
+
+                DB   GOTO
+                DW   PINK
+
+;.....................................
+TIM_C:          DB   GATE_CON,1
+
+                DB   GATE,64
+
+                DB   TRANSPOSE,12
+                DB   PULSE,50
+
+                DW   $0
+
+BOREVER:        DB   GOSUB
+                DW   SUB2
+
+                DB   GOTO
+                DW   BOREVER
+
+;.....................................
+;SUBROUTINES
+
+SUB1:           DB   FOR,8
+                DB   30,4
+                DB   34,4
+                DB   37,4
+                DB   39,4
+                DB   36,4
+                DB   32,4
+                DB   NEXT
+                DB   RETURN
+
+SUB2:           DB   FOR,8
+                DB   30,2
+                DB   34,2
+                DB   37,2
+                DB   39,2
+                DB   36,2
+                DB   32,2
+                DB   NEXT
+                DB   RETURN
+
+
+BOTDATA:        
+
+;=====================================
+
+
