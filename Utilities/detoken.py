@@ -3,9 +3,10 @@
 # Title:		Decoder for Tatung Einstein 6502 SRC files
 # Author:		Dean Belfield
 # Created:		29/04/2023
-# Last Updated:	29/04/2023
+# Last Updated:	04/05/2023
 #
 # Modinfo:
+# 04/05/2023:	Added bounds checking on the tokens array and extra tokens
 
 import sys
 import os
@@ -13,7 +14,7 @@ import os
 # Array of tokenised keywoards
 #
 tokens = [
-	"ADC",
+	"ADC",	# 0x00
 	"AND",
 	"ASL",
 	"BNE",
@@ -29,7 +30,7 @@ tokens = [
 	"CLC",
 	"CMP",
 	"CPX",
-	"CPY",
+	"CPY",	# 0x10
 	"CLD",
 	"CLI",
 	"CLV",
@@ -45,7 +46,7 @@ tokens = [
 	"DCW",
 	"EQU",
 	"EOR",
-	"END",
+	"END",	# 0x20
 	"ELSE",
 	"FROM",
 	"FIN",
@@ -61,7 +62,7 @@ tokens = [
 	"LDX",
 	"LDY",
 	"LSR",
-	"LOAD",
+	"LOAD",	# 0x30
 	"LEN",
 	"NOP",
 	"ORA",
@@ -77,7 +78,7 @@ tokens = [
 	"SBC",
 	"STA",
 	"STX",
-	"STY",
+	"STY",	# 0x40
 	"SEC",
 	"SED",
 	"SEI",
@@ -90,8 +91,15 @@ tokens = [
 	"TYA",
 	"TSX",
 	"TO",
-	"WAIT"
+	"WAIT",
+    "*?*",
+    "*?*",
+	"ENT",	# 0x50
+	"ADD",	# 0x51 - Pseudo instruction = CLC:ADC
+	"SUB",	# 0x52 - Pseudo instruction = SEC:SBC
 ]
+
+tokens_len = len(tokens)						# Length of tokens list
 
 # Open the file for reading
 #
@@ -120,16 +128,20 @@ while True:
     elif byte < 0x8A:							# If it is a printable character
         asc = chr(byte)							# Get the ASCII character
         print(asc, end="")						# Print it
-        col = col + 1							# Increment the column number
+        col += 1								# Increment the column number
         if(asc == ":"):							# If it is a colon (following a label) then tab to the column specified by indent
             print(" "*(indent-col), end="")
     elif byte != 0xFF:							# If it is not 0xFF (the Einstein file may be padded at the end with this character)
         if(col == 0):							# If we are at the first column, then it's a token without a label
             print(" "*indent, end="")			# Tab to the column specified by indent
-        token = tokens[byte-0x8A]				# Fetch the token from the tokens table
+        byte -= 0x8A							# Get index into array
+        if(byte < tokens_len):					# Check bounds
+           token = tokens[byte]					# Fetch the token from the tokens table
+        else:									# Otherwise
+           token = "?=" + hex(byte)				# It's an invalid token output this
         token = token + " "*(5-len(token))		# Pad it to fit into 5 characters
         print(token, end="")					# Print it
-        col = col + len(token)					# Adjust column by the width of the token
+        col += len(token)						# Adjust column by the width of the token
 
 file.close()									# We've done so close the files
 
