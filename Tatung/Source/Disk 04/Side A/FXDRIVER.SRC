@@ -1,0 +1,2752 @@
+;
+; ************************************
+; **                                **
+; **   Commodore 64  Music Driver   **
+; **                                **
+; **            VERSION 6           **
+; **                                **
+; **    Written by Stephen Ruddy    **
+; **                                **
+; **                                **
+; **   Last updated :- 08/07/1988   **
+; **                                **
+; ************************************
+;
+
+
+; ************************************
+; **                                **
+; ** This is the complete version   **
+; ** used for writing music only.   **
+; **                                **
+; ************************************
+
+
+                LOAD $C000
+
+;=====================================
+;Zero page definitions.
+
+                ORG  $0002
+
+
+PC_A:           DS   2
+PC_B:           DS   2
+PC_C:           DS   2
+
+COUNT_A:        DS   1
+COUNT_B:        DS   1
+COUNT_C:        DS   1
+
+MEMGATE_A:      DS   1
+MEMGATE_B:      DS   1
+MEMGATE_C:      DS   1
+
+REPEAT_A:       DS   1
+REPEAT_B:       DS   1
+REPEAT_C:       DS   1
+
+OLD_PC_A:       DS   2
+OLD_PC_B:       DS   2
+OLD_PC_C:       DS   2
+
+FLAG_A:         DS   1
+FLAG_B:         DS   1
+FLAG_C:         DS   1
+
+RATE_A:         DS   1
+RATE_B:         DS   1
+RATE_C:         DS   1
+
+PWM_A:          DS   2
+PWM_B:          DS   2
+PWM_C:          DS   2
+
+FLR_A:          DS   2
+FLR_B:          DS   2
+FLR_C:          DS   2
+
+GATERES_A:      DS   1
+GATERES_B:      DS   1
+GATERES_C:      DS   1
+
+GATE_A:         DS   1; SET TO ZERO
+GATE_B:         DS   1
+GATE_C:         DS   1
+
+FREQ_A:         DS   1
+FREQ_B:         DS   1
+FREQ_C:         DS   1
+
+TRANS_A:        DS   1
+TRANS_B:        DS   1
+TRANS_C:        DS   1
+
+EF_TIME_A:      DS   1
+EF_TIME_B:      DS   1
+EF_TIME_C:      DS   1
+
+EF_GATE_A:      DS   1
+EF_GATE_B:      DS   1
+EF_GATE_C:      DS   1
+
+VB_DEL_A:       DS   1
+VB_DEL_B:       DS   1
+VB_DEL_C:       DS   1
+
+WOB_DEL_A:      DS   1
+WOB_DEL_B:      DS   1
+WOB_DEL_C:      DS   1
+
+WOB_WAI_A:      DS   1
+WOB_WAI_B:      DS   1
+WOB_WAI_C:      DS   1
+
+PORT_A:         DS   1
+PORT_B:         DS   1
+PORT_C:         DS   1
+
+OLDNOTE_A:      DS   1
+OLDNOTE_B:      DS   1
+OLDNOTE_C:      DS   1
+
+TARGET_A:       DS   1
+TARGET_B:       DS   1
+TARGET_C:       DS   1; UPTO HERE
+
+CUTOFF:         DS   2
+INITCUT:        DS   2
+FILTRATE:       DS   1
+FILTCHAN:       DS   1
+
+STACK_A:        DS   2
+STACK_B:        DS   2
+STACK_C:        DS   2
+
+MEM_LO_A:       DS   1
+MEM_LO_B:       DS   1
+MEM_LO_C:       DS   1
+
+MEM_HI_A:       DS   1
+MEM_HI_B:       DS   1
+MEM_HI_C:       DS   1
+
+STOP_A:         DS   1
+STOP_B:         DS   1
+STOP_C:         DS   1
+
+VB_DEL1_A:      DS   1
+VB_DEL1_B:      DS   1
+VB_DEL1_C:      DS   1
+
+VB_DIR_A:       DS   1
+VB_DIR_B:       DS   1
+VB_DIR_C:       DS   1
+
+VB_LIM1_A:      DS   1
+VB_LIM1_B:      DS   1
+VB_LIM1_C:      DS   1
+
+VB_LIM2_A:      DS   1
+VB_LIM2_B:      DS   1
+VB_LIM2_C:      DS   1
+
+VB_RATE_A:      DS   1
+VB_RATE_B:      DS   1
+VB_RATE_C:      DS   1
+
+EF_WAIT_A:      DS   1
+EF_WAIT_B:      DS   1
+EF_WAIT_C:      DS   1
+
+ENDIT_A:        DS   1
+ENDIT_B:        DS   1
+ENDIT_C:        DS   1
+
+WOB_OFF_A:      DS   1
+WOB_OFF_B:      DS   1
+WOB_OFF_C:      DS   1
+
+ZP_WORK:        DS   1
+ZP_WORK1:       DS   1
+
+
+RESET_ZP:       EQU  CUTOFF-GATE_A
+
+
+; Test routines zero page usage.
+
+TUNE_NO:        DS   1
+TEMP:           DS   1
+TEMP1:          DS   1
+TEMP2:          DS   1
+TEMP3:          DS   1
+MAX:            DS   4
+TCOL:           DS   1
+OLDFS:          DS   6
+MINS:           DS   1
+SECS:           DS   1
+TIM:            DS   1
+OLDTS:          DS   3
+
+;=====================================
+; System equates.
+
+VIC:            EQU  $D000
+SID:            EQU  $D400
+
+BDRCOL:         EQU  VIC+$20
+SCRCOL:         EQU  VIC+$21
+
+X0:             EQU  9
+X1:             EQU  16
+X2:             EQU  23
+
+;=====================================
+; Test program.
+
+                ORG  $2000
+
+
+TESTIT:         SEI  
+                LDA  #$2F
+                STA  0
+                LDA  #$35
+                STA  1
+                LDA  #$FF
+                STA  $DC02
+                STA  $DD02
+                LDA  #$7F
+                STA  $DC00
+                LDA  #$97
+                STA  $DD00
+                LDA  #0
+                STA  BDRCOL
+                STA  SCRCOL
+                LDX  #2
+LOOP0:          STA  0,X
+                INX  
+                BNE  LOOP0
+                DEX  
+                TXS  
+                LDA  #$15
+                STA  $D018
+                LDX  #0
+LOOP:           LDA  #1
+                STA  $D800,X
+                STA  $D900,X
+                STA  $DA00,X
+                STA  $DB00,X
+                LDA  #32
+                STA  $0400,X
+                STA  $0500,X
+                STA  $0600,X
+                STA  $0700,X
+                INX  
+                BNE  LOOP
+                JSR  SETCOLOUR
+                LDX  #<STARTMES
+                LDY  #>STARTMES
+                JSR  MESS
+                LDX  #<TITLES
+                LDY  #>TITLES
+                JSR  MESS
+                LDX  #<VERSION
+                LDY  #>VERSION
+                JSR  MESS
+                LDX  #<TITLE
+                LDY  #>TITLE
+                JSR  MESS
+                LDA  #3
+                LDX  M_TUNES
+                BEQ  NO_T_COL
+T_COL_LOP:      STA  $D800+879,X
+                DEX  
+                BNE  T_COL_LOP
+NO_T_COL:       LDX  M_EFFECTS
+                BEQ  NO_F_COL
+F_COL_LOP:      STA  $D800+919,X
+                DEX  
+                BNE  F_COL_LOP
+NO_F_COL:       
+                LDA  #<BOT
+                SUB  #<TOP
+                STA  TEMP2
+                LDA  #>BOT
+                SBC  #>TOP
+                STA  TEMP3
+                LDX  #6
+                LDY  #2
+                LDA  #TEMP2
+                JSR  HEXIT
+                LDA  M_CALC
+                STA  MAX
+                LDA  M_CALC+1
+                STA  MAX+1
+                LDX  #19
+                LDY  #2
+                LDA  #MAX
+                JSR  HEXIT
+                LDA  MAX
+                ADD  TEMP2
+                STA  MAX
+                LDA  MAX+1
+                ADD  TEMP3
+                STA  MAX+1
+                LDX  #35
+                LDY  #2
+                LDA  #MAX
+                JSR  HEXIT
+                JSR  TUNEOFF
+                LDA  #0
+                STA  MAX+1
+                STA  MAX+2
+                STA  MAX+3
+                LDA  #50
+                STA  TIM
+LOOP1:          JSR  WAITRAST
+                JSR  DISPLAY
+                JSR  TESTKEYS
+                JMP  LOOP1
+
+TESTKEYS:       LDX  #$DF
+                LDY  #$FE
+                JSR  KEYS
+                BCC  TK0
+                JMP  SPEEDUP
+TK0:            LDY  #$F7
+                JSR  KEYS
+                BCC  TK1A
+TK1:            LDA  $D012
+                CMP  #160
+                BNE  TK1
+                BEQ  TK0
+TK1A:           LDX  M_TUNES
+                BEQ  NO_TUNES
+TK2:            LDA  KEY_T1,X
+                STA  $DC00
+                LDA  KEY_T2,X
+                CMP  $DC01
+                BEQ  START_T
+                DEX  
+                BPL  TK2
+                JSR  KEYS1
+NO_TUNES:       LDX  M_EFFECTS
+                BEQ  NO_FXS
+TK3:            LDA  KEYTAB_LO,X
+                STA  $DC00
+                LDA  KEYTAB_HI,X
+                CMP  $DC01
+                BEQ  START_F
+                DEX  
+                BPL  TK3
+NO_FXS:         
+                JMP  KEYS1
+
+START_F:        LDA  KEY_ACT,X
+                BMI  OFF
+                TAX  
+                JSR  FX
+                JMP  KEYS1
+
+START_T:        
+                LDA  KEY_ACT,X
+                BMI  OFF
+                JSR  DEBOUNCE
+                LDA  #50
+                STA  TIM
+                LDA  #0
+                STA  SECS
+                STA  MINS
+                STA  MAX+2
+                DEX  
+                STX  TUNE_NO
+                JSR  TUNE
+                LDX  #5
+                LDY  #24
+                LDA  TUNE_NO
+                JSR  HEXDIGIT
+                JMP  KEYS1
+
+OFF:            JSR  TUNEOFF
+                JMP  KEYS1
+
+SPEEDUP:        LDX  #50
+SU1:            DEX  
+                BNE  SU1
+                INC  $D020
+                JSR  REFRESH
+                DEC  $D020
+                JSR  CLOCK
+                JMP  TESTKEYS
+
+DEBOUNCE:       JSR  KEYS1
+                LDY  #50
+DEB1:           DEY  
+                BNE  DEB1
+                LDA  KEY_T1,X
+                STA  $DC00
+                LDA  KEY_T2,X
+                CMP  $DC01
+                BEQ  DEBOUNCE
+                RTS  
+
+KEYS:           STX  $DC00
+                CPY  $DC01
+                CLC  
+                BNE  KEYS1
+                SEC  
+KEYS1:          LDA  #$7F
+                STA  $DC00
+                LDA  #$FF
+                STA  $DC01
+                RTS  
+
+KEY_T1:         DB   $7F
+                DBH  EF7F7FFDFDFBFBF7F7EF
+
+KEY_T2:         DB   $7F
+                DBH  F7FEF7FEF7FEF7FEF7FE
+
+KEY_T3:         DB   $FF
+                DBH  00010203040506070809
+
+
+KEYTAB_LO:      DB   $7F;STOP
+                DB   $FD,$F7,$FB,$FB,$FD,$FB
+                DB   $F7,$F7,$EF,$EF,$EF,$DF
+                DB   $EF,$EF,$EF,$DF,$7F,$FB
+                DB   $FD,$FB,$F7,$F7,$FD,$FB
+                DB   $F7,$FD
+
+KEYTAB_HI:      DB   $7F;STOP
+                DB   $FB,$EF,$EF,$FB,$BF,$DF
+                DB   $FB,$DF,$FD,$FB,$DF,$FB
+                DB   $EF,$7F,$BF,$FD,$BF,$FD
+                DB   $DF,$BF,$BF,$7F,$FD,$7F
+                DB   $FD,$EF
+
+KEY_ACT:        DB   $FF
+                DB   0,1,2,3,4,5,6,7,8,9
+                DB   10,11,12,13,14,15,16
+                DB   17,18,19,20,21,22,23,24
+                DB   25,26
+
+DISPLAY:        LDX  #X0
+                LDY  #6
+                LDA  OLDNOTE_A
+                JSR  DECDIGIT
+                LDX  #X1
+                LDY  #6
+                LDA  OLDNOTE_B
+                JSR  DECDIGIT
+                LDX  #X2
+                LDY  #6
+                LDA  OLDNOTE_C
+                JSR  DECDIGIT
+                LDX  #X0
+                LDY  #7
+                LDA  #OLDFS
+                JSR  HEXIT
+                LDX  #X1
+                LDY  #7
+                LDA  #OLDFS+2
+                JSR  HEXIT
+                LDX  #X2
+                LDY  #7
+                LDA  #OLDFS+4
+                JSR  HEXIT
+                LDX  #X0
+                LDY  #8
+                LDA  COUNT_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #8
+                LDA  COUNT_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #8
+                LDA  COUNT_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #9
+                LDA  OLDTS
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #9
+                LDA  OLDTS+1
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #9
+                LDA  OLDTS+2
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #10
+                LDA  MEMGATE_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #10
+                LDA  MEMGATE_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #10
+                LDA  MEMGATE_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #11
+                LDA  #PWM_A
+                JSR  HEXIT
+                LDX  #X1
+                LDY  #11
+                LDA  #PWM_B
+                JSR  HEXIT
+                LDX  #X2
+                LDY  #11
+                LDA  #PWM_C
+                JSR  HEXIT
+                LDX  #X0
+                LDY  #12
+                LDA  RATE_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #12
+                LDA  RATE_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #12
+                LDA  RATE_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #13
+                LDA  VB_DEL_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #13
+                LDA  VB_DEL_A
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #13
+                LDA  VB_DEL_A
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #14
+                LDA  VB_RATE_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #14
+                LDA  VB_RATE_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #14
+                LDA  VB_RATE_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #15
+                LDA  VB_LIM2_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #15
+                LDA  VB_LIM2_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #15
+                LDA  VB_LIM2_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #16
+                LDA  EF_TIME_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #16
+                LDA  EF_TIME_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #16
+                LDA  EF_TIME_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #17
+                LDA  EF_GATE_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #17
+                LDA  EF_GATE_A
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #17
+                LDA  EF_GATE_A
+                JSR  HEXDIGIT
+                LDA  EF_FREQ_A
+                STA  TEMP2
+                LDA  EF_FREQ_A+1
+                STA  TEMP3
+                LDX  #X0
+                LDY  #18
+                LDA  #TEMP2
+                JSR  HEXIT
+                LDA  EF_FREQ_B
+                STA  TEMP2
+                LDA  EF_FREQ_B+1
+                STA  TEMP3
+                LDX  #X1
+                LDY  #18
+                LDA  #TEMP2
+                JSR  HEXIT
+                LDA  EF_FREQ_C
+                STA  TEMP2
+                LDA  EF_FREQ_C+1
+                STA  TEMP3
+                LDX  #X2
+                LDY  #18
+                LDA  #TEMP2
+                JSR  HEXIT
+                LDX  #X0
+                LDY  #19
+                LDA  ENDIT_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #19
+                LDA  ENDIT_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #19
+                LDA  ENDIT_C
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDY  #20
+                LDA  TRANS_A
+                JSR  HEXDIGIT
+                LDX  #X1
+                LDY  #20
+                LDA  TRANS_B
+                JSR  HEXDIGIT
+                LDX  #X2
+                LDY  #20
+                LDA  TRANS_C
+                JSR  HEXDIGIT
+
+                LDX  #31
+                LDY  #5
+                LDA  #CUTOFF
+                JSR  HEXIT
+                LDX  #31
+                LDY  #8
+                LDA  FILTRATE
+                JSR  HEXDIGIT
+                LDX  #31
+                LDY  #11
+                LDA  FILTCHAN
+                JSR  HEXDIGIT
+                LDX  #31
+                LDY  #15
+                LDA  MAX
+                JSR  HEXDIGIT
+                LDX  #33
+                LDY  #24
+                LDA  MAX+2
+                JSR  HEXDIGIT
+                LDX  #X0
+                LDA  FREQ_A
+                JSR  DI1
+                LDX  #X1
+                LDA  FREQ_B
+                JSR  DI1
+                LDX  #X2
+                LDA  FREQ_C
+DI1:            STX  TEMP
+                AND  #4
+                TAX  
+                LDY  #10
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                LDY  #0
+DI2:            LDA  N,X
+                AND  #$3F
+                STA  (TEMP),Y
+                INX  
+                INY  
+                CPY  #4
+                BNE  DI2
+                RTS  
+
+WAITRAST:       LDA  $D012
+                CMP  #160
+                BNE  WAITRAST
+                LDA  #2
+                STA  $D020
+                JSR  REFRESH
+                LDA  $D012
+                SEC  
+                SBC  #160
+                STA  MAX
+                CMP  MAX+2
+                BCC  WR1
+                STA  MAX+2
+WR1:            LDA  #0
+                STA  $D020
+CLOCK:          DEC  TIM
+                BNE  WR2
+                LDA  #50
+                STA  TIM
+                SED  
+                LDA  SECS
+                CLC  
+                ADC  #1
+                STA  SECS
+                CMP  #$60
+                BNE  CL1
+                LDA  #0
+                STA  SECS
+                LDA  MINS
+                ADC  #0
+                STA  MINS
+CL1:            CLD  
+WR2:            LDX  #15
+                LDY  #24
+                LDA  MINS
+                JSR  HEXDIGIT
+                LDX  #18
+                LDY  #24
+                LDA  SECS
+                JMP  HEXDIGIT
+
+;HEX PRINTING ROUTINE
+
+;ENTER X=xpos,Y=ypos,A=ZP address
+
+HEXIT:          STX  TEMP
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                LDA  1,X
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #0
+                STA  (TEMP),Y
+                LDA  1,X
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #1
+                STA  (TEMP),Y
+                LDA  0,X
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #2
+                STA  (TEMP),Y
+                LDA  0,X
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #3
+                STA  (TEMP),Y
+                RTS  
+
+DECDIGIT:       STX  TEMP
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                LDY  #2
+                TXA  
+                JSR  S0
+                ORA  #$30
+                STA  (TEMP),Y
+                TXA  
+                JSR  S0
+                DEY  
+                ORA  #$30
+                STA  (TEMP),Y
+                DEY  
+                TXA  
+                ORA  #$30
+                STA  (TEMP),Y
+                RTS  
+
+S0:             LDX  #0
+S1:             CMP  #10
+                BCC  S2
+                INX  
+                SBC  #10
+                BCS  S1
+S2:             RTS  
+
+HEXDIGIT:       STX  TEMP
+                TAX  
+                TYA  
+                ASL  A
+                TAY  
+                LDA  MUL40,Y
+                CLC  
+                ADC  TEMP
+                STA  TEMP
+                LDA  MUL40+1,Y
+                ADC  #4
+                STA  TEMP1
+                TXA  
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAY  
+                LDA  TAB,Y
+                LDY  #0
+                STA  (TEMP),Y
+                TXA  
+                AND  #15
+                TAY  
+                LDA  TAB,Y
+                LDY  #1
+                STA  (TEMP),Y
+                RTS  
+
+MESS:           STX  TEMP
+                STY  TEMP1
+                LDY  #0
+MESS1:          LDA  (TEMP),Y
+                CMP  #16
+                BNE  MESS1A
+                RTS  
+MESS1A:         BCS  MESS2
+                STA  TCOL
+                INY  
+                BNE  MESS1
+MESS2:          CMP  #31
+                BNE  MESS3
+                INY  
+                LDA  (TEMP),Y
+                STA  TEMP2
+                INY  
+                LDA  (TEMP),Y
+                ASL  A
+                TAX  
+                LDA  MUL40,X
+                CLC  
+                ADC  TEMP2
+                STA  TEMP2
+                LDA  MUL40+1,X
+                ADC  #4
+                STA  TEMP3
+                INY  
+                BNE  MESS1
+MESS3:          CMP  #30
+                BNE  MESS3A
+                INY  
+                LDA  (TEMP),Y
+                STA  MESMOD
+                INY  
+                BNE  MESS1
+MESS3A:         STY  MESS4+1
+                LDY  #0
+                AND  #$3F
+                EOR  #0
+MESMOD:         EQU  !-1
+                STA  (TEMP2),Y
+                LDA  TEMP3
+                EOR  #$DC
+                STA  TEMP3
+                LDA  TCOL
+                STA  (TEMP2),Y
+                LDA  TEMP3
+                EOR  #$DC
+                STA  TEMP3
+                INC  TEMP2
+                BNE  MESS4
+                INC  TEMP3
+MESS4:          LDY  #0
+                INY  
+                BNE  MESS1
+
+STARTMES:       DB   31,0,2,10
+                DB   "PROG $0000 : DATA $0"
+                DB   "000 :      TOTAL : $0000"
+                DB   31,30,4,5,30,128
+                DB   " CUTOFF  "
+                DB   31,30,5,32
+                DB   31,38,5,32
+                DB   31,30,6
+                DB   "         "
+                DB   31,30,7
+                DB   " RATE    "
+                DB   31,30,8,32
+                DB   31,38,8,32
+                DB   31,30,9
+                DB   "         "
+                DB   31,30,10
+                DB   " CHANNEL "
+                DB   31,30,11,32
+                DB   31,38,11,32
+                DB   31,30,12
+                DB   "         "
+                DB   31,30,14,2
+                DB   " RASTER  "
+                DB   31,30,15,32
+                DB   31,38,15,32
+                DB   31,30,16
+                DB   "         "
+                DB   30,0
+                DB   16
+
+TITLES:         DB   31,0,24,3
+                DB   "TUNE 00 : ",7
+                DB   " TIME 00: 00",3
+                DB   " :         MAX TIME $00"
+                DB   31,9,4,3
+                DB   "CH#0   "
+                DB   "CH#1   "
+                DB   "CH#2"
+                DB   31,0,6,12
+                DB   "NOTES"
+                DB   31,0,7
+                DB   "FREQS"
+                DB   31,0,8,8
+                DB   "COUNTS"
+                DB   31,0,9
+                DB   "LENGTH"
+                DB   31,0,10,1
+                DB   "GATES"
+                DB   31,0,11,5
+                DB   "PWM"
+                DB   31,0,12
+                DB   "RATES"
+                DB   31,0,13,14
+                DB   "V-DELAY"
+                DB   31,0,14
+                DB   "V-RATE"
+                DB   31,0,15
+                DB   "V-LIMIT"
+                DB   31,0,16,10
+                DB   "E-DELAY"
+                DB   31,0,17
+                DB   "E-GATE"
+                DB   31,0,18
+                DB   "E-FREQ"
+                DB   31,0,19,1
+                DB   "ENDITS"
+                DB   31,0,20,4
+                DB   "TRANSPSE"
+                DB   31,0,22,6
+                DB   "0123456789"
+                DB   31,0,23
+                DB   "ABCDEFGHIJKLM"
+                DB   "NOPQRSTUVWXYZ"
+                DB   16
+
+VERSION:        DB   31,0,0,3,30,128
+                DB   "MUSIC DRIVER V6 : 08"
+                DB   "/07/1988 BY  S.RUDDY"
+
+VERMOD:         DC   40,32
+                DB   30,0,16
+
+N:              DB   "NOTE"
+                DB   "FREQ"
+
+MUL40:          DW   0,40,80,120,160
+                DW   200,240,280,320,360
+                DW   400,440,480,520,560
+                DW   600,640,680,720,760
+                DW   800,840,880,920,960
+
+TAB:            DB   "0123456789"
+                DB   1,2,3,4,5,6
+
+SETCOLOUR:      LDA  #200
+                STA  TEMP
+                LDA  #$D8
+                STA  TEMP1
+                LDX  #0
+STC1:           LDA  COLTAB,X
+                LDY  #X2+4
+STC2:           STA  (TEMP),Y
+                DEY  
+                BPL  STC2
+                LDA  TEMP
+                ADD  #40
+                STA  TEMP
+                BCC  STC3
+                INC  TEMP1
+STC3:           INX  
+                CPX  #20
+                BNE  STC1
+                RTS  
+
+COLTAB:         DB   5,12,12,8,8,1,5,5,14,14
+                DB   14,10,10,10,1,4,1,1,1,1
+
+;=====================================
+
+TOP:            
+TUNE:           LDA  A_LO,X
+                STA  PC_A
+                LDA  A_HI,X
+                STA  PC_A+1
+                LDA  B_LO,X
+                STA  PC_B
+                LDA  B_HI,X
+                STA  PC_B+1
+                LDA  C_LO,X
+                STA  PC_C
+                LDA  C_HI,X
+                STA  PC_C+1
+                LDX  #RESET_ZP-1
+                LDA  #$00
+TUNE2:          STA  GATE_A,X
+                DEX  
+                BPL  TUNE2
+                STX  STOP_A
+                STX  STOP_B
+                STX  STOP_C
+                STX  ENDIT_A
+                STX  ENDIT_B
+                STX  ENDIT_C
+                INX  
+                STX  FILTERS+1
+                STX  LENGTH_A
+                STX  LENGTH_B
+                STX  LENGTH_C
+                STX  IGIT_A
+                STX  IGIT_B
+                STX  IGIT_C
+                INX  
+                STX  COUNT_A
+                STX  COUNT_B
+                STX  COUNT_C
+                LDA  #0
+                STA  LIM_LH+1
+                LDA  #50
+                STA  LIM_LL+1
+                LDA  #4
+                STA  LIM_HH+1
+                LDA  #205
+                STA  LIM_HL+1
+                LDA  #3
+                STA  PWM_A+1
+                STA  PWM_B+1
+                STA  PWM_C+1
+CLEARIT:        LDX  #28
+CLEAR:          LDA  #8
+                STA  SID,X
+                LDA  #0
+                STA  SID,X
+                DEX  
+                BPL  CLEAR
+FX2:            RTS  
+
+TUNEOFF:        LDA  #$00
+                STA  STOP_A
+                STA  STOP_B
+                STA  STOP_C
+                BEQ  CLEARIT
+
+FX:             LDA  FX_TAB1,X
+                STA  ZP_WORK
+                LDA  FX_TAB2,X
+                STA  ZP_WORK1
+                LDY  #$00
+FX1:            LDA  (ZP_WORK),Y
+                BMI  FX2
+                TAX  
+                INY  
+                LDA  (ZP_WORK),Y
+                STA  PC_A,X
+                INY  
+                LDA  (ZP_WORK),Y
+                STA  PC_A+1,X
+                INY  
+                TXA  
+                LSR  A
+                TAX  
+                LDA  #$FF
+                STA  STOP_A,X
+                LDA  #$01
+                STA  COUNT_A,X
+                JMP  FX1
+;=====================================
+;CHANNEL 1'S ROUTINES
+
+REFRESH:        
+CHANNEL_A:      LDA  STOP_A
+                BMI  GO_A
+                JMP  CHANNEL_B
+GO_A:           LDA  EF_WAIT_A
+                BEQ  TRY_VIB_A
+                DEC  EF_WAIT_A
+                BNE  TRY_VIB_A
+                LDA  MEM_LO_A
+                STA  SID
+                STA  OLDFS;REMOVE
+                LDA  MEM_HI_A
+                STA  SID+1
+                STA  OLDFS+1;REMOVE
+                LDA  FLAG_A
+                BEQ  TRY_VIB_A
+                LDA  MEMGATE_A
+                ORA  #1
+                STA  SID+4
+
+TRY_VIB_A:      LDA  VB_DEL_A
+                BEQ  TRY_WOB_A
+                LDA  VB_DEL1_A
+                BEQ  VIB1_A
+                DEC  VB_DEL1_A
+                BNE  TRY_WOB_A
+VIB1_A:         LDA  MEM_LO_A
+                LDX  MEM_HI_A
+VIB_MOD_A:      LDY  #0
+                BEQ  VIB2_A
+                CLC  
+                ADC  VB_RATE_A
+                BCC  VIB3_A
+                INX  
+                BNE  VIB3_A
+VIB2_A:         SEC  
+                SBC  VB_RATE_A
+                BCS  VIB3_A
+                DEX  
+VIB3_A:         STA  SID
+                STX  SID+1
+                STA  MEM_LO_A
+                STX  MEM_HI_A
+                STA  OLDFS;REMOVE
+                STX  OLDFS+1;REMOVE
+                DEC  VB_LIM1_A
+                BNE  TRY_WOB_A
+                LDA  VB_LIM2_A
+                BEQ  TRY_WOB_A
+                ASL  A
+                STA  VB_LIM1_A
+                TYA  
+                EOR  #255
+                STA  VIB_MOD_A+1
+
+TRY_WOB_A:      LDA  WOB_WAI_A
+                BEQ  TRY_POT_A
+                DEC  WOB_WAI_A
+                BNE  TRY_POT_A
+                LDA  WOB_DEL_A
+                STA  WOB_WAI_A
+WOB_MOD_A:      LDA  #0
+                EOR  #255
+                STA  WOB_MOD_A+1
+                BEQ  WOB1_A
+                LDA  OLDNOTE_A
+                ADD  WOB_OFF_A
+                JMP  RESOUND_A
+WOB1_A:         LDA  OLDNOTE_A
+                SUB  WOB_OFF_A
+                JMP  RESOUND_A
+
+TRY_POT_A:      LDA  PORT_A
+                BEQ  TRY_PWM_A
+                LDA  OLDNOTE_A
+                CMP  TARGET_A
+                BCC  GO_UP_A
+                BEQ  TRY_PWM_A
+                SBC  PORT_A
+                CMP  TARGET_A
+                BCS  RESOUND_A
+                BCC  GOTHERE_A
+GO_UP_A:        ADC  PORT_A
+                CMP  TARGET_A
+                BCC  RESOUND_A
+GOTHERE_A:      LDA  TARGET_A
+RESOUND_A:      STA  OLDNOTE_A
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID
+                STA  OLDFS;REMOVE
+                STA  MEM_LO_A
+                LDA  NOTES_HI,X
+                STA  SID+1
+                STA  OLDFS+1;REMOVE
+                STA  MEM_HI_A
+
+TRY_PWM_A:      LDA  #0
+                BNE  P_UP_A
+P_DOWN_A:       LDA  PWM_A
+                SUB  RATE_A
+                STA  PWM_A
+                LDA  PWM_A+1
+                SBC  #0
+                STA  PWM_A+1
+                BMI  PWM1_A
+                BNE  PWM4_A
+                LDA  PWM_A
+                CMP  #100
+                BCS  PWM4_A
+PWM1_A:         DEC  TRY_PWM_A+1
+P_UP_A:         BPL  TRY_CNT_A
+                LDA  PWM_A
+                CLC  
+                ADC  RATE_A
+                STA  PWM_A
+                LDA  PWM_A+1
+                ADC  #0
+                STA  PWM_A+1
+                CMP  #15
+                BEQ  PWM2_A
+                BCC  PWM4_A
+                BCS  PWM3_A
+PWM2_A:         LDA  PWM_A
+                CMP  #155
+                BCC  PWM4_A
+PWM3_A:         INC  TRY_PWM_A+1
+                JMP  P_DOWN_A
+PWM4_A:         LDA  PWM_A
+                STA  SID+2
+                LDA  PWM_A+1
+                STA  SID+3
+
+TRY_CNT_A:      DEC  COUNT_A
+                LDA  ENDIT_A
+                CMP  COUNT_A
+                BEQ  NO_GATE_A
+                LDA  GATE_A
+                BNE  NOT_YET_A
+NO_GATE_A:      LDA  MEMGATE_A
+                AND  #254
+                STA  SID+4
+                INC  GATE_A
+NOT_YET_A:      DEC  GATE_A
+                LDA  COUNT_A
+                BEQ  FETCH_A
+EXIT_A:         JMP  CHANNEL_B
+FETCH_A:        LDA  FREQ_A
+                BPL  LOOP_A
+                LDY  #0
+G_FREQ1_A:      LDA  (PC_A),Y
+                STA  ZP_WORK
+                INY  
+                LDA  (PC_A),Y
+                STA  ZP_WORK1
+                INY  
+                ORA  ZP_WORK
+                BNE  G_FREQ2_A
+                INC  FREQ_A
+                BEQ  ADD_Y_A
+G_FREQ2_A:      LDA  ZP_WORK
+                STA  SID
+                STA  OLDFS;REMOVE
+                LDA  ZP_WORK1
+                JMP  FREQIN_A
+ADD_Y_A:        TYA  
+                ADD  PC_A
+                STA  PC_A
+                BCC  LOOP_A
+                INC  PC_A+1
+LOOP_A:         LDY  #0
+                LDA  (PC_A),Y
+                BPL  GOTNOTE_A
+COMMAND_A:      INY  
+                TAX  
+                LDA  A_JUMP_LO-128,X
+                STA  JMP_MOD_A+1
+                LDA  A_JUMP_HI-128,X
+                STA  JMP_MOD_A+2
+JMP_MOD_A:      JMP  LOOP_A
+
+REST_A:         INY  
+                LDA  GATERES_A
+                STA  GATE_A
+                JMP  GOTREST_A
+
+GOTNOTE_A:      BEQ  REST_A
+                LDX  #0
+IGIT_A:         EQU  !-1
+                BEQ  DOTRANS_A
+                INC  IGIT_A
+                BEQ  NOTRANS_A
+DOTRANS_A:      ADD  TRANS_A
+NOTRANS_A:      TAX  
+                LDA  PORT_A
+                BEQ  NOPORT_A
+                STX  TARGET_A
+                LDX  OLDNOTE_A
+NOPORT_A:       STX  OLDNOTE_A
+                LDA  NOTES_LO,X
+                STA  SID
+                STA  MEM_LO_A
+                STA  OLDFS;REMOVE
+                LDA  NOTES_HI,X
+                STA  MEM_HI_A
+                INY  
+FREQIN_A:       STA  SID+1
+                STA  OLDFS+1;REMOVE
+                LDA  WOB_DEL_A
+                STA  WOB_WAI_A
+                LDA  VB_DEL_A
+                BEQ  NO_VIB_A
+                STA  VB_DEL1_A
+                LDA  VB_DIR_A
+                STA  VIB_MOD_A+1
+                LDA  VB_LIM2_A
+                STA  VB_LIM1_A
+                LDA  #0
+NO_VIB_A:       STA  WOB_MOD_A+1
+                LDA  GATERES_A
+                STA  GATE_A
+                LDA  FLR_A
+                ORA  FLR_A+1
+                BEQ  NOPULSE_A
+                LDA  FLR_A
+                STA  PWM_A
+                LDA  FLR_A+1
+                STA  PWM_A+1
+                LDA  #0
+PWM_DIR_A:      EQU  !-1
+                STA  TRY_PWM_A+1
+NOPULSE_A:      LDA  FILTCHAN
+                BNE  NOFILT_A
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  NOFILT_A
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+FILTSET_A:      LDA  #0
+                STA  FILTERS+1
+NOFILT_A:       LDA  FLAG_A
+                BEQ  GOTREST_A
+                LDA  MEMGATE_A
+                LDX  EF_TIME_A
+                BEQ  NO_EFF_A
+                STX  EF_WAIT_A
+                LDA  EF_FREQ_A
+                STA  SID
+                STA  OLDFS;REMOVE
+                LDA  EF_FREQ_A+1
+                STA  SID+1
+                STA  OLDFS+1;REMOVE
+                LDA  EF_GATE_A
+NO_EFF_A:       ORA  #1
+                STA  SID+4
+GOTREST_A:      LDA  #0
+LENGTH_A:       EQU  !-1
+                BNE  GOT_LEN_A
+                LDA  (PC_A),Y
+                INY  
+GOT_LEN_A:      STA  COUNT_A
+                STA  OLDTS;REMOVE
+                TYA  
+                ADD  PC_A
+                STA  PC_A
+                BCC  FINISH_A
+                INC  PC_A+1
+FINISH_A:       
+
+; the following may seem familiar but
+; , i didn't just copy it honest.
+
+
+CHANNEL_B:      LDA  STOP_B
+                BMI  GO_B
+                JMP  CHANNEL_C
+GO_B:           LDA  EF_WAIT_B
+                BEQ  TRY_VIB_B
+                DEC  EF_WAIT_B
+                BNE  TRY_VIB_B
+                LDA  MEM_LO_B
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                LDA  MEM_HI_B
+                STA  SID+8
+                STA  OLDFS+3;REMOVE
+                LDA  FLAG_B
+                BEQ  TRY_VIB_B
+                LDA  MEMGATE_B
+                ORA  #1
+                STA  SID+11
+
+TRY_VIB_B:      LDA  VB_DEL_B
+                BEQ  TRY_WOB_B
+                LDA  VB_DEL1_B
+                BEQ  VIB1_B
+                DEC  VB_DEL1_B
+                BNE  TRY_WOB_B
+VIB1_B:         LDA  MEM_LO_B
+                LDX  MEM_HI_B
+VIB_MOD_B:      LDY  #0
+                BEQ  VIB2_B
+                CLC  
+                ADC  VB_RATE_B
+                BCC  VIB3_B
+                INX  
+                BNE  VIB3_B
+VIB2_B:         SEC  
+                SBC  VB_RATE_B
+                BCS  VIB3_B
+                DEX  
+VIB3_B:         STA  SID+7
+                STX  SID+8
+                STA  MEM_LO_B
+                STX  MEM_HI_B
+                STA  OLDFS+2;REMOVE
+                STX  OLDFS+3;REMOVE
+                DEC  VB_LIM1_B
+                BNE  TRY_WOB_B
+                LDA  VB_LIM2_B
+                BEQ  TRY_WOB_B
+                ASL  A
+                STA  VB_LIM1_B
+                TYA  
+                EOR  #255
+                STA  VIB_MOD_B+1
+
+TRY_WOB_B:      LDA  WOB_WAI_B
+                BEQ  TRY_POT_B
+                DEC  WOB_WAI_B
+                BNE  TRY_POT_B
+                LDA  WOB_DEL_B
+                STA  WOB_WAI_B
+WOB_MOD_B:      LDA  #0
+                EOR  #255
+                STA  WOB_MOD_B+1
+                BEQ  WOB1_B
+                LDA  OLDNOTE_B
+                ADD  WOB_OFF_B
+                JMP  RESOUND_B
+WOB1_B:         LDA  OLDNOTE_B
+                SUB  WOB_OFF_B
+                JMP  RESOUND_B
+
+TRY_POT_B:      LDA  PORT_B
+                BEQ  TRY_PWM_B
+                LDA  OLDNOTE_B
+                CMP  TARGET_B
+                BCC  GO_UP_B
+                BEQ  TRY_PWM_B
+                SBC  PORT_B
+                CMP  TARGET_B
+                BCS  RESOUND_B
+                BCC  GOTHERE_B
+GO_UP_B:        ADC  PORT_B
+                CMP  TARGET_B
+                BCC  RESOUND_B
+GOTHERE_B:      LDA  TARGET_B
+RESOUND_B:      STA  OLDNOTE_B
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                STA  MEM_LO_B
+                LDA  NOTES_HI,X
+                STA  SID+8
+                STA  OLDFS+3;REMOVE
+                STA  MEM_HI_B
+
+TRY_PWM_B:      LDA  #0
+                BNE  P_UP_B
+P_DOWN_B:       LDA  PWM_B
+                SUB  RATE_B
+                STA  PWM_B
+                LDA  PWM_B+1
+                SBC  #0
+                STA  PWM_B+1
+                BMI  PWM1_B
+                BNE  PWM4_B
+                LDA  PWM_B
+                CMP  #100
+                BCS  PWM4_B
+PWM1_B:         DEC  TRY_PWM_B+1
+P_UP_B:         BPL  TRY_CNT_B
+                LDA  PWM_B
+                CLC  
+                ADC  RATE_B
+                STA  PWM_B
+                LDA  PWM_B+1
+                ADC  #0
+                STA  PWM_B+1
+                CMP  #15
+                BEQ  PWM2_B
+                BCC  PWM4_B
+                BCS  PWM3_B
+PWM2_B:         LDA  PWM_B
+                CMP  #155
+                BCC  PWM4_B
+PWM3_B:         INC  TRY_PWM_B+1
+                JMP  P_DOWN_B
+PWM4_B:         LDA  PWM_B
+                STA  SID+9
+                LDA  PWM_B+1
+                STA  SID+10
+
+TRY_CNT_B:      DEC  COUNT_B
+                LDA  ENDIT_B
+                CMP  COUNT_B
+                BEQ  NO_GATE_B
+                LDA  GATE_B
+                BNE  NOT_YET_B
+NO_GATE_B:      LDA  MEMGATE_B
+                AND  #254
+                STA  SID+11
+                INC  GATE_B
+NOT_YET_B:      DEC  GATE_B
+                LDA  COUNT_B
+                BEQ  FETCH_B
+EXIT_B:         JMP  CHANNEL_C
+FETCH_B:        LDA  FREQ_B
+                BPL  LOOP_B
+                LDY  #0
+G_FREQ1_B:      LDA  (PC_B),Y
+                STA  ZP_WORK
+                INY  
+                LDA  (PC_B),Y
+                STA  ZP_WORK1
+                INY  
+                ORA  ZP_WORK
+                BNE  G_FREQ2_B
+                INC  FREQ_B
+                BEQ  ADD_Y_B
+G_FREQ2_B:      LDA  ZP_WORK
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                LDA  ZP_WORK1
+                JMP  FREQIN_B
+ADD_Y_B:        TYA  
+                ADD  PC_B
+                STA  PC_B
+                BCC  LOOP_B
+                INC  PC_B+1
+LOOP_B:         LDY  #0
+                LDA  (PC_B),Y
+                BPL  GOTNOTE_B
+COMMAND_B:      INY  
+                TAX  
+                LDA  B_JUMP_LO-128,X
+                STA  JMP_MOD_B+1
+                LDA  B_JUMP_HI-128,X
+                STA  JMP_MOD_B+2
+JMP_MOD_B:      JMP  LOOP_B
+
+REST_B:         INY  
+                LDA  GATERES_B
+                STA  GATE_B
+                JMP  GOTREST_B
+
+GOTNOTE_B:      BEQ  REST_B
+                LDX  #0
+IGIT_B:         EQU  !-1
+                BEQ  DOTRANS_B
+                INC  IGIT_B
+                BEQ  NOTRANS_B
+DOTRANS_B:      ADD  TRANS_B
+NOTRANS_B:      TAX  
+                LDA  PORT_B
+                BEQ  NOPORT_B
+                STX  TARGET_B
+                LDX  OLDNOTE_B
+NOPORT_B:       STX  OLDNOTE_B
+                LDA  NOTES_LO,X
+                STA  SID+7
+                STA  MEM_LO_B
+                STA  OLDFS+2;REMOVE
+                LDA  NOTES_HI,X
+                STA  MEM_HI_B
+                INY  
+FREQIN_B:       STA  SID+8
+                STA  OLDFS+3;REMOVE
+                LDA  WOB_DEL_B
+                STA  WOB_WAI_B
+                LDA  VB_DEL_B
+                BEQ  NO_VIB_B
+                STA  VB_DEL1_B
+                LDA  VB_DIR_B
+                STA  VIB_MOD_B+1
+                LDA  VB_LIM2_B
+                STA  VB_LIM1_B
+                LDA  #0
+NO_VIB_B:       STA  WOB_MOD_B+1
+                LDA  GATERES_B
+                STA  GATE_B
+                LDA  FLR_B
+                ORA  FLR_B+1
+                BEQ  NOPULSE_B
+                LDA  FLR_B
+                STA  PWM_B
+                LDA  FLR_B+1
+                STA  PWM_B+1
+                LDA  #0
+PWM_DIR_B:      EQU  !-1
+                STA  TRY_PWM_B+1
+NOPULSE_B:      LDA  FILTCHAN
+                CMP  #$01
+                BNE  NOFILT_B
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  NOFILT_B
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+FILTSET_B:      LDA  #0
+                STA  FILTERS+1
+NOFILT_B:       LDA  FLAG_B
+                BEQ  GOTREST_B
+                LDA  MEMGATE_B
+                LDX  EF_TIME_B
+                BEQ  NO_EFF_B
+                STX  EF_WAIT_B
+                LDA  EF_FREQ_B
+                STA  SID+7
+                STA  OLDFS+2;REMOVE
+                LDA  EF_FREQ_B+1
+                STA  SID+8
+                STA  OLDFS+3;REMOVE
+                LDA  EF_GATE_B
+NO_EFF_B:       ORA  #1
+                STA  SID+11
+GOTREST_B:      LDA  #0
+LENGTH_B:       EQU  !-1
+                BNE  GOT_LEN_B
+                LDA  (PC_B),Y
+                INY  
+GOT_LEN_B:      STA  COUNT_B
+                STA  OLDTS+1;REMOVE
+                TYA  
+                ADD  PC_B
+                STA  PC_B
+                BCC  FINISH_B
+                INC  PC_B+1
+FINISH_B:       
+
+
+; the following may seem familiar but
+; , i didn't just copy it honest.
+
+
+CHANNEL_C:      LDA  STOP_C
+                BMI  GO_C
+                JMP  FILTERS
+GO_C:           LDA  EF_WAIT_C
+                BEQ  TRY_VIB_C
+                DEC  EF_WAIT_C
+                BNE  TRY_VIB_C
+                LDA  MEM_LO_C
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                LDA  MEM_HI_C
+                STA  SID+15
+                STA  OLDFS+5;REMOVE
+                LDA  FLAG_C
+                BEQ  TRY_VIB_C
+                LDA  MEMGATE_C
+                ORA  #1
+                STA  SID+18
+
+TRY_VIB_C:      LDA  VB_DEL_C
+                BEQ  TRY_WOB_C
+                LDA  VB_DEL1_C
+                BEQ  VIB1_C
+                DEC  VB_DEL1_C
+                BNE  TRY_WOB_C
+VIB1_C:         LDA  MEM_LO_C
+                LDX  MEM_HI_C
+VIB_MOD_C:      LDY  #0
+                BEQ  VIB2_C
+                CLC  
+                ADC  VB_RATE_C
+                BCC  VIB3_C
+                INX  
+                BNE  VIB3_C
+VIB2_C:         SEC  
+                SBC  VB_RATE_C
+                BCS  VIB3_C
+                DEX  
+VIB3_C:         STA  SID+14
+                STX  SID+15
+                STA  MEM_LO_C
+                STX  MEM_HI_C
+                STA  OLDFS+4;REMOVE
+                STX  OLDFS+5;REMOVE
+                DEC  VB_LIM1_C
+                BNE  TRY_WOB_C
+                LDA  VB_LIM2_C
+                BEQ  TRY_WOB_C
+                ASL  A
+                STA  VB_LIM1_C
+                TYA  
+                EOR  #255
+                STA  VIB_MOD_C+1
+
+TRY_WOB_C:      LDA  WOB_WAI_C
+                BEQ  TRY_POT_C
+                DEC  WOB_WAI_C
+                BNE  TRY_POT_C
+                LDA  WOB_DEL_C
+                STA  WOB_WAI_C
+WOB_MOD_C:      LDA  #0
+                EOR  #255
+                STA  WOB_MOD_C+1
+                BEQ  WOB1_C
+                LDA  OLDNOTE_C
+                ADD  WOB_OFF_C
+                JMP  RESOUND_C
+WOB1_C:         LDA  OLDNOTE_C
+                SUB  WOB_OFF_C
+                JMP  RESOUND_C
+
+TRY_POT_C:      LDA  PORT_C
+                BEQ  TRY_PWM_C
+                LDA  OLDNOTE_C
+                CMP  TARGET_C
+                BCC  GO_UP_C
+                BEQ  TRY_PWM_C
+                SBC  PORT_C
+                CMP  TARGET_C
+                BCS  RESOUND_C
+                BCC  GOTHERE_C
+GO_UP_C:        ADC  PORT_C
+                CMP  TARGET_C
+                BCC  RESOUND_C
+GOTHERE_C:      LDA  TARGET_C
+RESOUND_C:      STA  OLDNOTE_C
+                TAX  
+                LDA  NOTES_LO,X
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                STA  MEM_LO_C
+                LDA  NOTES_HI,X
+                STA  SID+15
+                STA  OLDFS+5;REMOVE
+                STA  MEM_HI_C
+
+TRY_PWM_C:      LDA  #0
+                BNE  P_UP_C
+P_DOWN_C:       LDA  PWM_C
+                SUB  RATE_C
+                STA  PWM_C
+                LDA  PWM_C+1
+                SBC  #0
+                STA  PWM_C+1
+                BMI  PWM1_C
+                BNE  PWM4_C
+                LDA  PWM_C
+                CMP  #100
+                BCS  PWM4_C
+PWM1_C:         DEC  TRY_PWM_C+1
+P_UP_C:         BPL  TRY_CNT_C
+                LDA  PWM_C
+                CLC  
+                ADC  RATE_C
+                STA  PWM_C
+                LDA  PWM_C+1
+                ADC  #0
+                STA  PWM_C+1
+                CMP  #15
+                BEQ  PWM2_C
+                BCC  PWM4_C
+                BCS  PWM3_C
+PWM2_C:         LDA  PWM_C
+                CMP  #155
+                BCC  PWM4_C
+PWM3_C:         INC  TRY_PWM_C+1
+                JMP  P_DOWN_C
+PWM4_C:         LDA  PWM_C
+                STA  SID+16
+                LDA  PWM_C+1
+                STA  SID+17
+
+TRY_CNT_C:      DEC  COUNT_C
+                LDA  ENDIT_C
+                CMP  COUNT_C
+                BEQ  NO_GATE_C
+                LDA  GATE_C
+                BNE  NOT_YET_C
+NO_GATE_C:      LDA  MEMGATE_C
+                AND  #254
+                STA  SID+18
+                INC  GATE_C
+NOT_YET_C:      DEC  GATE_C
+                LDA  COUNT_C
+                BEQ  FETCH_C
+EXIT_C:         JMP  FILTERS
+FETCH_C:        LDA  FREQ_C
+                BPL  LOOP_C
+                LDY  #0
+G_FREQ1_C:      LDA  (PC_C),Y
+                STA  ZP_WORK
+                INY  
+                LDA  (PC_C),Y
+                STA  ZP_WORK1
+                INY  
+                ORA  ZP_WORK
+                BNE  G_FREQ2_C
+                INC  FREQ_C
+                BEQ  ADD_Y_C
+G_FREQ2_C:      LDA  ZP_WORK
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                LDA  ZP_WORK1
+                JMP  FREQIN_C
+ADD_Y_C:        TYA  
+                ADD  PC_C
+                STA  PC_C
+                BCC  LOOP_C
+                INC  PC_C+1
+LOOP_C:         LDY  #0
+                LDA  (PC_C),Y
+                BPL  GOTNOTE_C
+COMMAND_C:      INY  
+                TAX  
+                LDA  C_JUMP_LO-128,X
+                STA  JMP_MOD_C+1
+                LDA  C_JUMP_HI-128,X
+                STA  JMP_MOD_C+2
+JMP_MOD_C:      JMP  LOOP_C
+
+REST_C:         INY  
+                LDA  GATERES_C
+                STA  GATE_C
+                JMP  GOTREST_C
+
+GOTNOTE_C:      BEQ  REST_C
+                LDX  #0
+IGIT_C:         EQU  !-1
+                BEQ  DOTRANS_C
+                INC  IGIT_C
+                BEQ  NOTRANS_C
+DOTRANS_C:      ADD  TRANS_C
+NOTRANS_C:      TAX  
+                LDA  PORT_C
+                BEQ  NOPORT_C
+                STX  TARGET_C
+                LDX  OLDNOTE_C
+NOPORT_C:       STX  OLDNOTE_C
+                LDA  NOTES_LO,X
+                STA  SID+14
+                STA  MEM_LO_C
+                STA  OLDFS+4;REMOVE
+                LDA  NOTES_HI,X
+                STA  MEM_HI_C
+                INY  
+FREQIN_C:       STA  SID+15
+                STA  OLDFS+5;REMOVE
+                LDA  WOB_DEL_C
+                STA  WOB_WAI_C
+                LDA  VB_DEL_C
+                BEQ  NO_VIB_C
+                STA  VB_DEL1_C
+                LDA  VB_DIR_C
+                STA  VIB_MOD_C+1
+                LDA  VB_LIM2_C
+                STA  VB_LIM1_C
+                LDA  #0
+NO_VIB_C:       STA  WOB_MOD_C+1
+                LDA  GATERES_C
+                STA  GATE_C
+                LDA  FLR_C
+                ORA  FLR_C+1
+                BEQ  NOPULSE_C
+                LDA  FLR_C
+                STA  PWM_C
+                LDA  FLR_C+1
+                STA  PWM_C+1
+                LDA  #0
+PWM_DIR_C:      EQU  !-1
+                STA  TRY_PWM_C+1
+NOPULSE_C:      LDA  FILTCHAN
+                CMP  #$02
+                BNE  NOFILT_C
+                LDA  INITCUT
+                ORA  INITCUT+1
+                BEQ  NOFILT_C
+                LDA  INITCUT
+                STA  CUTOFF
+                LDA  INITCUT+1
+                STA  CUTOFF+1
+FILTSET_C:      LDA  #0
+                STA  FILTERS+1
+NOFILT_C:       LDA  FLAG_C
+                BEQ  GOTREST_C
+                LDA  MEMGATE_C
+                LDX  EF_TIME_C
+                BEQ  NO_EFF_C
+                STX  EF_WAIT_C
+                LDA  EF_FREQ_C
+                STA  SID+14
+                STA  OLDFS+4;REMOVE
+                LDA  EF_FREQ_C+1
+                STA  SID+15
+                STA  OLDFS+5;REMOVE
+                LDA  EF_GATE_C
+NO_EFF_C:       ORA  #1
+                STA  SID+18
+GOTREST_C:      LDA  #0
+LENGTH_C:       EQU  !-1
+                BNE  GOT_LEN_C
+                LDA  (PC_C),Y
+                INY  
+GOT_LEN_C:      STA  COUNT_C
+                STA  OLDTS+2;REMOVE
+                TYA  
+                ADD  PC_C
+                STA  PC_C
+                BCC  FINISH_C
+                INC  PC_C+1
+FINISH_C:       
+
+; and now for the filters...
+
+FILTERS:        LDA  #$00
+                BNE  FILT_UP
+FILT_DOWN:      LDA  CUTOFF
+                SUB  FILTRATE
+                STA  CUTOFF
+                BCS  FILT1
+                DEC  CUTOFF+1
+                BMI  FILT2
+FILT1:          LDA  CUTOFF+1
+LIM_LH:         CMP  #0
+                BNE  CHANSTART
+                LDA  CUTOFF
+LIM_LL:         CMP  #50
+                BCS  CHANSTART
+FILT2:          DEC  FILTERS+1
+FILT_UP:        LDA  CUTOFF
+                ADD  FILTRATE
+                STA  CUTOFF
+                BCC  FILT3
+                INC  CUTOFF+1
+FILT3:          LDA  CUTOFF+1
+LIM_HH:         CMP  #4
+                BCC  CHANSTART
+                LDA  CUTOFF
+LIM_HL:         CMP  #205
+                BCC  CHANSTART
+                INC  FILTERS+1
+                JMP  FILT_DOWN
+CHANSTART:      LDA  CUTOFF
+                STA  SID+21
+                LSR  A
+                LSR  A
+                LSR  A
+                STA  ZP_WORK
+                LDA  CUTOFF+1
+                LSR  A
+                ROR  A
+                ROR  A
+                ROR  A
+                ORA  ZP_WORK
+                STA  SID+22
+                LDA  STOP_A
+                ORA  STOP_B
+                ORA  STOP_C
+                RTS  
+;=====================================
+; COMMAND ROUTINES FOR EACH CHANNEL
+
+;-------------------------------------
+; Command :      FOR
+
+A_FOR:          LDA  (PC_A),Y
+                INY  
+                STA  REPEAT_A
+                LDA  PC_A
+                ADD  #2
+                STA  OLD_PC_A
+                STA  PC_A
+                LDA  PC_A+1
+                ADC  #0
+                STA  OLD_PC_A+1
+                STA  PC_A+1
+                JMP  LOOP_A
+
+B_FOR:          LDA  (PC_B),Y
+                INY  
+                STA  REPEAT_B
+                LDA  PC_B
+                ADD  #2
+                STA  OLD_PC_B
+                STA  PC_B
+                LDA  PC_B+1
+                ADC  #0
+                STA  OLD_PC_B+1
+                STA  PC_B+1
+                JMP  LOOP_B
+
+C_FOR:          LDA  (PC_C),Y
+                INY  
+                STA  REPEAT_C
+                LDA  PC_C
+                ADD  #2
+                STA  OLD_PC_C
+                STA  PC_C
+                LDA  PC_C+1
+                ADC  #0
+                STA  OLD_PC_C+1
+                STA  PC_C+1
+                JMP  LOOP_C
+;-------------------------------------
+; Command :      NEXT
+
+A_NEXT:         DEC  REPEAT_A
+                BEQ  A_GOADDY
+                LDA  OLD_PC_A
+                STA  PC_A
+                LDA  OLD_PC_A+1
+                STA  PC_A+1
+                JMP  LOOP_A
+
+B_NEXT:         DEC  REPEAT_B
+                BEQ  B_GOADDY
+                LDA  OLD_PC_B
+                STA  PC_B
+                LDA  OLD_PC_B+1
+                STA  PC_B+1
+                JMP  LOOP_B
+
+C_NEXT:         DEC  REPEAT_C
+                BEQ  C_GOADDY
+                LDA  OLD_PC_C
+                STA  PC_C
+                LDA  OLD_PC_C+1
+                STA  PC_C+1
+                JMP  LOOP_C
+;-------------------------------------
+; Command - GATECON
+
+A_GATE:         STY  FLAG_A
+                LDA  (PC_A),Y
+                INY  
+                STA  GATERES_A
+A_GOADDY:       JMP  ADD_Y_A
+
+B_GATE:         STY  FLAG_B
+                LDA  (PC_B),Y
+                INY  
+                STA  GATERES_B
+B_GOADDY:       JMP  ADD_Y_B
+
+C_GATE:         STY  FLAG_C
+                LDA  (PC_C),Y
+                INY  
+                STA  GATERES_C
+C_GOADDY:       JMP  ADD_Y_C
+;-------------------------------------
+; Command - LENGTH
+
+A_LEN:          LDA  (PC_A),Y
+                STA  LENGTH_A
+                INY  
+                JMP  ADD_Y_A
+
+B_LEN:          LDA  (PC_B),Y
+                STA  LENGTH_B
+                INY  
+                JMP  ADD_Y_B
+
+C_LEN:          LDA  (PC_C),Y
+                STA  LENGTH_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - SEND
+
+A_SEND:         LDA  (PC_A),Y
+A_SEND1:        TAX  
+                INY  
+                LDA  (PC_A),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_A),Y
+                BPL  A_SEND1
+                INY  
+                JMP  ADD_Y_A
+
+B_SEND:         LDA  (PC_B),Y
+B_SEND1:        TAX  
+                INY  
+                LDA  (PC_B),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_B),Y
+                BPL  B_SEND1
+                INY  
+                JMP  ADD_Y_B
+
+C_SEND:         LDA  (PC_C),Y
+C_SEND1:        TAX  
+                INY  
+                LDA  (PC_C),Y
+                INY  
+                STA  SID,X
+                LDA  (PC_C),Y
+                BPL  C_SEND1
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - GATE
+
+A_SETGATE:      LDA  (PC_A),Y
+                STA  SID+4
+                STA  MEMGATE_A
+                INY  
+                ASL  A
+                ASL  A
+                LDA  #$FF
+                BCS  A_SG1
+                LDA  #$01
+A_SG1:          STA  PWM_DIR_A
+                STA  TRY_PWM_A+1
+                JMP  ADD_Y_A
+
+B_SETGATE:      LDA  (PC_B),Y
+                STA  SID+11
+                STA  MEMGATE_B
+                INY  
+                ASL  A
+                ASL  A
+                LDA  #$FF
+                BCS  B_SG1
+                LDA  #$01
+B_SG1:          STA  PWM_DIR_B
+                STA  TRY_PWM_B+1
+                JMP  ADD_Y_B
+
+C_SETGATE:      LDA  (PC_C),Y
+                STA  SID+18
+                STA  MEMGATE_C
+                INY  
+                ASL  A
+                ASL  A
+                LDA  #$FF
+                BCS  C_SG1
+                LDA  #$01
+C_SG1:          STA  PWM_DIR_C
+                STA  TRY_PWM_C+1
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - STOP
+
+A_STOP:         INC  STOP_A
+                JMP  CHANNEL_B
+
+B_STOP:         INC  STOP_B
+                JMP  CHANNEL_C
+
+C_STOP:         INC  STOP_C
+                JMP  FILTERS
+;-------------------------------------
+; Command - PULSE
+
+A_PULSE:        LDA  (PC_A),Y
+                INY  
+                STA  RATE_A
+                LDA  (PC_A),Y
+                INY  
+                STA  FLR_A
+                STA  PWM_A
+                LDA  (PC_A),Y
+                INY  
+                STA  FLR_A+1
+                STA  PWM_A+1
+                JMP  ADD_Y_A
+
+B_PULSE:        LDA  (PC_B),Y
+                INY  
+                STA  RATE_B
+                LDA  (PC_B),Y
+                INY  
+                STA  FLR_B
+                STA  PWM_B
+                LDA  (PC_B),Y
+                INY  
+                STA  FLR_B+1
+                STA  PWM_B+1
+                JMP  ADD_Y_B
+
+C_PULSE:        LDA  (PC_C),Y
+                INY  
+                STA  RATE_C
+                LDA  (PC_C),Y
+                INY  
+                STA  FLR_C
+                STA  PWM_C
+                LDA  (PC_C),Y
+                INY  
+                STA  FLR_C+1
+                STA  PWM_C+1
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - FREQS
+
+A_FREQS:        DEC  FREQ_A
+                JMP  G_FREQ1_A
+
+B_FREQS:        DEC  FREQ_B
+                JMP  G_FREQ1_B
+
+C_FREQS:        DEC  FREQ_C
+                JMP  G_FREQ1_C
+;-------------------------------------
+; Command - FILTER
+
+A_FILTER:       LDA  (PC_A),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_A),Y
+                STA  FILTSET_A+1
+                INY  
+                LDA  (PC_A),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_A),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                LDA  (PC_A),Y
+                STA  LIM_LL+1
+                INY  
+                LDA  (PC_A),Y
+                STA  LIM_LH+1
+                INY  
+                LDA  (PC_A),Y
+                STA  LIM_HL+1
+                INY  
+                LDA  (PC_A),Y
+                STA  LIM_HH+1
+                INY  
+                JMP  ADD_Y_A
+
+B_FILTER:       LDA  (PC_B),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_B),Y
+                STA  FILTSET_B+1
+                INY  
+                LDA  (PC_B),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_B),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                LDA  (PC_B),Y
+                STA  LIM_LL+1
+                INY  
+                LDA  (PC_B),Y
+                STA  LIM_LH+1
+                INY  
+                LDA  (PC_B),Y
+                STA  LIM_HL+1
+                INY  
+                LDA  (PC_B),Y
+                STA  LIM_HH+1
+                INY  
+                JMP  ADD_Y_B
+
+C_FILTER:       LDA  (PC_C),Y
+                STA  FILTRATE
+                INY  
+                LDA  (PC_C),Y
+                STA  FILTSET_C+1
+                INY  
+                LDA  (PC_C),Y
+                STA  CUTOFF
+                STA  INITCUT
+                INY  
+                LDA  (PC_C),Y
+                STA  CUTOFF+1
+                STA  INITCUT+1
+                INY  
+                LDA  (PC_C),Y
+                STA  LIM_LL+1
+                INY  
+                LDA  (PC_C),Y
+                STA  LIM_LH+1
+                INY  
+                LDA  (PC_C),Y
+                STA  LIM_HL+1
+                INY  
+                LDA  (PC_C),Y
+                STA  LIM_HH+1
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - CLAIM
+
+A_CLAIM:        LDA  #$00
+                STA  FILTCHAN
+                JMP  ADD_Y_A
+
+B_CLAIM:        LDA  #$01
+                STA  FILTCHAN
+                JMP  ADD_Y_B
+
+C_CLAIM:        LDA  #$01
+                STA  FILTCHAN
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - GOSUB,GOTO
+
+A_GOSUB:        LDA  PC_A
+                ADD  #3
+                STA  STACK_A
+                LDA  PC_A+1
+                ADC  #0
+                STA  STACK_A+1
+                LDA  (PC_A),Y
+                TAX  
+                INY  
+                LDA  (PC_A),Y
+                STA  PC_A+1
+                STX  PC_A
+                JMP  LOOP_A
+
+B_GOSUB:        LDA  PC_B
+                ADD  #3
+                STA  STACK_B
+                LDA  PC_B+1
+                ADC  #0
+                STA  STACK_B+1
+                LDA  (PC_B),Y
+                TAX  
+                INY  
+                LDA  (PC_B),Y
+                STA  PC_B+1
+                STX  PC_B
+                JMP  LOOP_B
+
+C_GOSUB:        LDA  PC_C
+                ADD  #3
+                STA  STACK_C
+                LDA  PC_C+1
+                ADC  #0
+                STA  STACK_C+1
+                LDA  (PC_C),Y
+                TAX  
+                INY  
+                LDA  (PC_C),Y
+                STA  PC_C+1
+                STX  PC_C
+                JMP  LOOP_C
+;-------------------------------------
+; Command - RETURN
+
+A_RETURN:       LDA  STACK_A
+                STA  PC_A
+                LDA  STACK_A+1
+                STA  PC_A+1
+                JMP  LOOP_A
+
+B_RETURN:       LDA  STACK_B
+                STA  PC_B
+                LDA  STACK_B+1
+                STA  PC_B+1
+                JMP  LOOP_B
+
+C_RETURN:       LDA  STACK_C
+                STA  PC_C
+                LDA  STACK_C+1
+                STA  PC_C+1
+                JMP  LOOP_C
+;-------------------------------------
+; Command - TRANS
+
+A_TRANS:        LDA  (PC_A),Y
+                STA  TRANS_A
+                INY  
+                JMP  ADD_Y_A
+
+B_TRANS:        LDA  (PC_B),Y
+                STA  TRANS_B
+                INY  
+                JMP  ADD_Y_B
+
+C_TRANS:        LDA  (PC_C),Y
+                STA  TRANS_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - VIB
+
+A_SETVIB:       LDA  (PC_A),Y
+                STA  VB_DEL_A
+                INY  
+                LDA  (PC_A),Y
+                STA  VB_RATE_A
+                INY  
+                LDA  (PC_A),Y
+                STA  VB_LIM2_A
+                INY  
+                LDA  (PC_A),Y
+                STA  VB_DIR_A
+                INY  
+                JMP  ADD_Y_A
+
+B_SETVIB:       LDA  (PC_B),Y
+                STA  VB_DEL_B
+                INY  
+                LDA  (PC_B),Y
+                STA  VB_RATE_B
+                INY  
+                LDA  (PC_B),Y
+                STA  VB_LIM2_B
+                INY  
+                LDA  (PC_B),Y
+                STA  VB_DIR_B
+                INY  
+                JMP  ADD_Y_B
+
+C_SETVIB:       LDA  (PC_C),Y
+                STA  VB_DEL_C
+                INY  
+                LDA  (PC_C),Y
+                STA  VB_RATE_C
+                INY  
+                LDA  (PC_C),Y
+                STA  VB_LIM2_C
+                INY  
+                LDA  (PC_C),Y
+                STA  VB_DIR_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - EFFECT
+
+A_EFFECT:       LDA  (PC_A),Y
+                STA  EF_TIME_A
+                INY  
+                LDA  (PC_A),Y
+                STA  EF_GATE_A
+                INY  
+                LDA  (PC_A),Y
+                STA  EF_FREQ_A
+                INY  
+                LDA  (PC_A),Y
+                STA  EF_FREQ_A+1
+                INY  
+                JMP  ADD_Y_A
+EF_FREQ_A:      DW   0
+
+B_EFFECT:       LDA  (PC_B),Y
+                STA  EF_TIME_B
+                INY  
+                LDA  (PC_B),Y
+                STA  EF_GATE_B
+                INY  
+                LDA  (PC_B),Y
+                STA  EF_FREQ_B
+                INY  
+                LDA  (PC_B),Y
+                STA  EF_FREQ_B+1
+                INY  
+                JMP  ADD_Y_B
+EF_FREQ_B:      DW   0
+
+C_EFFECT:       LDA  (PC_C),Y
+                STA  EF_TIME_C
+                INY  
+                LDA  (PC_C),Y
+                STA  EF_GATE_C
+                INY  
+                LDA  (PC_C),Y
+                STA  EF_FREQ_C
+                INY  
+                LDA  (PC_C),Y
+                STA  EF_FREQ_C+1
+                INY  
+                JMP  ADD_Y_C
+EF_FREQ_C:      DW   0
+;-------------------------------------
+; Command - ENDIT
+
+A_END:          LDA  (PC_A),Y
+                STA  ENDIT_A
+                INY  
+                JMP  ADD_Y_A
+
+B_END:          LDA  (PC_B),Y
+                STA  ENDIT_B
+                INY  
+                JMP  ADD_Y_B
+
+C_END:          LDA  (PC_C),Y
+                STA  ENDIT_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - WOBBLE
+
+A_WOBBLE:       LDA  (PC_A),Y
+                STA  WOB_DEL_A
+                INY  
+                LDA  (PC_A),Y
+                STA  WOB_OFF_A
+                INY  
+                JMP  ADD_Y_A
+
+B_WOBBLE:       LDA  (PC_B),Y
+                STA  WOB_DEL_B
+                INY  
+                LDA  (PC_B),Y
+                STA  WOB_OFF_B
+                INY  
+                JMP  ADD_Y_B
+
+C_WOBBLE:       LDA  (PC_C),Y
+                STA  WOB_DEL_C
+                INY  
+                LDA  (PC_C),Y
+                STA  WOB_OFF_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - PORT
+
+A_PORT:         LDA  (PC_A),Y
+                STA  PORT_A
+                INY  
+                JMP  ADD_Y_A
+
+B_PORT:         LDA  (PC_B),Y
+                STA  PORT_B
+                INY  
+                JMP  ADD_Y_B
+
+C_PORT:         LDA  (PC_C),Y
+                STA  PORT_C
+                INY  
+                JMP  ADD_Y_C
+;-------------------------------------
+; Command - IGNORE
+
+A_IGNORE:       DEC  IGIT_A
+                JMP  ADD_Y_A
+
+B_IGNORE:       DEC  IGIT_B
+                JMP  ADD_Y_B
+
+C_IGNORE:       DEC  IGIT_C
+                JMP  ADD_Y_C
+;=====================================
+; Jump tables for commands.
+
+A_JUMP_LO:      DB   <A_PULSE;      0
+                DB   <A_NEXT;       1
+                DB   <A_FOR;        2
+                DB   <A_GATE;       3
+                DB   <A_LEN;        4
+                DB   <A_SEND;       5
+                DB   <A_STOP;       6
+                DB   <A_FREQS;      7
+                DB   <A_FILTER;     8
+                DB   <A_CLAIM;      9
+                DB   <A_GOSUB;     10
+                DB   <A_RETURN;    11
+                DB   <A_TRANS;     12
+                DB   <A_SETGATE;   13
+                DB   <A_SETVIB;    14
+                DB   <A_EFFECT;    15
+                DB   <A_END;       16
+                DB   <A_WOBBLE;    17
+                DB   <A_PORT;      18
+                DB   <A_IGNORE;    19
+
+B_JUMP_LO:      DB   <B_PULSE;      0
+                DB   <B_NEXT;       1
+                DB   <B_FOR;        2
+                DB   <B_GATE;       3
+                DB   <B_LEN;        4
+                DB   <B_SEND;       5
+                DB   <B_STOP;       6
+                DB   <B_FREQS;      7
+                DB   <B_FILTER;     8
+                DB   <B_CLAIM;      9
+                DB   <B_GOSUB;     10
+                DB   <B_RETURN;    11
+                DB   <B_TRANS;     12
+                DB   <B_SETGATE;   13
+                DB   <B_SETVIB;    14
+                DB   <B_EFFECT;    15
+                DB   <B_END;       16
+                DB   <B_WOBBLE;    17
+                DB   <B_PORT;      18
+                DB   <B_IGNORE;    19
+
+C_JUMP_LO:      DB   <C_PULSE;      0
+                DB   <C_NEXT;       1
+                DB   <C_FOR;        2
+                DB   <C_GATE;       3
+                DB   <C_LEN;        4
+                DB   <C_SEND;       5
+                DB   <C_STOP;       6
+                DB   <C_FREQS;      7
+                DB   <C_FILTER;     8
+                DB   <C_CLAIM;      9
+                DB   <C_GOSUB;     10
+                DB   <C_RETURN;    11
+                DB   <C_TRANS;     12
+                DB   <C_SETGATE;   13
+                DB   <C_SETVIB;    14
+                DB   <C_EFFECT;    15
+                DB   <C_END;       16
+                DB   <C_WOBBLE;    17
+                DB   <C_PORT;      18
+                DB   <C_IGNORE;    19
+
+A_JUMP_HI:      DB   >A_PULSE;      0
+                DB   >A_NEXT;       1
+                DB   >A_FOR;        2
+                DB   >A_GATE;       3
+                DB   >A_LEN;        4
+                DB   >A_SEND;       5
+                DB   >A_STOP;       6
+                DB   >A_FREQS;      7
+                DB   >A_FILTER;     8
+                DB   >A_CLAIM;      9
+                DB   >A_GOSUB;     10
+                DB   >A_RETURN;    11
+                DB   >A_TRANS;     12
+                DB   >A_SETGATE;   13
+                DB   >A_SETVIB;    14
+                DB   >A_EFFECT;    15
+                DB   >A_END;       16
+                DB   >A_WOBBLE;    17
+                DB   >A_PORT;      18
+                DB   >A_IGNORE;    19
+
+B_JUMP_HI:      DB   >B_PULSE;      0
+                DB   >B_NEXT;       1
+                DB   >B_FOR;        2
+                DB   >B_GATE;       3
+                DB   >B_LEN;        4
+                DB   >B_SEND;       5
+                DB   >B_STOP;       6
+                DB   >B_FREQS;      7
+                DB   >B_FILTER;     8
+                DB   >B_CLAIM;      9
+                DB   >B_GOSUB;     10
+                DB   >B_RETURN;    11
+                DB   >B_TRANS;     12
+                DB   >B_SETGATE;   13
+                DB   >B_SETVIB;    14
+                DB   >B_EFFECT;    15
+                DB   >B_END;       16
+                DB   >B_WOBBLE;    17
+                DB   >B_PORT;      18
+                DB   >B_IGNORE;    19
+
+C_JUMP_HI:      DB   >C_PULSE;      0
+                DB   >C_NEXT;       1
+                DB   >C_FOR;        2
+                DB   >C_GATE;       3
+                DB   >C_LEN;        4
+                DB   >C_SEND;       5
+                DB   >C_STOP;       6
+                DB   >C_FREQS;      7
+                DB   >C_FILTER;     8
+                DB   >C_CLAIM;      9
+                DB   >C_GOSUB;     10
+                DB   >C_RETURN;    11
+                DB   >C_TRANS;     12
+                DB   >C_SETGATE;   13
+                DB   >C_SETVIB;    14
+                DB   >C_EFFECT;    15
+                DB   >C_END;       16
+                DB   >C_WOBBLE;    17
+                DB   >C_PORT;      18
+                DB   >C_IGNORE;    19
+
+;=====================================
+
+;DO FILTERING THINGS
+
+NOTES_LO:       
+                DB   12,28,45,62,81,102,123
+                DB   145,169,195,221,250,24
+                DB   56,90,125,163,204,246
+                DB   35,83,134,187,244,48
+                DB   112,180,251,71,152,237
+                DB   71,167,12,119,233,97
+                DB   225,104,247,143,48,218
+                DB   143,78,24,239,210,195
+                DB   195,209,239,31,96,181
+                DB   30,156,49,223,165,135
+                DB   134,162,223,62,193,107
+                DB   60,57,99,190,75,15,12
+                DB   69,191,125,131,214,121
+                DB   115,199,124,151,30,24
+                DB   139,126,250,6,172,243
+                DB   230,143,248,46,255
+
+NOTES_HI:       
+                DB   1,1,1,1,1,1,1,1,1,1,1,1
+                DB   2,2,2,2,2,2,2,3,3,3,3,3
+                DB   4,4,4,4,5,5,5,6,6
+                DB   7,7,7,8,8,9,9,10,11,11
+                DB   12,13,14,14,15,16,17,18
+                DB   19,21,22,23,25,26,28,29
+                DB   31,33,35,37,39,42,44,47
+                DB   50,53,56,59,63,67,71,75
+                DB   79,84,89,94,100,106,112
+                DB   119,126,134,142,150,159
+                DB   168,179,189,200,212,225
+                DB   238,253,255
+BOT:            
+
+;=====================================
+
+                ORG  $4000
+
+M_TUNES:        DS   1
+M_EFFECTS:      DS   1
+
+M_CALC:         DS   2
+
+TITLE:          DS   40+3+6
+TOPCALC:        
+;=====================================
+A_LO:           DS   10
+
+A_HI:           DS   10
+;=====================================
+B_LO:           DS   10
+
+B_HI:           DS   10
+;=====================================
+C_LO:           DS   10
+
+C_HI:           DS   10
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DS   26
+
+FX_TAB2:        DS   26
+
+;=====================================
+
+                END  
