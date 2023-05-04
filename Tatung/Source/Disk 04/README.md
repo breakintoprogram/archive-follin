@@ -1,38 +1,31 @@
 # Disk 3
 
-### Side A: BAT
+### Side A: PITH
 
 | FILE         | TYPE | STATUS   | DESCRIPTION |
 |--------------|------|----------|---|
-| MUSIC3.SRC   | 6502 | OK       | 
-| MUSIC3.BAK   | 6502 | OK       |
-| MUSIC4.SRC   | 6502 | OK       |
-| PACKRAT.BAK  | Z80  | OK       |
-| PACKER-R.SRC | Z80  | OK       |
-| SLIME.SRC    | 6502 | OK       |
-| SLIME.BAK    | 6502 | OK       |
-| AYDRIVE.SRC  |      | BAD DATA |
-| BLACK.SRC    |      | BAD DATA |
-| BLACK.BAK    |      | BAD DATA |
-| COMBLAK.BAK  |      | BAD DATA |
-| COMBLAK.SRC  |      | 0 BYTES  |
-| GREEN.SRC    |      | 0 BYTES  |
-| GREEN.BAK    |      | 0 BYTES  |
-| PACKRAT.SRC  |      | 0 BYTES  |
-| POO.SRC      |      | 0 BYTES  |
+| EDIT.COM     | COM  | OK       |
+| ALLFEET.SRC  | 6502 | OK       |
+| BASE.SRC     | 6502 | OK       |
+| BDRIVER.SRC  | 6502 | OK       |
+| BIT.SRC      | 6502 | OK       |
+| COMP.SRC     | 6502 | OK       |
+| FOOT.SRC     | 6502 | OK       |
+| FOOTLY.SRC   | 6502 | OK       |
+| FUTGCOM.SRC  | 6502 | OK       |
+| FUTGOV.SRC   | 6502 | OK       |
+| FUTJING.SRC  | 6502 | OK       |
+| FXDRIVER.SRC | 6502 | OK       |
+| HUT.SRC      | 6502 | OK       |
+| LOP2C.SRC    | 6502 | OK       |
+| LOP3C.SRC    | 6502 | OK       |
+| MUD.SRC      | 6502 | OK       |
+| SONG.SRC     | 6502 | OK       |
+| WISP.SRC     | 6502 | OK       |
+| YCT.SRC      | 6502 | OK       |
+| AMDRIVE.SRC  |      | 0 BYTES  |
 
-### Side B: PAKK
+### Side B: PATHOS
 
-| FILE         | TYPE | STATUS   | DESCRIPTION |
-|--------------|------|----------|---|
-| 1.SRC        | 6502 | OK       |
-| 2.SRC        | 6502 | OK       |
-| AYDRIVE.SRC  | Z80  | OK       |
-| AYDRIVE.BAK  | Z80  | OK       |
-| COMBLAK.SRC  | 6502 | OK       |
-| GREEN.SRC    | Z80  | OK       |
-| HIGH.SRC     | 6502 | OK       |
-| PACKRAT.SRC  | Z80  | OK       |
-| POO.SRC      | Z80  | OK       |
-| TONY.SRC     | Z80  | OK       |
-| AMP.SRC      |      | 0 BYTES  |
+Unable to read the disk in the Einstein: BAD DATA
+
