@@ -1,0 +1,1303 @@
+                INCL PINK
+TOPDATA:        
+
+
+;=====================================
+;TUNE1   TITLE PAGE TUNE
+;=====================================
+
+TITL_A:         DB   SEND
+                DB   5,$0A
+                DB   6,$20
+                DB   12,$0A
+                DB   13,$20
+                DB   19,$0A
+                DB   20,$20
+                DB   24,15
+                DB   END
+                DB   PORT,0
+                DB   GATE_CON,255
+                DB   ENDIT,2
+                DB   GATE,64
+                DB   PULSE,200
+                DW   0
+                DB   79,128
+
+                DB   SEND
+                DB   5,$36
+                DB   6,$C3
+                DB   12,$0B
+                DB   13,$0B
+                DB   19,$0A
+                DB   20,$09
+                DB   23,%00000010
+                DB   24,%00011111
+                DB   END
+                DB   GATE,64
+                DB   PULSE,40
+                DW   100
+
+                DB   VIB,24,80,3,0
+                DB   55,16,60,24,55,8,60,16
+                DB   63,24,65,8,63,16,62,24
+                DB   58,8,53,16,55,24,60,8
+                DB   63,16,65,48,65,24,63,8
+                DB   62,8,63,8,62,32,59,16
+                DB   55,32
+                DB   55,16,60,24,55,8,60,16
+                DB   63,24,65,8,63,16,62,24
+                DB   58,8,53,16,55,24,60,8
+                DB   63,16,65,48,63,32,62,16
+                DB   60,48,55,16,56,16
+
+                DB   FOR,2
+                DB   55,16,64,32,64,8,65,8
+                DB   VIB,24,150,0,255,ENDIT,255
+                DB   67,32,ENDIT,2
+                DB   69,16,65,24,67,8
+                DB   VIB,24,80,3,0
+                DB   65,16,65,16,64,8,62,8
+                DB   60,8,55,8,64,32,64,8
+                DB   65,8,67,32,67,16,69,16
+                DB   71,16,67,16,72,32,NEXT
+                DB   VIB,0,0,0,0
+                DB   SEND
+                DB   5,$0A
+                DB   6,$0A
+                DB   END
+                DB   WOBBLE,2
+                DB   67,16,72,20,71,10,69,10
+                DB   67,20,69,20,67,20,60,20
+                DB   67,20,65,10,64,10,65,20
+                DB   67,20,65,20,62,20,65,10
+                DB   64,10,60,20,64,20,62,60
+                DB   60,16,62,16,65,16,64,16
+                DB   67,16,GATE_CON,8
+                DB   VIB,24,120,3,0
+                DB   WOBBLE,0
+                DB   SEND,6,0,END
+                DB   72,16
+                DB   ENDIT,255
+                DB   PULSE,50
+                DW   0
+                DB   VIB,0,0,0,0
+                DB   GATE_CON,255
+                DB   SEND
+                DB   5,$C0
+                DB   6,$FC
+                DB   24,15
+                DB   23,0
+                DB   END
+                DB   62,38
+                DB   PORT,3
+                DB   GATE_CON,1
+                DB   SEND
+                DB   5,$00
+                DB   6,$FC
+                DB   END
+                DB   GOSUB
+                DW   SOLO
+                DB   60,16,61,16
+
+                DB   56,48,58,40,56,4,58,4
+                DB   FOR,4
+                DB   63,8,56,8,58,8,NEXT
+                DB   55,48,58,40,55,4,58,4
+                DB   FOR,4
+                DB   63,8,55,8,58,8,NEXT
+                DB   56,48,58,40,56,4,58,4
+                DB   FOR,4
+                DB   63,8,56,8,58,8,NEXT
+                DB   55,48,58,40,55,4,58,4
+                DB   63,8,55,8,58,8,63,8,58,8
+                DB   63,8,67,8,63,8,67,8,70,8
+                DB   67,8,70,8
+                DB   74,88,72,4,74,4
+                DB   69,8,67,4,69,4,62,8,60,4
+                DB   62,4,57,8,55,4,57,4
+                DB   52,32,53,16,55,8,53,8
+                DB   55,8,57,8,55,8,57,8
+                DB   60,16,59,32,59,8,57,8
+                DB   59,8,60,8,59,8,60,8
+                DB   62,8,60,8,62,8,64,8
+                DB   65,8,67,8
+                DB   74,88,72,4,74,4
+                DB   69,8,67,4,69,4,62,8,60,4
+                DB   62,4,57,8,55,4,57,4
+                DB   52,32,53,16,55,16,57,16
+                DB   58,16,57,16,58,8,55,24
+                DB   55,8,57,8,59,8,60,8,62,8
+                DB   64,8,65,8,67,8,69,8,71,8
+                DB   72,8,74,8
+
+                DB   TRANSPOSE,0
+                DB   60,24,55,8,60,16
+                DB   63,24,65,8,63,16,62,24
+                DB   58,8,53,16,55,24,60,8
+                DB   63,16,65,48,65,24,63,8
+                DB   62,8,63,8,62,32,59,16
+                DB   55,32
+                DB   55,16,60,24,55,8,60,16
+                DB   63,24,65,8,63,16,62,24
+                DB   58,8,53,16,55,24,60,8
+                DB   63,16,65,48,63,32,62,16
+                DB   60,48,55,16,60,16,63,16
+
+                DB   65,40,63,20,65,60,63,60
+                DB   62,60,60,96
+
+                DB   GOTO
+                DW   TITL_A
+;.....................................
+
+TITL_B:         DB   GATE,64
+                DB   GATE_CON,255
+                DB   ENDIT,255
+                DB   PULSE,0
+                DW   300
+                DB   EFFECT,0,0
+                DW   0
+
+                DB   FOR,7
+                DB   55,4,56,4,43,4,44,4
+                DB   NEXT
+                DB   55,4,56,4
+                DB   GATE_CON,3,43,24
+                DB   GATE_CON,1
+                DB   FILTER,20,0
+                DW   $400
+                DB   CLAIM
+                DB   PULSE,30
+                DW   50
+                DB   EFFECT,2,128
+                DW   $100
+
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+                DB   19,16,26,8,31,16,26,8
+                DB   24,16,24,16,19,16
+                DB   17,16,24,8,29,16,24,8
+                DB   17,8,16,8,17,8
+                DB   20,8,19,8,20,8
+                DB   19,16,26,16,31,16
+                DB   19,16,21,16,23,16
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+                DB   19,16,26,8,31,16,26,8
+                DB   24,16,24,16,19,16
+                DB   25,16,32,8,37,16,32,8
+                DB   19,16,26,16,31,16
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+
+                DB   FOR,2
+                DB   24,24,24,16,31,8
+                DB   36,24,36,16,31,8
+                DB   24,16,24,8,24,16,31,8
+                DB   24,16,31,16,19,16
+                DB   24,24,24,16,31,8
+                DB   36,24,36,16,31,8
+                DB   17,16,19,16,23,16
+                DB   24,16,24,8,31,16,19,8
+                DB   NEXT
+
+                DB   24,60,36,60,17,60,29,60
+                DB   36,60,24,60,19,48
+                DB   24,16,31,8,36,16,31,8
+
+                DB   EFFECT,0,0
+                DW   0
+                DB   PULSE,40
+                DW   0
+
+                DB   24,4
+                DB   GATE_CON,2
+                DB   FOR,4
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   ONE
+                DB   GOSUB
+                DW   ONE
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   ONE
+                DB   GOSUB
+                DW   ONE
+                DB   NEXT
+
+                DB   FOR,2
+                DB   TRANSPOSE,0
+                DB   20,32,20,16,32,16,32,8
+                DB   27,16,27,8
+                DB   20,16,20,16,27,16
+                DB   20,16,20,8,22,16,22,8
+                DB   TRANSPOSE,7
+                DB   20,32,20,16,32,16,32,8
+                DB   27,16,27,8
+                DB   20,16,20,16,27,16
+                DB   20,16,20,8,22,16,22,8
+                DB   NEXT
+                DB   TRANSPOSE,6
+                DB   FOR,2
+                DB   20,32,27,16,32,16,32,8
+                DB   27,16,20,8
+                DB   20,16,20,16,27,16
+                DB   20,16,20,16,27,16
+                DB   13,16,13,16,20,16
+                DB   25,16,25,8,20,16,20,8
+                DB   13,16,13,16,25,16
+                DB   13,16,25,8,15,16,13,8
+                DB   NEXT
+                DB   PULSE,30
+                DW   50
+                DB   EFFECT,2,128
+                DW   $100
+
+                DB   TRANSPOSE,0
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+                DB   19,16,26,8,31,16,26,8
+                DB   24,16,24,16,19,16
+                DB   17,16,24,8,29,16,24,8
+                DB   17,8,16,8,17,8
+                DB   20,8,19,8,20,8
+                DB   19,16,26,16,31,16
+                DB   19,16,21,16,23,16
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+                DB   19,16,26,8,31,16,26,8
+                DB   24,16,24,16,19,16
+
+                DB   25,16,32,8,37,16,32,8
+                DB   19,16,26,16,31,16
+                DB   24,16,36,8,17,16,19,8
+                DB   24,16,31,16,36,16
+                DB   25,20,32,20,37,20
+                DB   25,20,32,10,37,20,32,10
+                DB   19,20,26,20,31,20
+                DB   19,20,26,20,31,20
+                DB   24,16,31,8,36,16,31,8
+                DB   24,16,31,16,36,16
+
+                DB   GOTO
+                DW   TITL_B
+;.....................................
+
+TITL_C:         DB   GATE,64
+                DB   GATE_CON,255
+                DB   PULSE,30
+                DW   0
+                DB   19,126,GATE_CON,2,19,18
+
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINU
+                DB   TRANSPOSE,1
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJU
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJU
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJU
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJU
+
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJS
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MAJU
+
+                DB   60,23
+                DB   PULSE,50
+                DW   0
+
+                DB   VIB,0,0,0,0
+                DB   GATE_CON,255
+                DB   SEND
+                DB   19,$C0
+                DB   20,$AC
+                DB   END
+                DB   62,38
+                DB   PORT,3
+                DB   GATE_CON,1
+                DB   SEND
+                DB   19,$09
+                DB   20,$09
+                DB   END
+                DB   GOSUB
+                DW   SOLO
+                DB   60,9,PORT,0
+
+                DB   GATE_CON,2
+                DB   SEND
+                DB   19,$0A
+                DB   20,$09
+                DB   END
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   MAJDU
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,3
+                DB   GOSUB
+                DW   MAJDU
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   MAJDU
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,247
+                DB   GOSUB
+                DW   MAJDU
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,2
+                DB   GOSUB
+                DW   MINDU
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJDU
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,2
+                DB   GOSUB
+                DW   MINDU
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MINDU
+                DB   GOSUB
+                DW   MAJDU
+
+                DB   SEND
+                DB   19,$0A
+                DB   20,$AA
+                DB   END
+
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINU
+                DB   TRANSPOSE,249
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJDU
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINU
+                DB   TRANSPOSE,1
+                DB   GOSUB
+                DW   MAJD
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   MAJU
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+
+                DB   FOR,40
+                DB   73,1,77,1,80,1,NEXT
+                DB   TRANSPOSE,248
+                DB   FOR,40
+                DB   73,1,77,1,80,1,NEXT
+
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   MINDU
+
+                DB   GOTO
+                DW   TITL_C
+;....................................
+
+MINDU:          DB   GATE,128,FREQS
+                DW   $100
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,75,1,79,1,NEXT
+                DB   72,2
+                DB   GATE,128,FREQS
+                DW   $E000
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,75,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MIND:           DB   GATE,128,FREQS
+                DW   $100
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,75,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MINU:           DB   GATE,128,FREQS
+                DW   $E000
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,75,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MAJDU:          DB   GATE,128,FREQS
+                DW   $100
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,76,1,79,1,NEXT
+                DB   72,2
+                DB   GATE,128,FREQS
+                DW   $E000
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,76,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MAJD:           DB   GATE,128,FREQS
+                DW   $100
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,76,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MAJU:           DB   GATE,128,FREQS
+                DW   $E000
+                DB   16
+                DW   NOFREQS
+                DB   GATE,32,FOR,10
+                DB   72,1,76,1,79,1,NEXT
+                DB   72,2,RETURN
+
+MAJS:           DB   GATE,32,FOR,19
+                DB   72,1,76,1,79,1,NEXT
+                DB   72,1,76,2,RETURN
+
+ONE:            DB   GATE,64
+                DB   24,16,24,8,GATE,32
+                DB   55,2,51,2,50,2,46,2
+                DB   55,2,51,2,50,2,46,2
+                DB   GATE,64,22,8,24,16,24,8
+                DB   GATE,32
+                DB   55,2,51,2,50,2,46,2
+                DB   55,2,51,2,50,2,46,2
+                DB   GATE,64,23,8,RETURN
+
+SOLO:           DB   62,5,63,5
+                DB   62,6,58,5,55,5,60,6
+                DB   57,5,53,5,55,38,53,5,51,5
+                DB   50,48,49,20
+                DB   48,4,49,4,51,4,53,4,55,4
+                DB   56,4,58,4,60,4,61,4,63,4
+                DB   65,4,67,4,68,4,70,4,72,4
+                DB   75,4,79,48,80,48,82,32
+                DB   79,4,77,4,75,4,77,4
+                DB   74,4,75,4,72,4,70,4
+                DB   74,4,72,4,69,4,70,4
+                DB   67,4,63,4,69,4,67,4
+                DB   62,4,63,4,60,4,58,4
+                DB   62,4,60,4,57,4,58,4
+                DB   55,24,53,8,51,8,50,32
+                DB   50,16,49,8
+                DB   48,4,49,4,51,4,53,4
+                DB   51,4,53,4,55,4,56,4
+                DB   55,4,56,4,58,4,60,4
+                DB   58,4,60,4,61,4,63,4
+                DB   61,4,63,4,65,4,67,4
+                DB   65,4,67,4,68,4,70,4
+
+                DB   72,4,70,4,68,4,67,4
+                DB   65,4,67,4,65,4,63,4
+                DB   61,4,63,4,61,4,60,4
+                DB   58,4,56,4,55,4,56,4
+                DB   55,4,53,4,51,4,53,4
+                DB   51,4,49,4,48,4,46,4
+
+                DB   50,4,48,4,50,16
+                DB   55,4,53,4,55,16
+                DB   58,4,57,4,58,16
+                DB   62,4,60,4,62,16
+                DB   63,16,65,16,63,16
+                DB   62,16,60,16,62,16
+                DB   PORT,1
+                DB   53,24,65,24,55,24,67,24
+                DB   56,24,68,24,58,24,70,24
+                DB   PORT,3
+                DB   72,8,67,8,70,8,65,8
+                DB   69,8,63,8,67,8,62,8
+                DB   65,8,60,8,63,8,58,8
+                DB   62,8,57,8,60,8,55,8
+                DB   58,8,53,8,55,48
+                DB   53,16,51,16,53,16,55,16
+                DB   53,16,55,16,56,16,55,16
+                DB   56,16,58,16
+                DB   RETURN
+
+;=====================================
+;TUNE2  GAME TUNE
+;=====================================
+
+GAME_A:         DB   GATE_CON,255
+                DB   ENDIT,255
+                DB   SEND
+                DB   5,$D0
+                DB   6,$F0
+                DB   12,$00
+                DB   13,$00
+                DB   19,$00
+                DB   20,$00
+                DB   23,%11110001
+                DB   24,%00100111
+                DB   END
+                DB   GATE,128
+                DB   FILTER,3,0
+                DW   0
+                DB   CLAIM
+
+                DB   FOR,9,90,128,NEXT
+                DB   SEND,24,40,END,90,3
+                DB   SEND,24,41,END,90,3
+                DB   SEND,24,42,END,90,3
+                DB   SEND,24,43,END,90,3
+                DB   SEND,24,44,END,90,3
+                DB   SEND,24,45,END,90,3
+                DB   SEND,24,46,END,90,3
+                DB   GATE_CON,3
+                DB   SEND,24,47,END,90,4
+
+                DB   SEND
+                DB   5,$0D
+                DB   6,$0D
+                DB   12,$06
+                DB   13,$06
+                DB   19,$06
+                DB   20,$06
+                DB   23,%11110110
+                DB   24,%01101111
+                DB   END
+                DB   GATE,64
+                DB   PULSE,30
+                DW   0
+                DB   VIB,1,5,3,0
+                DB   GATE_CON,94
+                DB   25,47
+                DB   FOR,6,25,48,NEXT,25,96
+                DB   SEND
+                DB   5,$E0
+                DB   6,$FB
+                DB   END
+                DB   PULSE,20
+                DW   200
+                DB   VIB,12,30,3,0
+                DB   44,72,45,6,44,6,42,12
+                DB   GATE_CON,1,44,96
+                DB   GATE_CON,255
+                DB   47,72,49,6,46,6,42,12
+                DB   GATE_CON,1,44,192
+                DB   VIB,1,255,0,0
+                DB   GATE_CON,255
+                DB   GATE,%00010100
+                DB   SEND
+                DB   5,$E0
+                DB   6,$FF
+                DB   END
+                DB   90,192
+                DB   GATE,64
+                DB   VIB,12,30,3,0
+                DB   SEND
+                DB   5,$0D
+                DB   6,$03
+                DB   END
+                DB   ENDIT,1
+                DB   FOR,2
+                DB   56,6,54,6,56,6,54,6
+                DB   56,6,58,6,59,12,61,12
+                DB   58,6,54,6,56,24
+                DB   56,6,54,6,52,12,54,6
+                DB   52,6,51,12,52,6,51,6
+                DB   49,12,51,12,47,12
+                DB   49,72,51,12,47,12
+                DB   49,192,NEXT
+                DB   VIB,0,0,0,0
+                DB   21,144,20,48
+                DB   ENDIT,2
+                DB   GATE_CON,255,13,192
+                DB   13,192
+                DB   FOR,2
+                DB   61,12,63,12,64,12,66,12
+                DB   68,12,66,6,64,6,66,12
+                DB   63,12,64,12,63,6,61,6
+                DB   63,12,59,12,58,6,59,6
+                DB   58,6,56,6,54,24,NEXT
+
+                DB   61,12,59,12,57,12,56,12
+                DB   57,6,56,6,54,12,56,12
+                DB   52,12,54,12,56,12,57,12
+                DB   59,12,61,24,49,24
+                DB   61,12,59,12,57,12,56,12
+                DB   57,6,56,6,54,12,56,12
+                DB   52,12,54,12,56,12,57,12
+                DB   59,12,61,24,59,12,56,12
+                DB   61,192
+
+                DB   TRANSPOSE,17
+                DB   VIB,1,200,0,0
+                DB   GATE,%01000010
+                DB   SEND
+                DB   05,$30
+                DB   06,$F2
+                DB   19,$30
+                DB   20,$F2
+                DB   END
+                DB   GATE_CON,255
+                DB   ENDIT,2
+
+                DB   GOSUB
+                DW   HARMO
+
+                DB   TRANSPOSE,0
+                DB   SEND
+                DB   5,$F0
+                DB   6,$FB
+                DB   19,$F0
+                DB   20,$FB
+                DB   END
+                DB   PULSE,30
+                DW   0
+                DB   GATE,64
+                DB   VIB,0,0,0,0
+
+                DB   21,192
+                DB   GATE,64
+                DB   20,192
+
+                DB   PULSE,40
+                DW   0
+                DB   ENDIT,4
+
+                DB   VIB,32,50,3,0
+                DB   49,144,47,24,50,24
+                DB   61,144,59,24,62,24
+                DB   73,144,71,24,74,24
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   VIB,1,1,6,0
+                DB   25,192
+
+                DB   GOTO
+                DW   GAME_A
+;.....................................
+
+GAME_B:         DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   GATE,64
+                DB   PULSE,30
+                DW   200
+                DB   61,128
+
+                DB   GATE_CON,48
+                DB   SEND
+                DB   12,$00
+                DB   13,$40
+                DB   END
+
+                DB   GOSUB
+                DW   LINE
+                DB   68,155
+
+                DB   EFFECT,0,0
+                DW   0
+                DB   PULSE,80
+                DW   $7A0
+                DB   FILTER,55,255
+                DW   $480
+                DB   CLAIM
+                DB   GATE_CON,1
+                DB   FOR,47
+                DB   68,24,66,24
+                DB   NEXT
+                DB   FOR,34
+                DB   68,24,61,24,66,24,63,24
+                DB   NEXT
+                DB   FILTER,6,255
+                DW   $440
+                DB   GATE_CON,1
+                DB   GATE,128
+                DB   90,192
+
+                DB   GOTO
+                DW   GAME_B
+;.....................................
+
+GAME_C:         DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   GATE,64
+                DB   PULSE,30
+                DW   200
+                DB   61,155
+                DB   GATE_CON,48
+                DB   SEND
+                DB   19,$00
+                DB   20,$20
+                DB   END
+
+                DB   GOSUB
+                DW   LINE
+                DB   68,128
+
+                DB   EFFECT,0,0
+                DW   0
+                DB   PULSE,80
+                DW   $7A0
+                DB   GATE_CON,1
+                DB   FOR,47
+                DB   61,24,63,24
+                DB   NEXT
+
+                DB   SEND
+                DB   23,%11110010
+                DB   19,$0D
+                DB   20,$0D
+                DB   END
+                DB   PULSE,50
+                DW   200
+                DB   VIB,1,1,5,0
+                DB   25,192,25,192
+                DB   GATE,64
+                DB   PULSE,0
+                DW   200
+                DB   SEND
+                DB   19,$07
+                DB   20,$07
+                DB   END
+                DB   FOR,32
+                DB   GATE_CON,5
+                DB   73,2,80,2,73,2,80,2
+                DB   73,2,GATE_CON,1,80,2
+                DB   NEXT
+                DB   FOR,32
+                DB   GATE_CON,5
+                DB   69,2,76,2,69,2,76,2
+                DB   69,2,GATE_CON,1,76,2
+                DB   NEXT
+                DB   68,192
+                DB   GATE,0
+                DB   VIB,12,80,2,0
+
+                DB   GOSUB
+                DW   HARMO
+
+                DB   GATE,32
+                DB   FOR,4
+                DB   GOSUB
+                DW   HARPO
+                DB   NEXT,GATE,32
+                DB   TRANSPOSE,251
+                DB   FOR,4
+                DB   GOSUB
+                DW   HARPO
+                DB   NEXT
+                DB   TRANSPOSE,0
+                DB   SEND
+                DB   5,$69
+                DB   6,$77
+                DB   19,$69
+                DB   20,$77
+                DB   END
+                DB   GATE,64
+                DB   PULSE,40
+                DW   0
+                DB   ENDIT,4
+                DB   VIB,32,50,3,0
+                DB   TRANSPOSE,7
+                DB   49,144,47,24,50,24
+                DB   61,144,59,24,62,24
+                DB   73,144,71,24,74,24
+                DB   SEND
+                DB   5,$0C
+                DB   6,$0C
+                DB   12,$0F
+                DB   13,$0F
+                DB   19,$0C
+                DB   20,$0C
+                DB   24,%00101111
+                DB   END
+                DB   VIB,1,1,6,0
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   TRANSPOSE,0
+                DB   37,192
+
+                DB   GOSUB
+                DW   GAME_C
+;.....................................
+
+LINE:           DB   EFFECT,1,128
+                DW   $FFFF
+                DB   VIB,1,3,20,0
+
+                DB   61,8,68,16,61,8,68,64
+                DB   61,8,68,16,61,8,71,16
+                DB   70,16,71,4,70,4,68,16
+                DB   61,8,68,16,61,8,68,64
+                DB   61,8,68,16,61,8,71,16
+                DB   70,16,71,5,70,8,68,96
+                DB   68,16,71,16,73,16,70,48
+                DB   70,4,71,4,70,16,66,16
+                DB   68,48
+                DB   68,16,71,16,73,16,70,48
+                DB   GATE_CON,255
+                DB   66,64,68,96
+                DB   RETURN
+
+HARMO:          DB   FOR,2
+                DB   65,12,61,12,68,12,65,12
+                DB   73,24,75,24,72,12,73,12
+                DB   72,12,70,12,68,24,70,24
+                DB   66,12,65,12,63,24,66,24
+                DB   63,24,65,12,63,12,61,24
+                DB   63,24,60,24,NEXT
+                DB   61,24,63,24,65,24,66,24
+                DB   68,24,70,24,68,24
+                DB   ENDIT,255
+                DB   GATE_CON,12,68,24
+                DB   GATE_CON,255
+                DB   RETURN
+
+HARPO:          DB   49,2,51,2,52,2,56,2,61,2
+                DB   63,2,64,2,66,2,68,2,69,2
+                DB   73,2,75,2,76,2,75,2,73,2
+                DB   69,2,68,2,66,2,64,2,63,2
+                DB   61,2,56,2,52,2,51,2
+                DB   RETURN
+
+
+;=====================================
+;TUNE3  HIGH SCORE TABLE
+;=====================================
+
+HIGH_A:         DB   GATE_CON,1
+                DB   SEND
+                DB   5,$38
+                DB   6,$A2
+                DB   12,$07
+                DB   13,$09
+                DB   19,$0A
+                DB   20,$0A
+                DB   24,%00011111
+                DB   23,%00000100
+                DB   END
+                DB   VIB,12,120,2,0
+                DB   GATE,64
+                DB   PULSE,0
+                DW   $7A0
+                DB   ENDIT,2
+                DB   55,120
+                DB   GATE_CON,19
+                DB   ENDIT,3
+                DB   TRANSPOSE,12
+BOB:            DB   GATE,64
+                DB   55,6,57,12,58,18,57,6
+                DB   55,12,54,18,55,6,57,12
+                DB   50,18,52,6,54,12,55,18
+                DB   53,6,51,12,50,18,48,6
+                DB   46,12,45,18,46,6,48,12
+                DB   50,18,48,6,46,6,45,6
+                DB   43,18
+                DB   55,6,57,12,58,18,57,6
+                DB   55,12,62,18,60,6,62,12
+                DB   50,18,52,6,54,12,55,18
+                DB   53,6,51,12,50,18,48,6
+                DB   46,12,46,18,48,3,46,3
+                DB   45,18,46,18*4
+                DB   GATE,0
+                DB   43,18*14,43,12
+
+                DB   GOTO
+                DW   BOB
+;.....................................
+
+HIGH_B:         DB   GATE,128
+                DB   FOR,128
+
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   96,18
+                DB   GATE_CON,255
+                DB   ENDIT,1
+                DB   96,18
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   96,18
+                DB   GATE_CON,255
+                DB   ENDIT,1
+                DB   96,18
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   96,18
+                DB   GATE_CON,255
+                DB   ENDIT,1
+                DB   96,18
+                DB   GATE_CON,1
+                DB   ENDIT,255
+                DB   96,18
+                DB   GATE_CON,255
+                DB   ENDIT,1
+                DB   96,12,96,6
+
+                DB   NEXT
+
+                DB   STOP
+;.....................................
+
+HIGH_C:         DB   GATE,64
+                DB   PULSE,50
+                DW   250
+                DB   EFFECT,2,128
+                DW   $FFFF
+                DB   GATE_CON,2
+                DB   FILTER,10,0
+                DW   $150
+                DB   CLAIM
+
+                DB   31,18,34,18,38,18,34,18
+                DB   33,18,34,18,31,18,34,12
+                DB   38,6
+FRED:           DB   31,18,34,18,38,18,34,18
+                DB   33,18,34,18,31,12,43,6
+                DB   33,18,34,18,38,18,41,18
+                DB   36,18,38,18,42,18,43,18
+                DB   38,12,43,6
+                DB   31,18,34,18,38,18,34,18
+                DB   33,18,34,18,31,12,43,6
+                DB   33,18,34,18,38,18,41,18
+                DB   36,18,34,18,41,18,46,18
+                DB   45,18,43,18,38,18,34,18
+                DB   38,18,33,18,34,18,31,12
+                DB   43,6,33,18,34,18,38,18
+                DB   41,18,36,18,34,18,29,18
+                DB   22,18,21,18
+
+                DB   GOTO
+                DW   FRED
+
+;=====================================
+;TUNE4   STAGE COMPLETE
+;=====================================
+
+STCO_A:         DB   GATE_CON,1
+                DB   SEND
+                DB   5,$0B
+                DB   6,$0B
+                DB   12,$09
+                DB   13,$09
+                DB   19,$09
+                DB   20,$09
+                DB   23,0
+                DB   24,15
+                DB   END
+                DB   GATE,64
+                DB   PULSE,20
+                DW   $100
+                DB   VIB,1,30,2,0
+                DB   TRANSPOSE,12
+
+                DB   54,16,57,32,59,16,61,24
+                DB   62,8,61,16,59,32,56,16
+                DB   52,24,54,8,56,16,57,32
+                DB   54,16,54,24,53,8,54,16
+                DB   56,32,53,16,49,32
+                DB   54,16,57,32,59,16,61,24
+                DB   62,8,61,16,59,32,56,16
+                DB   52,24,54,8,56,16,57,16
+                DB   56,16,54,16,53,16,51,16
+                DB   53,16,54,48,54,128
+
+                DB   STOP
+;.....................................
+
+STCO_B:         DB   GATE_CON,1
+                DB   GATE,0
+                DB   54,16
+                DB   PULSE,0
+                DW   $600
+                DB   GATE,64
+
+                DB   GOSUB
+                DW   UGL1
+                DB   GOSUB
+                DW   UGL1
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   UGL1
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL1
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   NIC1
+                DB   GOSUB
+                DW   NIC1
+
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL1
+                DB   TRANSPOSE,3
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   UGL1
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   NIC1
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL1
+                DB   42,128
+
+                DB   STOP
+;.....................................
+
+STCO_C:         DB   GATE_CON,1
+                DB   GATE,0
+                DB   54,24
+                DB   PULSE,0
+                DW   $600
+                DB   GATE,64
+
+                DB   GOSUB
+                DW   UGL2
+                DB   GOSUB
+                DW   UGL2
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   UGL2
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL2
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   NIC2
+                DB   GOSUB
+                DW   NIC2
+
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL2
+                DB   TRANSPOSE,3
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,254
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   UGL2
+                DB   TRANSPOSE,252
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,251
+                DB   GOSUB
+                DW   NIC2
+                DB   TRANSPOSE,0
+                DB   GOSUB
+                DW   UGL2
+
+                DB   STOP
+
+;.....................................
+
+UGL1:           DB   42,16,49,16,49,16
+                DB   RETURN
+
+UGL2:           DB   45,16,54,16,45,16
+                DB   RETURN
+
+NIC1:           DB   42,16,49,16,49,16
+                DB   RETURN
+
+NIC2:           DB   46,16,54,16,46,16
+                DB   RETURN
+
+;=====================================
+;TUNE5  START TUNE
+;=====================================
+
+STAR_A:         DB   GATE,64
+                DB   GATE_CON,255
+                DB   SEND
+                DB   5,$00
+                DB   6,$F5
+                DB   END
+                DB   PULSE,20
+                DB   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+STAR_B:         DB   GATE,0
+                DB   50,25
+                DB   GATE,64
+                DB   SEND
+                DB   12,$00
+                DB   13,$95
+                DB   END
+                DB   PULSE,20
+                DB   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+STAR_C:         DB   GATE,0
+                DB   50,50
+                DB   GATE,64
+                DB   SEND
+                DB   19,$00
+                DB   20,$45
+                DB   END
+                DB   PULSE,20
+                DB   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+GREEN:          DB   50,8,55,16,58,8,60,8
+                DB   58,8,55,8,61,8,GATE,0
+                DB   61,8,GATE,61,8,61,24
+                DB   GATE,64,RETURN
+;.....................................
+
+BOTDATA:        
+
