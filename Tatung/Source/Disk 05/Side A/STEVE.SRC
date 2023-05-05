@@ -1,0 +1,137 @@
+ORG 50000
+LOAD 49152
+;======================================
+;  Walking noise
+;======================================
+
+WALK:LD A,000
+XOR 1
+LD (WALK+1),A
+JR Z,BICH
+
+LD C,6
+LD HL,10
+HIN:LD A,16
+OUT (254),A
+LD B,(HL)
+INC HL
+HIEL:DJNZ HIEL
+XOR A
+OUT (254),A
+LD B,(HL)
+INC HL
+HEIR:DJNZ HEIR
+PUSH BC
+LD BC,120
+HINE:DEC BC
+LD A,B
+OR C
+JP NZ,HINE
+POP BC
+DEC C
+JP NZ,HIN
+JP FINI
+
+BICH:LD C,9
+LD HL,10
+BIN:LD A,16
+OUT (254),A
+LD B,(HL)
+INC HL
+BIEL:DJNZ BIEL
+XOR A
+OUT (254),A
+LD B,(HL)
+INC HL
+BEIR:DJNZ BEIR
+PUSH BC
+LD BC,20
+BINE:DEC BC
+LD A,B
+OR C
+JP NZ,BINE
+POP BC
+DEC C
+JP NZ,BIN
+LD B,100
+BEL:DJNZ BEL
+
+FINI:
+LD B,150
+INIF:DJNZ INIF
+
+RET
+
+;======================================
+;Fire noise
+;======================================
+
+SHOOT:LD C,15
+LD D,124
+LD E,1
+BRA1:XOR A
+OUT (254),A
+LD B,D
+BRA2:DJNZ BRA2
+LD A,16
+OUT (254),A
+LD B,E
+BRA3:DJNZ BRA3
+LD A,E
+ADD 10
+LD E,A
+INC D
+DEC C
+JP NZ,BRA1
+RET
+
+;======================================
+;Bit noise
+;======================================
+
+BITTY:LD C,24
+FAR1:XOR A
+OUT (254),A
+LD B,64
+FAR2:DJNZ FAR2
+LD A,16
+OUT (254),A
+LD B,64
+FAR3:DJNZ FAR3
+DEC C
+JP NZ,FAR1
+RET
+
+;======================================
+;Brains
+;======================================
+
+THINK:LD A,000
+DEC A
+AND 7
+LD (THINK+1),A
+INC A
+INC A
+LD (SMD+1),A
+LD D,A
+LD C,44
+PAR1:XOR A
+LD (SID+1),A
+DEC D
+JR NZ,PUT
+LD A,16
+LD (SID+1),A
+SMD:LD D,000
+PUT:XOR A
+OUT (254),A
+SID:LD A,000
+OUT (254),A
+LD B,64
+PAR3:DJNZ PAR3
+
+DEC C
+JP NZ,PAR1
+RET
+
+END
+
