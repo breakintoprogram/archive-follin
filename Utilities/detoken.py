@@ -8,6 +8,7 @@
 # Modinfo:
 # 04/05/2023:	Added bounds checking on the tokens array
 # 05/05/2023:	Fixed python indenting, tweaked error handling
+#				Fixed indents in comments, added ENT back in
 
 import sys
 import os
@@ -95,8 +96,8 @@ tokens = [
 	"WAIT",
 	"*?*",
 	"*?*",
-	"*?*",	# 0x50
-	"ADD",	# 0x51 - Pseudo instruction
+	"ENT",	# 0x50
+	"ADD",	# 0x51 - Pseudo instruction ()
 	"SUB",	# 0x52 - Pseudo instruction
 ]
 
@@ -112,6 +113,7 @@ file_stdout = sys.stdout								# Store the current stdout file handle
 sys.stdout = open(full_path + ".DTK", "w")				# Redirect stdout for the detokenised file output
 
 col = 0			# Current column # (used for tabbing the listing)
+comment = False	# Are we in a comment?
 indent = 16		# Indent for first column
 
 # Iterate through the file
@@ -123,14 +125,17 @@ while True:
 	byte = data[0]										# Fetch the byte 
 	if byte == 0x0D:									# If it is CR then
 		col = 0											# Reset the column to 0
+		comment = False									# Reset the comment flag
 		print("")										# Print a CR
-	elif byte == 0x1A:									# If it is EOF the
+	elif byte == 0x1A :									# If it is EOF the
 		break;											# Exit the loop
 	elif byte < 0x8A:									# If it is a printable character
 		asc = chr(byte)									# Get the ASCII character
 		print(asc, end="")								# Print it
 		col += 1										# Increment the column number
-		if(asc == ":"):									# If it is a colon (following a label) then tab to the column specified by indent
+		if asc == ";":									# Flag when in a comment
+			comment = True
+		if asc == ":" and not comment:					# If it is a colon (following a label) and not in comment then indent
 			print(" "*(indent-col), end="")		
 	else:												# Otherwise try to detokenise
 		if(col == 0):									# If we are at the first column, then it's a token without a label
