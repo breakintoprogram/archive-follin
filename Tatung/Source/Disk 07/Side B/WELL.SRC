@@ -1,0 +1,186 @@
+                LOAD $C000
+                ORG  $4000
+
+TUNES:          EQU  1
+EFFECTS:        EQU  0
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,9,30,0
+
+                DB   "      ^     GHOULS A"
+                DB   "ND GHOSTS     ^     "
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <TITLE_A
+                DC   A_LO+10-!,0
+
+A_HI:           DB   >TITLE_A
+                DC   A_HI+10-!,0
+
+
+B_LO:           DB   <TITLE_B
+                DC   B_LO+10-!,0
+
+B_HI:           DB   >TITLE_B
+                DC   B_HI+10-!,0
+
+
+C_LO:           DB   <TITLE_C
+                DC   C_LO+10-!,0
+
+C_HI:           DB   >TITLE_C
+                DC   C_HI+10-!,0
+
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <FIRE
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >FIRE
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+FREQS:          EQU  $87
+NOFREQS:        EQU  0
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+GOTO:           EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+
+;=====================================
+; SOUND EFFECT DATA
+
+FIRE:           DB   4
+                DW   FIRE
+                DB   $FF
+
+;=====================================
+
+TITLE_A:        DB   GATE_CON,255,ENDIT,1
+                DB   SEND,12,$21,13,$72
+                DB   12,$A0,13,$F6
+                DB   19,$A0,20,$F6
+                DB   24,15,END
+                DB   PULSE,50
+                DW   $3A0
+                DB   FOR,4
+                DB   GOSUB
+                DW   LEV1B
+                DB   WOBBLE,8,1,2,49,18,49,18
+                DB   TRANS,251,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,6,1,2,47,18
+                DB   WOBBLE,9,1,2,47,18
+                DB   NEXT
+                DB   FOR,2
+                DB   TRANS,249,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,9,1,2,50,18,50,18
+                DB   TRANS,251,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,7,1,2,49,18,49,18
+                DB   TRANS,0,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,8,1,2,49,18
+                DB   WOBBLE,8,1,2,49,18
+                DB   TRANS,0,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,8,1,2,49,18,49,18
+                DB   TRANS,249,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,9,1,2,50,18,50,18
+                DB   TRANS,251,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,7,1,2,49,18,49,18
+                DB   TRANS,252,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,5,1,2,54,18
+                DB   WOBBLE,9,1,2,51,18
+                DB   TRANS,251,GOSUB
+                DW   LEV1B
+                DB   WOBBLE,8,1,2,53,18,53,18
+                DB   NEXT
+
+                DB   GATE,0,STOP
+;.....................................
+
+TITLE_B:        DB   ENDIT,1,GATE,16
+                DB   VIB,8,200,2,0,FOR,2
+                DB   GATE_CON,255,ENDIT,255
+                DB   57,36,PORT,1,56,18
+                DB   61,36,65,18,66,36
+                DB   62,18,GATE_CON,36
+                DB   65,54,NEXT
+                DB   FOR,2,GATE_CON,255
+                DB   66,54,65,54,68,18
+                DB   66,18,62,18
+                DB   GATE_CON,36,61,54
+                DB   GATE_CON,255
+                DB   66,54,65,54,68,18
+                DB   66,18,68,18
+                DB   GATE_CON,36,65,54,NEXT
+
+                DB   GATE,0,STOP
+;.....................................
+
+TITLE_C:        DB   ENDIT,1,GATE,16
+                DB   VIB,8,250,2,0,FOR,2
+                DB   GATE_CON,255,ENDIT,255
+                DB   66,36,PORT,1,65,18
+                DB   68,36,71,18,69,36
+                DB   66,18,GATE_CON,36
+                DB   73,54,NEXT
+                DB   FOR,2,GATE_CON,255
+                DB   74,54,73,36,68,18,71,18
+                DB   69,18,68,18
+                DB   GATE_CON,36,69,54
+                DB   GATE_CON,255
+                DB   74,54,73,36,68,18,71,18
+                DB   69,18,72,18
+                DB   GATE_CON,36,73,54,NEXT
+
+
+                DB   GATE,0,STOP
+;.....................................
+
+LEV1B:          DB   GATE,64
+                DB   EFFECT,1,129,0,100
+                DB   SEND,5,$31,6,$72,END
+                DB   WOBBLE,0,0,0,30,18
+                DB   SEND,5,$08,6,$0F,END
+                DB   EFFECT,0,0,0,0,TRANS,0
+                DB   GATE,32,RETURN
+
+;=====================================
+CALC:           EQU  !-TOPCALC
+
+                ORG  $2000
+                ENT  
+
+                END  

@@ -1,0 +1,553 @@
+
+                LOAD $C000
+                ORG  $4000
+
+TUNES:          EQU  1
+EFFECTS:        EQU  0
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,2,30,0
+
+                DB   "GAME  ^    GHOULS AN"
+                DB   "D GHOSTS     ^  ONE "
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <GAME_A
+                DC   A_LO+10-!,0
+
+A_HI:           DB   >GAME_A
+                DC   A_HI+10-!,0
+
+
+B_LO:           DB   <GAME_B
+                DC   B_LO+10-!,0
+
+B_HI:           DB   >GAME_B
+                DC   B_HI+10-!,0
+
+
+C_LO:           DB   <GAME_C
+                DC   C_LO+10-!,0
+
+C_HI:           DB   >GAME_C
+                DC   C_HI+10-!,0
+
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <FIRE
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >FIRE
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+GOTO:           EQU  $87
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+SETPWM:         EQU  $94
+
+;=====================================
+; SOUND EFFECT DATA
+
+FIRE:           DB   4
+                DW   FIRE
+                DB   $FF
+
+;=====================================
+
+GAME_A:         DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$F0
+                DB   12,0,13,$80
+                DB   19,0,20,$40
+                DB   24,%00011111,END
+                DB   TRANS,5
+                DB   GOSUB
+                DW   STORL
+                DB   VIB,18,100,2,0
+                DB   24,8,41,8,43,8,46,8
+                DB   48,8,55,8,60,8
+                DB   ENDIT,1,64,8
+
+CY3_A:          DB   SEND,5,$10,6,$F0
+                DB   20,$0F,END
+                DB   GATE_CON,180
+                DB   VIB,16,140,2,0
+                DB   TRANS,0,70,192
+                DB   VIB,0,0,0,0
+                DB   GATE_CON,255,ENDIT,255
+                DB   WOBBLE,2,4,4,73,168
+                DB   GATE_CON,8
+                DB   WOBBLE,0,0,0
+                DB   75,3,76,3,ENDIT,1,77,18
+                DB   VIB,16,140,2,0
+                DB   ENDIT,255
+                DB   GOSUB
+                DW   DEGE
+                DB   TRANS,12,GOSUB
+                DW   DEGE
+                DB   TRANS,7,GOSUB
+                DW   DEGE
+                DB   TRANS,12
+                DB   GATE_CON,2,58,8,56,8
+                DB   GATE_CON,24,58,24
+                DB   GATE_CON,2,56,8
+                DB   GATE_CON,2,53,8,56,8
+                DB   GATE_CON,24,53,24
+                DB   GATE_CON,2,49,8
+                DB   GATE_CON,16,51,8
+                DB   GATE_CON,2,52,8
+                DB   GATE_CON,16,51,8
+                DB   GATE_CON,2,49,8
+                DB   GATE_CON,16,51,8
+                DB   GATE_CON,2,52,8
+                DB   GATE_CON,8,53,16,56,16
+                DB   61,16,GATE_CON,174
+                DB   VIB,0,0,0,0
+                DB   WOBBLE,1,4,4,65,176
+                DB   WOBBLE,0,0,0
+                DB   65,4,61,4,58,4,54,4
+                DB   WOBBLE,1,4,4
+                DB   53,48,WOBBLE,0,0,0
+                DB   GATE_CON,22
+                DB   56,3,61,3,65,3,66,3,65,3
+                DB   61,3,56,30
+                DB   GATE_CON,8
+                DB   70,16,68,8,66,16,68,8
+                DB   GATE_CON,8,65,8
+                DB   GATE_CON,2,66,8
+                DB   GATE_CON,8,65,8
+                DB   GATE_CON,2,66,8
+                DB   GATE_CON,14,68,16
+                DB   SEND,5,$09,6,$0F,END
+                DB   GATE_CON,255
+                DB   ENDIT,1,FOR,2
+                DB   GOSUB
+                DW   DING
+                DB   NEXT
+                DB   TRANS,11
+                DB   GOSUB
+                DW   DING
+                DB   TRANS,9
+                DB   GOSUB
+                DW   DING
+                DB   TRANS,0
+                DB   SEND,5,0,6,$A0
+                DB   19,0,20,$50,END
+                DB   GOSUB
+                DW   HAM3
+                DB   GOSUB
+                DW   HAM3
+                DB   ENDIT,2
+                DB   VIB,16,50,2,0
+                DB   TRANS,0,FOR,2
+                DB   49,48,51,48,53,48
+                DB   ENDIT,255,56,43,PORT,1
+                DB   ENDIT,2,1,5
+                DB   49,48,51,48,53,48
+                DB   ENDIT,255,55,43,PORT,1
+                DB   ENDIT,2,49,5,NEXT
+                DB   SEND,5,0,6,$10
+                DB   19,0,20,$20,END
+                DB   GATE,0,ENDIT,255,50,14
+                DB   GOSUB
+                DW   GTR3
+                DB   GATE,16,ENDIT,1
+                DB   EFFECT,1,129,0,70
+                DB   VIB,3,20,0,0
+                DB   SEND,5,$05,END,FOR,4
+                DB   46,32,49,16,46,32,49,8
+                DB   44,8,NEXT
+                DB   FOR,4
+                DB   SEND,5,$05,END
+                DB   46,8,49,8,46,8,46,8
+                DB   46,16,49,8,46,8,49,16
+                DB   49,8
+                DB   SEND,5,$02,END,65,4
+                DB   65,4,NEXT
+                DB   EFFECT,0,0,0,0
+                DB   VIB,0,0,0,0
+                DB   SEND,20,$0F,END,GATE,16
+                DB   WOBBLE,7,1,255,FOR,2
+                DB   SEND,5,$08,END
+                DB   65,16,63,16,65,32,68,24
+                DB   65,8,70,16,68,16,70,32
+                DB   73,24,75,8,77,16,73,16
+                DB   70,32,68,24,65,8,70,48
+                DB   58,40
+                DB   SEND,5,$02,END,65,4
+                DB   SEND,5,$04,END,65,4
+                DB   NEXT
+                DB   GATE,128,FOR,8
+                DB   SEND,5,$18,END,74,16
+                DB   SEND,5,$03,END,80,8
+                DB   80,8,80,8,80,8
+                DB   SEND,5,$18,END,74,16
+                DB   SEND,5,$03,END,80,8
+                DB   SEND,5,$05,END,80,8
+                DB   SEND,5,$03,END,80,4
+                DB   SEND,5,$05,END,80,8
+                DB   SEND,5,$02,END,80,4
+                DB   NEXT
+                DB   SEND,5,$08,END,GATE,16
+                DB   WOBBLE,7,1,255,FOR,2
+                DB   58,48,70,48,65,8,68,24
+                DB   70,32,73,16,77,16,75,8
+                DB   73,24,70,32,68,16,70,16
+                DB   65,8,68,24,65,32,63,16
+                DB   65,16,NEXT
+                DB   WOBBLE,0,0,0
+                DB   GOTO
+                DW   CY3_A
+;.....................................
+
+GAME_B:         DB   GATE_CON,255,ENDIT,255
+                DB   GATE,0,50,12
+                DB   TRANS,5
+                DB   GOSUB
+                DW   STORL
+                DB   VIB,18,100,2,0
+                DB   24,8,41,8,43,8,46,8
+                DB   48,8,55,8
+                DB   ENDIT,1,60,4
+
+CY3_B:          DB   TRANS,0,VIB,0,0,0,0
+                DB   CLAIM,FILTER,0,0
+                DW   0,0,0
+                DB   SEND,13,$0F,END
+                DB   PULSE,20
+                DW   $200
+                DB   FOR,12
+                DB   GOSUB
+                DW   BA3S
+                DB   NEXT,TRANS,5
+                DB   FOR,4
+                DB   GOSUB
+                DW   BA3S
+                DB   NEXT,TRANS,0
+                DB   FOR,11
+                DB   TRANS,0,GOSUB
+                DW   BA3S
+                DB   GOSUB
+                DW   BA3S
+                DB   TRANS,5,GOSUB
+                DW   BA3X
+                DB   GOSUB
+                DW   BA3X
+                DB   NEXT,TRANS,0
+                DB   FOR,6
+                DB   GOSUB
+                DW   BA3Z
+                DB   TRANS,5,GOSUB
+                DW   BA3Z
+                DB   GOSUB
+                DW   BA3Z
+                DB   TRANS,0,GOSUB
+                DW   BA3Z
+                DB   NEXT
+                DB   GOTO
+                DW   CY3_B
+;.....................................
+
+GAME_C:         DB   GATE_CON,255,ENDIT,255
+                DB   TRANS,5
+                DB   GATE,0,50,24
+                DB   GOSUB
+                DW   STORL
+                DB   VIB,18,100,2,0
+                DB   24,8,41,8,43,8,46,8
+                DB   ENDIT,1,48,8
+
+CY3_C:          DB   GATE,16,PULSE,0
+                DW   $7A0
+                DB   EFFECT,1,129,0,70
+                DB   VIB,3,16,0,0
+                DB   TRANS,0,FOR,12
+                DB   GOSUB
+                DW   RY3TH
+                DB   NEXT
+                DB   TRANS,5,FOR,4
+                DB   GOSUB
+                DW   RY3TH
+                DB   NEXT
+                DB   TRANS,0,FOR,2
+                DB   GOSUB
+                DW   RY3TH
+                DB   NEXT
+                DB   TRANS,5,FOR,2
+                DB   GOSUB
+                DW   RY3TH
+                DB   NEXT,TRANS,19
+                DB   EFFECT,0,0,0,0
+                DB   VIB,1,3,5,0
+                DB   GOSUB
+                DW   HAM3
+                DB   TRANS,0,GOSUB
+                DW   MAM3
+                DB   VIB,0,0,0,0
+                DB   SEND,5,$C0,6,$00
+                DB   19,$C0,20,$00,END
+                DB   VIB,16,70,2,0
+                DB   ENDIT,2
+                DB   TRANS,0,FOR,4
+                DB   58,48,60,48,61,48
+                DB   ENDIT,255,63,43,PORT,1
+                DB   ENDIT,2,58,5,NEXT
+                DB   ENDIT,255,GOSUB
+                DW   GTR3
+                DB   GATE,1,50,14
+                DB   SEND,6,$0F,20,$60,END
+                DB   GATE,16
+                DB   GOSUB
+                DW   GTR3B
+                DB   ENDIT,1,FOR,2
+                DB   TRANS,0,GOSUB
+                DW   PAT3
+                DB   TRANS,5,GOSUB
+                DW   PAT3
+                DB   GOSUB
+                DW   PAT3
+                DB   TRANS,0,GOSUB
+                DW   PAT3
+                DB   NEXT
+                DB   FOR,32,VIB,0,0,0,0
+                DB   GOSUB
+                DW   KICK
+                DB   EFFECT,1,129,0,70
+                DB   VIB,3,20,0,0,GATE,17
+                DB   SEND,19,$05,END
+                DB   49,8,49,8,46,8,49,8
+                DB   SEND,19,$02,END,65,4
+                DB   65,4,NEXT
+                DB   EFFECT,0,0,0,0
+                DB   VIB,0,0,0,0
+                DB   GOTO
+                DW   CY3_C
+;.....................................
+
+PAT3:           DB   VIB,0,0,0,0
+                DB   GOSUB
+                DW   KICK
+                DB   EFFECT,1,129,0,70
+                DB   VIB,3,20,0,0,GATE,17
+                DB   SEND,19,$05,END
+                DB   44,8,44,16,41,8,44,8
+                DB   41,8,41,8,44,8
+                DB   44,8,41,8
+                DB   SEND,19,$02,END,65,4
+                DB   65,4,RETURN
+
+GTR3:           DB   GATE,64,PULSE,0
+                DW   $7A0
+                DB   GATE_CON,255
+                DB   PORT,0
+                DB   VIB,1,50,0,1,63,24
+                DB   VIB,16,80,3,0,65,96
+                DB   VIB,1,50,0,0,65,24
+                DB   VIB,16,80,3,0,63,24
+                DB   VIB,1,150,0,0,63,8
+                DB   VIB,1,45,0,1,61,24
+                DB   VIB,16,80,3,0,63,72
+                DB   VIB,1,51,0,0,63,96
+                DB   VIB,1,204,0,1,52,24
+                DB   VIB,1,50,0,1,63,24
+                DB   VIB,16,80,3,0,65,72
+                DB   VIB,1,100,0,1,65,24
+                DB   VIB,16,80,3,0,68,48
+                DB   VIB,1,80,0,1,68,24
+                DB   VIB,16,80,3,0,70,72
+                DB   VIB,1,120,0,1,70,24
+                DB   VIB,16,80,3,0,73,24
+                DB   VIB,1,120,0,0,73,24
+                DB   VIB,16,80,3,0,70,26
+                DB   RETURN
+
+GTR3B:          DB   VIB,16,160,3,0,77,48
+                DB   VIB,1,100,0,0,77,24
+                DB   VIB,16,156,3,0,75,48
+                DB   VIB,1,134,0,0,75,24
+                DB   VIB,16,150,3,0,72,24
+                DB   VIB,1,150,0,0,72,24
+                DB   VIB,16,136,3,0,68,72
+                DB   VIB,1,90,0,0,68,24
+                DB   VIB,16,120,3,0,65,24
+                DB   VIB,1,190,0,1,65,48
+                DB   VIB,1,100,0,1,75,24
+                DB   VIB,16,160,3,0,77,96
+                DB   VIB,1,180,0,1,77,24
+                DB   VIB,16,160,3,0,80,48
+                DB   VIB,1,130,0,1,80,24
+                DB   VIB,16,160,3,0,82,72
+                DB   VIB,1,130,0,1,82,48
+                DB   VIB,16,80,3,0,85,72
+                DB   RETURN
+
+STORL:          DB   GATE,16,LENGTH,8
+                DB   29,60,56,55,53,48,44,41
+                DB   25,44,49,56,61,65,67,68
+                DB   29,60,56,55,53,48,44,41
+                DB   25,41,44,49,56,61,65,67
+                DB   29,60,56,55,53,48,44,41
+                DB   25,44,49,56,61,65,67,68
+                DB   27,43,46,51,58,63,67,70
+                DB   LENGTH,0,RETURN
+                DB   RETURN
+
+DEGE:           DB   GATE_CON,8
+                DB   58,16
+                DB   GATE_CON,1,56,8
+                DB   GATE_CON,8,58,16
+                DB   GATE_CON,1,56,8
+                DB   GATE_CON,8,61,8
+                DB   GATE_CON,2
+                DB   58,16,58,8
+                DB   GATE_CON,5,61,8
+                DB   GATE_CON,2,63,8
+                DB   GATE_CON,4,63,4,64,4
+                DB   63,4,61,4
+                DB   GATE_CON,2,63,8,58,8
+                DB   GATE_CON,8,61,8
+                DB   GATE_CON,2,63,8
+                DB   GATE_CON,9,64,8
+                DB   GATE_CON,2,65,8,68,8
+                DB   GATE_CON,9,64,8
+                DB   GATE_CON,2,65,8,68,8
+                DB   RETURN
+
+BA3S:           DB   SEND,12,$09,23,2,END
+                DB   EFFECT,2,65,0,2
+                DB   GATE,64,22,16
+                DB   EFFECT,0,0,0,0,34,8
+                DB   SEND,12,$06,23,0,END
+                DB   GATE,16,WOBBLE,8,2,1
+                DB   53,16,WOBBLE,0,0,0
+                DB   SEND,12,$09,23,2,END
+                DB   GATE,64,24,8
+                DB   EFFECT,2,65,0,2,20,16
+                DB   EFFECT,0,0,0,0,17,8
+                DB   SEND,12,$06,23,0,END
+                DB   GATE,16,WOBBLE,8,2,1
+                DB   55,8,WOBBLE,0,0,0
+                DB   SEND,12,$09,23,2,END
+                DB   GATE,64,20,16,RETURN
+
+BA3X:           DB   SEND,12,$09,23,2,END
+                DB   EFFECT,2,65,0,2
+                DB   GATE,64,22,16
+                DB   EFFECT,0,0,0,0,34,8
+                DB   SEND,12,$06,23,0,END
+                DB   GATE,16,WOBBLE,9,2,1
+                DB   53,16,WOBBLE,0,0,0
+                DB   SEND,12,$09,23,2,END
+                DB   GATE,64,24,8
+                DB   EFFECT,2,65,0,2,20,16
+                DB   EFFECT,0,0,0,0,17,8
+                DB   SEND,12,$06,23,0,END
+                DB   GATE,16,WOBBLE,4,2,1
+                DB   56,8,WOBBLE,0,0,0
+                DB   SEND,12,$09,23,2,END
+                DB   GATE,64,20,16,RETURN
+
+BA3Z:           DB   EFFECT,2,65,0,2,22,16
+                DB   EFFECT,0,1,0,0,34,8
+                DB   SEND,12,$05,23,0,END
+                DB   WOBBLE,5,1,2
+                DB   GATE,17,53,16
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,$09,23,2,END
+                DB   GATE,64,24,8
+                DB   EFFECT,2,65,0,2,20,16
+                DB   EFFECT,0,0,0,0,17,16
+                DB   20,16,RETURN
+
+RY3TH:          DB   SEND,19,$04,END,41,8
+                DB   44,8,41,8,41,8
+                DB   SEND,19,$07,END,44,16
+                DB   SEND,19,$04,END,41,8
+                DB   SEND,19,$07,END,46,8
+                DB   SEND,19,$04,END,44,8,41,8
+                DB   SEND,19,$07,END,41,8
+                DB   SEND,19,$02,END,65,4,65,4
+                DB   RETURN
+
+DING:           DB   SEND,5,$02,6,$0F,END
+                DB   80,8,80,8
+                DB   SEND,5,$05,END,80,8
+                DB   SEND,5,$02,END,80,8
+                DB   SEND,5,$05,END,80,16
+                DB   SEND,5,$02,END
+                DB   80,4,80,4,80,8,80,8
+                DB   SEND,5,$05,END,80,16
+                DB   SEND,5,$02,END,TRANS,12
+                DB   80,4,80,4,RETURN
+
+HAM3:           DB   58,48,61,48,65,48,70,44
+                DB   68,4
+                DB   LENGTH,8,67,65,63,65,63
+                DB   61,63,61,60,61,60,58,60
+                DB   58,56,58,56,55,56,55,53
+                DB   55,53,51,LENGTH,0,58,48
+                DB   61,48,65,48,70,40,70,4
+                DB   72,4
+                DB   LENGTH,8,73,75,73,72,73
+                DB   72,70,68,67,68,67,65,67
+                DB   63,58,61,60,58,63,58,55
+                DB   56,55,56,LENGTH,0
+                DB   RETURN
+
+MAM3:           DB   49,48,53,48,58,48,61,44
+                DB   60,4
+                DB   LENGTH,8,58,56,55,56,55
+                DB   53,55,53,51,53,51,49,51
+                DB   49,48,49,48,46,48,46,44
+                DB   46,44,43,LENGTH,0,49,48
+                DB   53,48,58,48,61,40,61,4
+                DB   63,4
+                DB   LENGTH,8,65,67,65,63,65
+                DB   63,61,60,58,60,58,56,58
+                DB   55,51,53,51,49,55,51,46
+                DB   48,46,48,LENGTH,0
+                DB   RETURN
+
+KICK:           DB   SEND,19,$0A,END
+                DB   EFFECT,1,128,0,60
+                DB   GATE,16,IGNORE
+                DB   40,1,PORT,4,IGNORE
+                DB   EFFECT,0,1,0,0
+                DB   1,5,PORT,0,GATE,1
+                DB   SEND,19,0,END
+                DB   IGNORE,1,2,RETURN
+
+;=====================================
+CALC:           EQU  !-TOPCALC
+
+                ORG  $2000
+                ENT  
+
+                END  

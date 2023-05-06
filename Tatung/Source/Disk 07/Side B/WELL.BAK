@@ -1,0 +1,185 @@
+
+                LOAD $C000
+                ORG  $4000
+
+TUNES:          EQU  1
+EFFECTS:        EQU  0
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,2,30,0
+
+                DB   "      ^     GHOULS A"
+                DB   "ND GHOSTS     ^     "
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <END_A
+                DC   A_LO+10-!,0
+
+A_HI:           DB   >END_A
+                DC   A_HI+10-!,0
+
+
+B_LO:           DB   <END_B
+                DC   B_LO+10-!,0
+
+B_HI:           DB   >END_B
+                DC   B_HI+10-!,0
+
+
+C_LO:           DB   <END_C
+                DC   C_LO+10-!,0
+
+C_HI:           DB   >END_C
+                DC   C_HI+10-!,0
+
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <FIRE
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >FIRE
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+GOTO:           EQU  $87
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+SETPWM:         EQU  $94
+
+;=====================================
+; SOUND EFFECT DATA
+
+FIRE:           DB   4
+                DW   FIRE
+                DB   $FF
+
+;=====================================
+
+END_A:          DB   GATE_CON,255,ENDIT,1
+                DB   SEND,5,$0B
+                DB   6,$0F
+                DB   12,$0B,13,$0F
+                DB   19,$0B,20,$0F
+                DB   24,15,END
+                DB   PULSE,0
+                DW   2000
+                DB   GATE,%01010000
+                DB   GOSUB
+                DW   PART1
+                DB   GATE,16
+                DB   TRANS,251
+                DB   GOSUB
+                DW   PART1
+
+                DB   GATE,0,STOP
+;.....................................
+
+END_B:          DB   GATE_CON,255,ENDIT,1
+                DB   PULSE,0
+                DW   2000
+                DB   GATE,%01010000
+                DB   GOSUB
+                DW   PART2
+                DB   GATE,16
+                DB   TRANS,251
+                DB   GOSUB
+                DW   PART2
+
+                DB   GATE,0,STOP
+;.....................................
+
+END_C:          DB   GATE_CON,255,ENDIT,1
+                DB   PULSE,0
+                DW   1800
+                DB   GATE,%01010000
+                DB   GOSUB
+                DW   PART3
+                DB   GATE,16,SEND
+                DB   5,$0A,6,$0A
+                DB   19,$30,20,$F1,END
+                DB   VIB,18,100,2,0
+                DB   TRANS,7
+                DB   GOSUB
+                DW   PART3
+
+                DB   GATE,0,STOP
+;.....................................
+
+PART1:          DB   37,18,44,18,49,18,44,18
+                DB   38,18,45,18,50,18,38,18
+                DB   37,18,44,18,51,18,49,18
+                DB   38,36,42,36
+                DB   37,18,44,18,49,18,44,18
+                DB   38,18,45,18,50,18,38,18
+                DB   40,18,47,18,52,18,40,18
+                DB   41,18,44,18,50,18,49,18
+                DB   42,18,44,18,42,36
+                DB   40,18,42,18,40,36
+                DB   40,36,42,18,40,18
+                DB   36,36,35,36
+                DB   33,18,35,18,36,18,33,18
+                DB   35,18,38,18,35,36
+                DB   28,36,35,36,40,72
+                DB   RETURN
+
+PART2:          DB   52,36,52,36,54,36,54,36
+                DB   52,36,52,36,48,18,46,18
+                DB   48,36
+                DB   52,36,52,36,54,36,54,36
+                DB   57,36,56,36,53,36,53,36
+                DB   54,18,49,18,52,18,51,18
+                DB   50,36,50,36,52,18,54,18
+                DB   52,18,50,18,52,36,50,36
+                DB   48,36,45,36,47,36,42,36
+                DB   43,36,42,36,47,72
+                DB   RETURN
+
+PART3:          DB   56,36,56,18,61,18,61,36
+                DB   59,18,57,18,56,36,56,18
+                DB   54,18,56,72,56,36
+                DB   56,18,61,18
+                DB   61,36,59,18,61,18
+                DB   64,54,62,18
+                DB   61,72,57,36,59,18,61,18
+                DB   61,36,54,18
+                DB   57,18,56,36,57,18
+                DB   59,18,59,18,57,18,55,18
+                DB   54,18,52,54
+                DB   54,18,52,54,50,18,52,36
+                DB   40,18,42,18,44,72
+                DB   RETURN
+
+;=====================================
+CALC:           EQU  !-TOPCALC
+
+                ORG  $2000
+                ENT  
+
+                END  
