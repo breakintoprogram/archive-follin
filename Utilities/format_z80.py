@@ -6,6 +6,7 @@
 # Last Updated:	06/05/2023
 #
 # Modinfo:
+# 06/05/2023:	Tweaked for comments on first line, and file EOL
 
 import sys
 import os
@@ -21,6 +22,7 @@ sys.stdout = open(full_path + ".DTK", "w")				# Redirect stdout for the detokeni
 
 col = 0			# Current column # (used for tabbing the listing)
 comment = False	# Are we in a comment?
+string = False	# Are we in a string?
 label = False	# Does this line contain a comment?
 indent = 16		# Indent for first column
 line = ""		# Storage for line
@@ -37,13 +39,15 @@ while True:
 	asc = chr(byte)
 	line += asc
 	col += 1											# Increment the column number
-	if asc == ";":										# Flag when in a comment
+	if asc == ";":										# Flag when in a comment or string literal
 		comment = True
-	if asc == ":" and not comment:						# If it is a colon (following a label) and not in comment then indent
+	if asc == '"':
+		string = not string
+	if asc == ":" and not comment and not string:		# If it is a colon (following a label) and not in comment or string then indent
 		line += " "*(indent-col)						# Indent
 		label = True	
-	if byte == 0x0A:									# If it is CR then
-		if not label:									# If this line doesn't contain a label
+	if byte == 0x0D:									# If it is CR then
+		if not label and line[0] != ";":				# If this line doesn't contain a label and the first character isn't a comment
 			line = (" "*indent) + line 					# Indent 
 		print(line, end="")								# Print the line
 		col = 0											# Reset the column to 0
