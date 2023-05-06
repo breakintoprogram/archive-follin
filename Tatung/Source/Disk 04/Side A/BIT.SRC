@@ -393,27 +393,3 @@ C4:             DB   SEND,19,$18,END,GATE,64
                 DB   RETURN
 
 BOTDATA:        END  
-                DB   RETURN
-56,8
-                DB   RETURN
-                DB   RETURN
-
-
-B,0,STOP
-;.....................................
-
-BOTDATA:        END  
-DATA:           END  
-                DB   RETURN
-
-
-BOTDATA:        END  
-56,8
-                DB   RETURN
-
-
-BOTDATA:        END  
-                DB   RETURN
-
-
-B

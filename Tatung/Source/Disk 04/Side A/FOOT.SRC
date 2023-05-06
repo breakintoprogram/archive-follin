@@ -425,36 +425,3 @@ HAM:            DB   58,10,58,10,61,10,58,10
 
 
 BOTDATA:        END  
-TDATA:          END  
-ATA:            END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-TA:             END  
-,0,RETURN
-BOTDATA:        END  
-TA:             N
-BOTDATA:        END  
-TDATA:          END  
-ATA:            END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-TA:             END  
-,0,RETURN
-BOTDATA:        END  
-TA

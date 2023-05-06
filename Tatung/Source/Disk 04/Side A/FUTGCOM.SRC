@@ -240,36 +240,3 @@ TOP1:           DB   GATE,16,VIB,1,200,0,0
                 DB   68,6,73,5,RETURN
 
 BOTDATA:        END  
-TDATA:          END  
-ATA:            END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-TA:             END  
-,0,RETURN
-BOTDATA:        END  
-TA:             N
-BOTDATA:        END  
-TDATA:          END  
-ATA:            END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-URN
-BOTDATA:        END  
-TA:             END  
-TA:             END  
-,0,RETURN
-BOTDATA:        END  
-TA
