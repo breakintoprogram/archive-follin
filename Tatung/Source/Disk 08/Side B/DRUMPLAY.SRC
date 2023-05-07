@@ -1,0 +1,584 @@
+;+++++++++++++++++++++++++++++++++++++
+;+.......NMI SAMPLE SEQUENCER........+
+;+.......��������������������........+
+;+...................................+
+;+. ....WRITTEN BY M.AGER V3.0.......+
+;+...................................+
+;+......1 FULL RASTER =$4CC7.........+
+;+......8 PIXEL LINES =$01F7.........+
+;+�����������������������������������+
+;+...................................+
+;+...SET 'PLAYFLAG' TO START DRUMS...+
+;+...�����������������������������...+
+;+...................................+
+;+�����������������������������������+
+;+...................................+
+;+.ZERO PAGE.USED = $FB-$FD..........+
+;+...................................+
+;+++++++++++++++++++++++++++++++++++++
+                ORG  0900H
+                LOAD 8000H
+SPEED:          EQU  253
+PAUSE:          EQU  254
+REPEAT:         EQU  255
+BAREND:         EQU  255
+SAMP:           EQU  0FBH
+EORFLAG:        EQU  0FDH
+
+                SEI  
+                LDA  #35H
+                STA  1
+
+                LDX  #255
+                TXS  
+                LDA  #1
+                STA  0D01AH
+                STA  0D019H
+                LDA  0D011H
+                AND  #7FH
+                STA  0D011H
+                LDA  #128
+                STA  0D012H
+                LDA  #7FH
+                STA  0DC0DH
+                STA  0DD0DH
+                LDX  #<INT
+                LDY  #>INT
+                STX  0FFFEH
+                STY  0FFFFH
+
+                LDX  #<NMI
+                LDY  #>NMI
+                STX  0FFFAH
+                STY  0FFFBH
+                LDA  #7FH
+                STA  0DD0DH
+                LDA  #129
+                STA  0DD0DH
+                LDX  NMIWAIT
+                LDY  NMIWAIT+1
+                STX  0DD04H
+                STY  0DD05H
+
+                LDA  #1
+                JSR  INITTUNE
+                CLI  
+
+MAIN:           JMP  MAIN
+
+
+INT:            PHA  
+                DEC  0D019H
+                INC  0D020H
+
+                JSR  PLAYDRUMS
+; JSR  PRINTNUM
+
+
+                DEC  0D020H
+                PLA  
+                RTI  
+
+PRINTNUM:       LDA  SELF1+2
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAX  
+                LDA  HEXTAB,X
+                STA  1024
+                LDA  SELF1+2
+                AND  #15
+                TAX  
+                LDA  HEXTAB,X
+                STA  1025
+
+                LDA  SELF1+1
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                TAX  
+                LDA  HEXTAB,X
+                STA  1026
+                LDA  SELF1+1
+                AND  #15
+                TAX  
+                LDA  HEXTAB,X
+                STA  1027
+                RTS  
+
+
+
+
+
+HEXTAB:         DBH  30313233343536373839
+                DB   1,2,3,4,5,6
+
+
+PLAYDRUMS:      LDA  PLAYFLAG
+                BNE  PLAYD1
+                RTS  
+PLAYD1:         LDA  LENGTH
+                BEQ  GETSAMPLE
+                DEC  LENGTH
+                RTS  
+
+GETSAMPLE:      LDA  #0
+                STA  0DD0EH
+
+                LDA  TUNEFLAG
+                BNE  GETBAR
+
+GETTUNE:        LDA  TUNEPOINT
+                ASL  A
+                TAX  
+TUNEMOD1:       LDA  0FFFFH,X
+                CMP  #REPEAT
+                BNE  GETADDR
+                LDA  #0
+                STA  TUNEPOINT
+                JMP  GETTUNE
+
+GETADDR:        STA  TUNEVECT+1
+                STA  TUNEVECT1+1
+                INX  
+TUNEMOD2:       LDA  0FFFFH,X
+                STA  TUNEVECT+2
+                STA  TUNEVECT1+2
+                INC  TUNEPOINT
+                INC  TUNEFLAG
+
+GETBAR:         LDA  BARPOINT
+                ASL  A
+                TAX  
+TUNEVECT:       LDY  0FFFFH,X
+                CPY  #BAREND
+                BNE  PAUSE?
+                INY  
+                STY  BARPOINT
+                STY  TUNEFLAG
+                JMP  GETSAMPLE
+
+PAUSE?:         INX  
+TUNEVECT1:      LDA  0FFFFH,X
+                STA  LENGTH
+                CPY  #PAUSE
+                BNE  SPEED?
+                LDA  #0
+                STA  0DD0EH
+                INC  BARPOINT
+                RTS  
+
+SPEED?:         CPY  #SPEED
+                BNE  GETSAMP
+                LDA  LENGTH
+                ASL  A
+                TAX  
+                LDA  SCALE,X
+                STA  0DD04H
+                LDA  SCALE+1,X
+                STA  0DD05H
+                INC  BARPOINT
+                JMP  GETBAR
+
+GETSAMP:        LDA  SAMPLO,Y
+                STA  SAMP
+                LDA  SAMPHI,Y
+                STA  SAMP+1
+
+                LDY  #0
+                LDA  (SAMP),Y
+                STA  SELF1+1
+                INY  
+                LDA  (SAMP),Y
+                STA  SELF1+2
+                INY  
+                LDA  (SAMP),Y
+                STA  SELF3+1
+                INY  
+                LDA  (SAMP),Y
+                STA  SELF2+1
+                INC  BARPOINT
+                LDA  #17
+                STA  0DD0EH
+                RTS  
+
+
+SCALE:          DW   00FCH  ;SLOWEST -20  0
+                DW   00F8H  ;-19          1
+                DW   00F4H  ;-18          2
+                DW   00F0H  ;-17          3
+                DW   00ECH  ;-16          4
+                DW   00E8H  ;-15          5
+                DW   00E4H  ;-14          6
+                DW   00E0H  ;-13          7
+                DW   00DCH  ;-12          8
+                DW   00D8H  ;-11          9
+                DW   00D4H  ;-10          10
+                DW   00D0H  ;-9           11
+                DW   00CCH  ;-8           12
+                DW   00C8H  ;-7           13
+                DW   00C4H  ;-6           14
+                DW   00C0H  ;-5           15
+                DW   00BCH  ;-4           16
+                DW   00B8H  ;-3           17
+                DW   00B4H  ;-2           18
+                DW   00B0H  ;-1           19
+NMIWAIT:        DW   00ACH  ;NORM RATE 0  20
+                DW   00A8H  ;+1           21
+                DW   00A4H  ;+2           22
+                DW   00A0H  ;+3           23
+                DW   009CH  ;+4           24
+                DW   0098H  ;+5           25
+                DW   0094H  ;+6           26
+                DW   0090H  ;+7           27
+                DW   008CH  ;+8           28
+                DW   0088H  ;+9           29
+                DW   0084H  ;+10          30
+                DW   0080H  ;+11          31
+                DW   007CH  ;+12          32
+                DW   0078H  ;+13          33
+                DW   0074H  ;+14          34
+                DW   0070H  ;+15          35
+                DW   006CH  ;+16          36
+                DW   0068H  ;+17          37
+                DW   0064H  ;+18          38
+                DW   0060H  ;+19          39
+                DW   005CH  ;FASTEST +20  40
+
+LENGTH:         DB   00
+BARPOINT:       DB   00
+TUNEPOINT:      DB   00
+TUNEFLAG:       DB   00
+PLAYFLAG:       DB   00
+
+
+
+;��������������������������������������
+;         TUNES START HERE..
+;��������������������������������������
+
+TUNEADDR:       DW   TUNE1,TUNE2
+
+;     ��������������������������
+;     �                        �
+;     � TUNE1 = BMX TUNE       �
+;     �                        �
+;     � TUNE2 = OUTRUN TUNE    �
+;     �                        �
+;     ��������������������������
+
+TUNE1:          DW   BAR1,BAR2,BAR2
+                DW   BAR3,BAR3,BAR3,BAR3
+                DW   BAR4,BAR5,BAR5
+                DW   BAR5,BAR5,BAR8,BAR9
+                DW   BAR8,BAR9,BAR6,BAR6
+                DW   BAR7
+                DB   REPEAT
+
+TUNE2:          DW   BAR10,BAR12,BAR11,BAR12
+                DW   BAR11,BAR13,BAR14
+                DB   REPEAT
+
+
+BAR1:           DB   SPEED,20
+                DB   0,12,0,12
+                DB   3,24
+                DB   3,12,3,5,3,5,3,24
+                DB   0,12,3,5,3,5,3,24
+                DB   1,5,1,5,1,12,3,24
+                DB   BAREND
+
+BAR2:           DB   SPEED,20
+                DB   2,5,2,5,2,5,2,5
+                DB   1,12
+                DB   SPEED,28
+                DB   2,5
+                DB   SPEED,20
+                DB   1,5
+                DB   SPEED,32
+                DB   2,12
+                DB   SPEED,32
+                DB   2,5
+                DB   SPEED,28
+                DB   2,5
+                DB   SPEED,20
+                DB   1,12
+                DB   SPEED,16
+                DB   2,12
+                DB   SPEED,20
+                DB   2,5,2,5,2,10
+                DB   SPEED,20
+                DB   1,12
+                DB   SPEED,28
+                DB   2,5
+                DB   SPEED,20
+                DB   1,5
+                DB   SPEED,16
+                DB   2,12
+                DB   2,5
+                DB   SPEED,20
+                DB   2,5
+                DB   1,12,1,5,1,5
+                DB   BAREND
+
+
+BAR3:           DB   SPEED,20
+                DB   0,5,0,5,0,5,0,5
+                DB   1,12
+                DB   SPEED,28
+                DB   0,5
+                DB   SPEED,20
+                DB   1,5
+                DB   SPEED,32
+                DB   0,12
+                DB   SPEED,32
+                DB   0,5
+                DB   SPEED,28
+                DB   0,5
+                DB   SPEED,20
+                DB   1,12
+                DB   SPEED,16
+                DB   0,12
+                DB   SPEED,20
+                DB   0,5,0,5,0,10
+                DB   SPEED,20
+                DB   1,12
+                DB   SPEED,28
+                DB   0,5
+                DB   SPEED,20
+                DB   1,5
+                DB   SPEED,16
+                DB   0,12
+                DB   0,5
+                DB   SPEED,20
+                DB   0,5
+                DB   1,12,1,5,1,5
+                DB   BAREND
+
+BAR4:           DB   SPEED,5
+                DB   4,11,4,11
+                DB   SPEED,8
+                DB   4,11,4,11
+                DB   SPEED,12
+                DB   4,12,4,12
+                DB   SPEED,17
+                DB   4,12,4,12
+                DB   SPEED,20
+                DB   4,12,4,12
+                DB   SPEED,25
+                DB   4,12,4,12
+                DB   1,5,1,5,1,12
+                DB   1,12,1,12
+                DB   BAREND
+
+BAR5:           DB   2,12,2,5,2,5,1,12
+                DB   2,5,2,12,2,5,2,12
+                DB   1,12,1,5,1,5
+                DB   BAREND
+
+BAR8:           DB   SPEED,25
+                DB   0,12,0,5,0,5,1,12
+                DB   0,5,SPEED,30
+                DB   0,12,0,5,0,12
+                DB   SPEED,25
+                DB   1,12,1,5,1,5
+                DB   BAREND
+
+BAR9:           DB   SPEED,25
+                DB   0,12,0,5,0,5,1,12
+                DB   0,5,SPEED,18
+                DB   0,12,0,5,0,12
+                DB   SPEED,25
+                DB   1,12,1,5,1,5
+                DB   BAREND
+
+BAR6:           DB   5,12,5,5,5,5,5,12
+                DB   5,5,5,5
+                DB   1,5,1,5,1,5,1,5
+                DB   1,5,1,5,1,5,1,5
+                DB   BAREND
+
+BAR7:           DB   5,12,5,12,5,12,5,12
+                DB   1,12,1,12,1,12,1,12
+                DB   SPEED,6
+                DB   1,5
+                DB   SPEED,0
+                DB   5,12
+                DB   SPEED,6
+                DB   1,5
+                DB   SPEED,0
+                DB   5,5
+                DB   SPEED,6
+                DB   1,5
+                DB   SPEED,0
+                DB   5,12
+                DB   SPEED,20
+                DB   1,5,1,5
+                DB   SPEED,0
+                DB   0,200
+                DB   BAREND
+
+;TUNE2 BARS
+
+BAR10:          DB   SPEED,22
+                DB   9,10
+                DB   SPEED,24
+                DB   9,10
+                DB   SPEED,26
+                DB   9,10
+                DB   SPEED,28
+                DB   9,10
+                DB   SPEED,30
+                DB   9,10
+                DB   SPEED,32
+                DB   9,10
+                DB   SPEED,34
+                DB   9,10
+                DB   SPEED,36
+                DB   9,44
+                DB   BAREND
+
+
+BAR11:          DB   SPEED,27
+                DB   8,11,8,22
+                DB   SPEED,30
+                DB   8,11,8,11
+                DB   6,1,6,1
+                DB   6,2,6,11,6,5,6,11
+                DB   8,11,8,22
+                DB   SPEED,34
+                DB   8,11,8,11
+                DB   BAREND
+
+BAR12:          DB   SPEED,29
+                DB   7,35
+                DB   BAREND
+
+BAR13:          DB   SPEED,29
+                DB   7,11
+                DB   BAREND
+
+BAR14:          DB   SPEED,20
+                DB   6,5,6,5,6,5,6,5
+                DB   6,5,6,5
+                DB   7,11
+                DB   6,5,6,5,6,5,6,5
+                DB   6,5,6,5
+                DB   7,11
+                DB   6,5,6,5,6,5,6,5
+                DB   6,5,6,5
+                DB   7,5,7,5,7,5,7,5,7,11
+                DB   7,5,7,5,7,5,7,5,7,11
+                DB   7,5,7,5,7,5,7,5,7,11
+                DB   7,44
+                DB   SPEED,10
+                DB   9,200
+                DB   BAREND
+
+
+
+SAMPLO:         DB   <SAMPLE0,<SAMPLE1
+                DB   <SAMPLE2,<SAMPLE3
+                DB   <SAMPLE4,<SAMPLE5
+
+                DB   <SAMPLE6,<SAMPLE7
+                DB   <SAMPLE8,<SAMPLE9
+
+
+SAMPHI:         DB   >SAMPLE0,>SAMPLE1
+                DB   >SAMPLE2,>SAMPLE3
+                DB   >SAMPLE4,>SAMPLE5
+
+                DB   >SAMPLE6,>SAMPLE7
+                DB   >SAMPLE8,>SAMPLE9
+
+;TUNE1 SAMPLES
+
+SAMPLE0:        DW   0A000H,0A300H
+SAMPLE1:        DW   0A300H,0A600H
+SAMPLE2:        DW   0A000H,0A060H
+SAMPLE3:        DW   0A600H,0A900H
+SAMPLE4:        DW   0A900H,0ABA0H
+SAMPLE5:        DW   0ABA0H,0AD00H
+
+;TUNE2 SAMPLES
+
+SAMPLE6:        DW   02C30H,02E00H ;SCRAPE
+SAMPLE7:        DW   04508H,04D60H ;SNARE
+SAMPLE8:        DW   02948H,02C30H ;THUD2
+SAMPLE9:        DW   02FF8H,032E0H ;THUD
+
+
+;��������������������������������������
+;�    NMI HANDLING THINGY
+
+NMI:            PHA  
+SELF1:          LDA  2000H
+                PHA  
+                LDA  EORFLAG
+                EOR  #255
+                STA  EORFLAG
+                BEQ  HINYB
+
+LONYB:          PLA  
+                AND  #15
+                STA  0D418H
+                JMP  NOPLAY
+
+HINYB:          PLA  
+                LSR  A
+                LSR  A
+                LSR  A
+                LSR  A
+                STA  0D418H
+
+                INC  SELF1+1
+                BNE  NOHI
+                INC  SELF1+2
+
+NOHI:           LDA  SELF1+2
+SELF2:          CMP  #30
+                BNE  NOPLAY
+                LDA  SELF1+1
+SELF3:          CMP  #0
+                BNE  NOPLAY
+                JMP  NMIOFF
+
+NOPLAY:         LDA  0DD0DH
+                PLA  
+                RTI  
+
+NMIOFF:         LDA  0DD0DH
+                LDA  #0
+                STA  0DD0EH
+                PLA  
+                RTI  
+
+
+
+
+;��������������������������������������
+;�  ACC HOLDS TUNE NUMBER
+
+INITTUNE:       LDX  #0
+                STX  LENGTH
+                STX  BARPOINT
+                STX  TUNEPOINT
+                STX  TUNEFLAG
+                STX  EORFLAG
+                INX  
+                STX  PLAYFLAG
+                ASL  A
+                TAY  
+                LDA  TUNEADDR,Y
+                STA  TUNEMOD1+1
+                STA  TUNEMOD2+1
+                LDA  TUNEADDR+1,Y
+                STA  TUNEMOD1+2
+                STA  TUNEMOD2+2
+                RTS  
+
+
+                END  

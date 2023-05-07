@@ -1,0 +1,187 @@
+;INSTRUCTIONS FOR MUSIC THINGY
+;
+;Version 2 : 20/11/1987
+;.....................................
+;
+;GATE_CON
+;========
+;Format ]     DB GATE_CON,n
+;
+;Where n is the number of frames the
+;note will be played before the gate
+;byte is cleared.
+;
+;.....................................
+;
+;SEND and END
+;====     ===
+;Format ]     DB SEND
+;       ]     DB offset,data
+;       ]     DB .......
+;       ]     DB END
+;
+;Where offset is the offset from the
+;start of the SID chip and data the
+;byte to be poked in there.
+;NOTE : The send must be terminated
+;       with an END.
+;
+;This no longer store the gate byte!
+;
+;.....................................
+;
+;FOR and NEXT
+;===     ====
+;Format ]     DB FOR,n
+;       ]     DB .....
+;       ]     DB NEXT
+;
+;Where n is the number of repeats for
+;the loop.
+;NOTE : These cannot be nested.
+;
+;.....................................
+;
+;KILL
+;====
+;Format ]     DB KILL
+;
+;This will stop the waveform being
+;poked into gate thingy.
+;
+;.....................................
+;
+;STOP
+;====
+;Format ]     DB STOP
+;
+;This will stop the channel altogether
+;
+;.....................................
+;
+;PULSE
+;=====
+;Format ]     DB PULSE,rate
+;       ]     DW start
+;
+;Where rate is the value to added/
+;subtracted from the PWM and start
+;is the start value of the PWM.If
+;start is zero then the PWM is not
+;initialised at every note otherwise
+;it is.The start value should be
+;between $0 and $FFF-50.
+;
+;.....................................
+;
+;FREQS and NOFREQS
+;=====     =======
+;Format ]     DB FREQS
+;       ]     DW value
+;       ]     DB frames
+;       ]     DW ...
+;       ]     DB ...
+;       ]     DW NOFREQS
+;
+;Where value is a 16 bit frequency and
+;frames is the number of frames before
+;the next interpret.
+;
+;.....................................
+;
+;FILTER
+;======
+;Format ]     DB FILTER,rate,control
+;             DW start
+;
+;Where rate is the value to added/
+;subtracted. If control is 0 then it
+;starts subtracting, if control is
+;255 then it starts adding. The start
+;value should be between $0 and
+;$4FF-50.
+;
+;.....................................
+;
+;CLAIM
+;=====
+;Format ]     DB CLAIM
+;
+;This will claim filter control for
+;the channel where it is located.
+;
+;This will reset the filters every
+;time a note is played on that channel
+;
+;.....................................
+;
+;GOSUB and GOTO
+;=====     ====
+;Format ]     DB GOSUB
+;       ]     DW label
+;
+;These will cause the program to vector
+;to the given label, this will also
+;store the current program counter.
+;
+;NOTE : These cannot be nested.
+;
+;.....................................
+;
+;RETURN
+;======
+;Format ]     DB RETURN
+;
+;This will retrieve the last stored
+;program counter.
+;
+;.....................................
+;
+;TRANSPOSE
+;=========
+;Format ]     DB TRANSPOSE,offset
+;
+;Where offset is the offset in notes
+;to be added to all subsequent notes.
+;
+;.....................................
+;
+;GATE
+;====
+;Format ]     DB GATE,waveform
+;
+;Where waveform is the new type of
+;waveform on this channel.
+;
+;.....................................
+;
+;EFFECT
+;======
+;Format ]     DB EFFECT,length,wavform
+;       ]     DW freq
+;
+;Where length is the number of frames
+;the effect lasts,waveform is the
+;desired waveform and freq is a 16 bit
+;frequecy.
+;
+;.....................................
+;
+;VIB
+;===
+;Format ]     DB VIB,delay,rate,limit,
+;       ]        dir
+;
+;Where delay is the number of frames a
+;note must play before VIB starts,
+;rate is the offset to be added or
+;subtracted from the frequency,limit
+;is the maximum offset ( if this is 0
+;then there is no limit ) and dir is
+;the direction to go ( 255=up,0=down)
+;
+;.....................................
+;
+;'+' = SPEED UP
+;'-' = FREEZE
+;

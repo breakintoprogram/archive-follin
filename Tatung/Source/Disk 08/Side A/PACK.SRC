@@ -1,0 +1,65 @@
+                INCL RATS
+TOPDATA:        
+
+;=====================================
+;TUNE1  TITLE TUNE
+;=====================================
+
+TITL_A:         DB   GATE,64
+                DB   GATE_CON,255
+                DB   SEND
+                DB   5,$00
+                DB   6,$F5
+                DB   24,15
+                DB   END
+                DB   PULSE,20
+                DW   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+TITL_B:         DB   GATE,0
+                DB   50,19
+                DB   GATE,64
+                DB   GATE_CON,255
+                DB   SEND
+                DB   12,$00
+                DB   13,$85
+                DB   END
+                DB   PULSE,20
+                DW   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+TITL_C:         DB   GATE,0
+                DB   50,19*2
+                DB   GATE,64
+                DB   GATE_CON,255
+                DB   SEND
+                DB   19,$00
+                DB   20,$35
+                DB   END
+                DB   PULSE,20
+                DW   200
+
+                DB   GOSUB
+                DW   GREEN
+
+                DB   STOP
+;.....................................
+
+GREEN:          DB   50,8,55,16,57,8,59,8
+                DB   57,8,55,8,62,8,GATE,0
+                DB   62,8,GATE,64,62,8,62,32
+                DB   GATE,0,RETURN
+;.....................................
+
+BOTDATA:        
+
