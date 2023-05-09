@@ -1,0 +1,298 @@
+;:::::::::::::::::::::::::::::::::::::
+;                                    :
+; BIONIC COMMANDO MUSIC DATA BY      :
+;                                    :
+; BIMBO FOLLIN HEAD TRIBESMAN JIM    :
+;                                    :
+; FOR THE RAY FRENCH CLAN            :
+;                                    :
+;:::::::::::::::::::::::::::::::::::::
+
+                ORG  $2000
+                LOAD $C500
+
+                ENT  
+
+                JMP  $2004
+
+;=====================================
+;NUMBER OF TUNES AVAILABLE
+
+TUNES:          EQU  1
+
+                DB   TUNES
+;=====================================
+;NUMBER OF FRAMES WAIT
+                ORG  $1000
+
+                DB   1
+;=====================================
+;display message for peeping goons...
+
+                ORG  $26E6
+                DB   "TIM IS A LOOSE-LIVER"
+                DB   "ED BOTTOM SQUEEZER. "
+;Use all the chars OK
+;=====================================
+
+                ORG  $3436
+TOPDATA:        
+
+A_LO:           DB   <GAME_A
+A_HI:           DB   >GAME_A
+
+B_LO:           DB   <GAME_B
+B_HI:           DB   >GAME_B
+
+C_LO:           DB   <GAME_C
+C_HI:           DB   >GAME_C
+
+NORMAL:         
+
+                ORG  $2795
+                DW   A_LO
+
+                ORG  $279A
+                DW   A_HI
+
+                ORG  $279F
+                DW   B_LO
+
+                ORG  $27A4
+                DW   B_HI
+
+                ORG  $27A9
+                DW   C_LO
+
+                ORG  $27AE
+                DW   C_HI
+
+                ORG  $207E
+                DB   <BOTDATA
+
+                ORG  $2081
+                DB   <TOPDATA
+
+                ORG  $2085
+                DB   >BOTDATA
+
+                ORG  $2087
+                DB   >TOPDATA
+
+;=====================================
+
+GATE_CON:       EQU  $83;DEY  
+SEND:           EQU  $85;DEY  
+END:            EQU  $FF;DEY  
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80;DEY  
+FREQS:          EQU  $87
+NOFREQS:        EQU  0
+FILTER:         EQU  $88;DEY  
+CLAIM:          EQU  $89;DEY  
+GOSUB:          EQU  $8A
+GOTO:           EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D;DEY  
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F;DEY  
+ENDIT:          EQU  $90;DEY  
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+
+                ORG  NORMAL
+;.....................................
+
+GAME_A:         DB   GATE_CON,255,ENDIT,1
+                DB   SEND,5,$08
+                DB   6,$2F
+                DB   12,$02
+                DB   13,$0F
+                DB   19,$00
+                DB   20,$B0
+                DB   23,%11110001
+                DB   24,%00011111,END
+                DB   GATE,0,11,30
+AYE:            DB   CLAIM,FILTER,122,1
+                DW   $AA,0,$AAA
+                DB   GATE,64,PULSE,10
+                DW   $777
+                DB   VIB,7,155,0,1
+                DB   GOSUB
+                DW   A1
+                DB   TRANS,3,GOSUB
+                DW   A1
+                DB   TRANS,6,GOSUB
+                DW   A1
+                DB   FILTER,122,0
+                DW   $AAA,0,$AAA
+                DB   SEND,5,$06,6,$0F,END
+                DB   VIB,0,0,0,0,TRANS,0,GOSUB
+                DW   A2
+                DB   GOSUB
+                DW   A2
+                DB   TRANS,3,GOSUB
+                DW   A3
+                DB   GOSUB
+                DW   A3
+                DB   TRANS,0,GOTO
+                DW   AYE
+                DB   GATE,0,STOP
+;.....................................
+
+GAME_B:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,128,65,2,65,2,65,2
+                DB   65,2,65,2,65,2,70,2,70,2
+                DB   70,2,70,2,70,2,70,2,70,2
+                DB   70,4
+BEE:            DB   SEND,12,$06,13,$20,END
+                DB   VIB,1,23,8,0
+                DB   GATE,128,TRANS,19,GOSUB
+                DW   B1
+                DB   TRANS,22,GOSUB
+                DW   B1
+                DB   TRANS,25,GOSUB
+                DW   B1
+                DB   SEND,12,$00,13,$50,END
+                DB   GATE,16,TRANS,25,GOSUB
+                DW   HAM1
+                DB   GOSUB
+                DW   HAM2
+                DB   TRANS,28,GOSUB
+                DW   HAM2
+                DB   TRANS,28,GOSUB
+                DW   HAM2
+                DB   TRANS,0,GOTO
+                DW   BEE
+                DB   GATE,0,STOP
+;.....................................
+GAME_C:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,16,VIB,9,35,0,1
+                DB   37,30,VIB,0,0,0,0
+CEE:            DB   GOSUB
+                DW   C1
+                DB   TRANS,3,GOSUB
+                DW   C1
+                DB   TRANS,6,GOSUB
+                DW   C1
+                DB   SEND,19,$00,20,$B0,END
+                DB   GATE,16,TRANS,13,GOSUB
+                DW   HAM1
+                DB   TRANS,25,GOSUB
+                DW   HAM2
+                DB   TRANS,21,GOSUB
+                DW   HAM2
+                DB   TRANS,28,GOSUB
+                DW   HAM2
+                DB   TRANS,0,GOTO
+                DW   CEE
+                DB   GATE,0,STOP
+;.....................................
+
+A1:             DB   42,15,38,11,37,4
+                DB   37,15,38,11,37,4
+                DB   35,15,38,11,35,4
+                DB   35,15,38,11,35,4
+                DB   33,15,38,10,45,5
+                DB   42,15,45,10,45,5
+                DB   44,15,45,10,47,5
+                DB   45,15,44,11,37,4
+                DB   RETURN
+
+B1:             DB   55,15,GATE,16,49,11,45,4
+                DB   GATE,128,55,15,GATE,16
+                DB   49,11,GATE,128,65,4
+                DB   55,15,GATE,16,50,11,45,4
+                DB   GATE,128,55,15,GATE,16
+                DB   50,11,GATE,128,66,4
+                DB   55,15,GATE,16,51,11,47,4
+                DB   GATE,128,55,15,GATE,16
+                DB   51,11,GATE,128,65,4
+                DB   55,15,GATE,16,52,11,47,4
+                DB   GATE,128,55,15,GATE,16
+                DB   52,11,GATE,128,65,4
+                DB   RETURN
+
+C1:             DB   30,15,49,11,45,4,30,15
+                DB   49,11,30,4
+                DB   30,15,50,11,45,4,30,15
+                DB   50,11,30,4
+                DB   30,15,51,11,47,4,30,15
+                DB   51,11,30,4
+                DB   30,15,52,11,47,4,33,15
+                DB   52,11,42,4
+                DB   RETURN
+
+A2:             DB   GATE,64,24,15,31,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,31,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,32,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,32,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,33,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,33,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,34,11
+                DB   GATE,128,77,4
+                DB   GATE,64,24,15,34,11
+                DB   GATE,128,77,4,RETURN
+
+A3:             DB   GATE,64,24,5,24,5,24,5
+                DB   31,5,31,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   31,5,31,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   32,5,32,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   32,5,32,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   33,5,33,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   33,5,33,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   34,5,34,6
+                DB   GATE,128,77,4
+                DB   GATE,64,24,5,24,5,24,5
+                DB   34,5,34,6
+                DB   GATE,128,77,4,RETURN
+
+HAM1:           DB   42,15,38,11,37,4
+                DB   37,15,38,11,37,4
+                DB   35,15,38,11,35,4
+                DB   35,15,38,11,35,4
+                DB   33,15,38,10,45,5
+                DB   42,15,45,10,45,5
+                DB   44,15,45,10,47,5
+                DB   45,15,44,11,37,4
+                DB   RETURN
+
+HAM2:           DB   42,5,41,5,42,5,39,5
+                DB   38,5,37,5,37,5,36,5
+                DB   37,5,38,5,37,5,37,5
+                DB   35,5,30,5,35,5,38,5
+                DB   37,5,35,5,35,5,30,5
+                DB   35,5,38,5,37,5,35,5
+                DB   33,5,30,5,33,5,38,5
+                DB   38,5,45,5,42,5,41,5
+                DB   42,5,45,5,45,5,45,5
+                DB   44,5,41,5,44,5,45,5
+                DB   46,5,47,5,45,5,44,5
+                DB   45,5,44,5,41,5,37,5
+                DB   RETURN
+
+
+BOTDATA:        END  
