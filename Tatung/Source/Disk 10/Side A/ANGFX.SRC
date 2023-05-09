@@ -1,0 +1,287 @@
+;*************************************
+;
+; MUSIC AND FX DRIVER.
+;
+; LED STORM BY TOM FILLIN.
+;
+;*************************************
+
+                LOAD $C000
+                ORG  $4000
+
+TUNES:          EQU  0
+EFFECTS:        EQU  8
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,3,30,128
+
+                DB   "LED STORM  BY  TIM. "
+                DB   "                    "
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <GAME_A
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+
+A_HI:           DB   >GAME_A
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+;=====================================
+B_LO:           DB   <GAME_B
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+
+B_HI:           DB   >GAME_B
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+;=====================================
+C_LO:           DB   <GAME_C
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+
+C_HI:           DB   >GAME_C
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+                DB   0
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <SHOOT,<JUMPS,<MAPPEAR
+                DB   <MDESTRO,<MAGAPPE
+                DB   <MAGCOLL,<LADDER
+                DB   <MAGUSE
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >SHOOT,>JUMPS,>MAPPEAR
+                DB   >MDESTRO,>MAGAPPE
+                DB   >MAGCOLL,>LADDER
+                DB   >MAGUSE
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+FREQS:          EQU  $87
+NOFREQS:        EQU  0
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+GOTO:           EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+
+;.....................................
+GAME_A:         DB   GATE_CON,255,ENDIT,1
+                DB   SEND,5,$08
+                DB   6,$0F
+                DB   12,$0F
+                DB   13,$BF
+                DB   19,$07
+                DB   20,$0F
+                DB   23,%11110010
+                DB   24,%00011111,END
+
+                DB   GATE,0,STOP
+                DB   GOTO
+                DW   GAME_A
+;.....................................
+
+GAME_B:         DB   GATE_CON,255,ENDIT,1
+
+                DB   GATE,0,STOP
+;.....................................
+
+GAME_C:         DB   GATE_CON,255,ENDIT,1
+
+                DB   GATE,0,STOP
+;.....................................
+;=====================================
+SHOOT:          DB   0
+                DW   SHOO_D
+                DB   $FF
+
+JUMPS:          DB   0
+                DW   JUMP_D
+                DB   $FF
+
+MAPPEAR:        DB   0
+                DW   MAPP_D
+                DB   $FF
+
+MDESTRO:        DB   0
+                DW   MDES_D
+                DB   $FF
+
+MAGAPPE:        DB   0
+                DW   MAGA_D
+                DB   $FF
+
+MAGCOLL:        DB   0
+                DW   MAGC_D
+                DB   $FF
+
+LADDER:         DB   0
+                DW   LADD_D
+                DB   $FF
+
+MAGUSE:         DB   0
+                DW   MAGU_D
+                DB   $FF
+
+SHOO_D:         DB   SEND,5,$09,6,$0F
+                DB   24,15,END
+                DB   GATE_CON,255,ENDIT,1
+                DB   VIB,1,255,0,0
+                DB   EFFECT,2,129,0,100
+                DB   WOBBLE,0,0
+                DB   GATE,128,58,16
+                DB   GATE,0,STOP
+
+JUMP_D:         DB   SEND,5,$09,6,$0F
+                DB   24,15,END,GATE,64
+                DB   PULSE,10
+                DW   $900
+                DB   WOBBLE,0,0
+                DB   EFFECT,0,0,0,0
+                DB   VIB,0,0,0,0
+                DB   61,1,PORT,2,66,4,PORT,5
+                DB   86,4,76,4,PORT,0
+                DB   GATE,0,STOP
+
+MAPP_D:         DB   SEND,5,$08,6,$0F
+                DB   24,15,END,GATE,64
+                DB   VIB,0,0,0,0,PORT,0
+                DB   EFFECT,1,16,0,70
+                DB   PULSE,80
+                DW   0
+                DB   WOBBLE,2,12
+                DB   44,8,44,8
+                DB   GATE,0,STOP
+
+MDES_D:         DB   SEND,5,$09,6,$0F
+                DB   24,15,END
+                DB   WOBBLE,0,0
+                DB   EFFECT,3,128,0,100
+                DB   VIB,1,255,0,0
+                DB   GATE,64,PULSE,1
+                DW   $900
+                DB   50,12
+                DB   GATE,0,STOP
+
+MAGA_D:         DB   SEND,5,$06,6,$0F
+                DB   24,15,END
+                DB   WOBBLE,0,0
+                DB   EFFECT,1,21,0,148
+                DB   VIB,1,200,0,0
+                DB   GATE,16,FOR,8
+                DB   79,2,79,2,79,2,79,2,79,2
+                DB   NEXT
+                DB   GATE,0,STOP
+
+MAGC_D:         DB   SEND,5,$29,6,$0F
+                DB   24,15,END
+                DB   WOBBLE,1,12
+                DB   EFFECT,0,0,0,0
+                DB   VIB,2,255,3,0
+                DB   GATE,64,PULSE,1
+                DW   $600
+                DB   60,4,67,4,70,4,74,4,76,4
+                DB   GATE,0,STOP
+
+LADD_D:         DB   SEND,5,$29,6,$0F
+                DB   24,15,END
+                DB   WOBBLE,1,12
+                DB   EFFECT,0,0,0,0
+                DB   VIB,0,0,0,0
+                DB   GATE,64,PULSE,1
+                DW   $400
+                DB   75,3,75,2,75,3
+                DB   74,3,74,2,74,3
+                DB   70,3,70,2,70,3
+                DB   GATE,0,STOP
+
+MAGU_D:         DB   SEND,5,$06,6,$0F
+                DB   24,15,END
+                DB   WOBBLE,1,12
+                DB   EFFECT,0,0,0,0
+                DB   VIB,0,0,0,0
+                DB   GATE,64,PULSE,80
+                DW   0
+                DB   FOR,50
+                DB   65,2,65,2,65,2,65,2
+                DB   NEXT
+                DB   GATE,0,STOP
+
+;=====================================
+BOTCALC:        
+
+CALC:           EQU  BOTCALC-TOPCALC
+
+;=====================================
+                ORG  $2000
+                ENT  
+;=====================================
+
+                END  
