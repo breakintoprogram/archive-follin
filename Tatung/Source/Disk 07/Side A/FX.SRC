@@ -1,1 +1,274 @@
-                ORG 50000                LOAD 0C000H                TUNES:          EQU 0EFFECTS:        EQU 11                                ;--------------------------------------                DW CALC                DB TUNES                DB EFFECTS;--------------------------------------                DATA_TOP:                                       KEY 3"|J|\A|M"                KEY 4"|J|\O|M"                KEY 7"|\SFX"                                TUNES_A:        DW 1                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_B:        DW 1                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_C:        DW 1                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                FX_TAB:         DW BIG,SMALL,TWIST,TRAVEL                DW ALARM,LIFE,FILL1,FILL2                DW EXPLO,FUSON,FUSOF;--------------------------------------FOR:            EQU 080HNEXT:           EQU 081HLENGTH:         EQU 082HSTOP:           EQU 083HGOSUB:          EQU 084HRETURN:         EQU 085HTRANS:          EQU 086HDISTORT:        EQU 087HSEND:           EQU 088HADSR:           EQU 089HENVON:          EQU 08AHWOBBLE:         EQU 08BHPORT:           EQU 08CHVIB:            EQU 08DHIGNORE:         EQU 08EHEFFECT:         EQU 08FHGOTO:           EQU 090HGATE_CON:       EQU 091HENDIT:          EQU 092H                ;======================================; SOUND FX DATA                BIG:            DB 0                DW XIG                DB 0FFH                SMALL:          DB 0                DW XMALL                DB 0FFH                TWIST:          DB 2                DW XWISA                DB 4                DW XWISB                DB 0FFH                TRAVEL:         DB 2                DW XWISA                DB 4                DW XRAVB                DB 0FFH                ALARM:          DB 0                DW XLARM                DB 0FFH                LIFE:           DB 0                DW XIFE                DB 0FFH                FILL1:          DB 0                DW XILL1                DB 0FFH                FILL2:          DB 0                DW XILL2                DB 0FFH                EXPLO:          DB 0                DW XXPLO                DB 0FFH                FUSON:          DB 0                DW XUSON                DB 0FFH                FUSOF:          DB 0                DW XUSOF                DB 0FFH                XIG:            DB LENGTH,3                DB ADSR,02FH,070H,0ROUTX:          DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB WOBBLE,0,0,0                DB SEND,7,00001001B                DB 10                DB SEND,7,00000001B                DB SEND,6,3,10                DB ENVON,0                DB SEND,6,4,10                DB SEND,6,5,10                DB SEND,6,6,10                DB SEND,6,7,10                DB SEND,6,8,10                DB SEND,6,9,10                DB SEND,6,10,10                DB SEND,6,11,10                DB SEND,6,12,10                DB SEND,6,13,10                DB SEND,6,14,10                DB SEND,6,15,10                DB SEND,6,16,10                DB SEND,6,17,10                DB SEND,6,18,10                DB SEND,6,19,10                DB SEND,6,20,10                DB SEND,6,21,10                DB SEND,6,22,10                DB SEND,6,23,10                DB SEND,6,24,10                DB SEND,6,25,10                DB SEND,6,26,10                DB SEND,6,27,10                DB SEND,6,28,10                DB SEND,6,29,10                DB SEND,6,30,10                DB SEND,6,31,20                DB SEND,7,00001001B                DB STOP                XMALL:          DB LENGTH,2                DB ADSR,02FH,040H,0                DB GOTO                DW ROUTX                XWISA:          DB SEND,7,00010000B                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB 16,1                DB STOP                XWISB:          DB SEND,7,00100000B                DB VIB,0,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB DISTORT,10,16,1                DB STOP                XRAVB:          DB SEND,7,00100000B                DB DISTORT,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB VIB,1,4,12,1XRAVY:          DB 16,24,GOTO                DW XRAVY                XLARM:          DB SEND,7,00001001B                DB LENGTH,0,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,1                DB ENVON,1,ADSR,090H,0,2                DB 50,1                DB SEND,7,00001000B                DB 50,8,55,4,59,4,62,8                DB STOP                XIFE:           DB SEND,7,00001000B                DB LENGTH,4,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,090H,0,2                DB 64,69,71,73,76,73,71,69                DB 64,SEND,7,00001001B                DB STOP                XILL1:          DB SEND,7,00001000B                DB LENGTH,7,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,06H,1                DB FOR,4                DB 64,ENVON,0,63,59,NEXT                DB SEND,7,00001001B                DB STOP                XILL2:          DB SEND,7,00001000B                DB LENGTH,7,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,06H,1                DB FOR,6                DB 57,ENVON,0,56,52,NEXT                DB SEND,7,00001001B                DB STOP                XXPLO:          DB SEND,7,00001000B                DB LENGTH,4,WOBBLE,12,2,2                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,04H,1                DB FOR,8,52,ENVON,0                DB 55,59,NEXT                DB SEND,7,00001001B                DB STOP                XUSON:          DB SEND,7,00001000B                DB LENGTH,0,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0A0H,0,2                DB SEND,7,00001001B                DB STOP                XUSOF:          DB SEND,7,00001000B                DB LENGTH,0,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0A0H,0,2                DB SEND,7,00001001B                DB STOP                ;======================================                SILENT:         DB STOP                ;======================================                TITLE_A:        DB STOP;.....................................                TITLE_B:        DB STOP;.....................................                TITLE_C:        DB STOP;......................................                ;======================================DATA_BOT:       CALC:           EQU DATA_BOT-DATA_TOP                                                END
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 0
+EFFECTS:        EQU 11
+                
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+                
+DATA_TOP:       
+                
+                KEY 3"|J|\A|M"
+                KEY 4"|J|\O|M"
+                KEY 7"|\SFX"
+                
+                
+TUNES_A:        DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_B:        DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_C:        DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+FX_TAB:         DW BIG,SMALL,TWIST,TRAVEL
+                DW ALARM,LIFE,FILL1,FILL2
+                DW EXPLO,FUSON,FUSOF
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+                
+;======================================
+; SOUND FX DATA
+                
+BIG:            DB 0
+                DW XIG
+                DB 0FFH
+                
+SMALL:          DB 0
+                DW XMALL
+                DB 0FFH
+                
+TWIST:          DB 2
+                DW XWISA
+                DB 4
+                DW XWISB
+                DB 0FFH
+                
+TRAVEL:         DB 2
+                DW XWISA
+                DB 4
+                DW XRAVB
+                DB 0FFH
+                
+ALARM:          DB 0
+                DW XLARM
+                DB 0FFH
+                
+LIFE:           DB 0
+                DW XIFE
+                DB 0FFH
+                
+FILL1:          DB 0
+                DW XILL1
+                DB 0FFH
+                
+FILL2:          DB 0
+                DW XILL2
+                DB 0FFH
+                
+EXPLO:          DB 0
+                DW XXPLO
+                DB 0FFH
+                
+FUSON:          DB 0
+                DW XUSON
+                DB 0FFH
+                
+FUSOF:          DB 0
+                DW XUSOF
+                DB 0FFH
+                
+XIG:            DB LENGTH,3
+                DB ADSR,02FH,070H,0
+ROUTX:          DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB WOBBLE,0,0,0
+                DB SEND,7,00001001B
+                DB 10
+                DB SEND,7,00000001B
+                DB SEND,6,3,10
+                DB ENVON,0
+                DB SEND,6,4,10
+                DB SEND,6,5,10
+                DB SEND,6,6,10
+                DB SEND,6,7,10
+                DB SEND,6,8,10
+                DB SEND,6,9,10
+                DB SEND,6,10,10
+                DB SEND,6,11,10
+                DB SEND,6,12,10
+                DB SEND,6,13,10
+                DB SEND,6,14,10
+                DB SEND,6,15,10
+                DB SEND,6,16,10
+                DB SEND,6,17,10
+                DB SEND,6,18,10
+                DB SEND,6,19,10
+                DB SEND,6,20,10
+                DB SEND,6,21,10
+                DB SEND,6,22,10
+                DB SEND,6,23,10
+                DB SEND,6,24,10
+                DB SEND,6,25,10
+                DB SEND,6,26,10
+                DB SEND,6,27,10
+                DB SEND,6,28,10
+                DB SEND,6,29,10
+                DB SEND,6,30,10
+                DB SEND,6,31,20
+                DB SEND,7,00001001B
+                DB STOP
+                
+XMALL:          DB LENGTH,2
+                DB ADSR,02FH,040H,0
+                DB GOTO
+                DW ROUTX
+                
+XWISA:          DB SEND,7,00010000B
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB 16,1
+                DB STOP
+                
+XWISB:          DB SEND,7,00100000B
+                DB VIB,0,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB DISTORT,10,16,1
+                DB STOP
+                
+XRAVB:          DB SEND,7,00100000B
+                DB DISTORT,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB VIB,1,4,12,1
+XRAVY:          DB 16,24,GOTO
+                DW XRAVY
+                
+XLARM:          DB SEND,7,00001001B
+                DB LENGTH,0,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,1
+                DB ENVON,1,ADSR,090H,0,2
+                DB 50,1
+                DB SEND,7,00001000B
+                DB 50,8,55,4,59,4,62,8
+                DB STOP
+                
+XIFE:           DB SEND,7,00001000B
+                DB LENGTH,4,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,0,2
+                DB 64,69,71,73,76,73,71,69
+                DB 64,SEND,7,00001001B
+                DB STOP
+                
+XILL1:          DB SEND,7,00001000B
+                DB LENGTH,7,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,06H,1
+                DB FOR,4
+                DB 64,ENVON,0,63,59,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XILL2:          DB SEND,7,00001000B
+                DB LENGTH,7,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,06H,1
+                DB FOR,6
+                DB 57,ENVON,0,56,52,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XXPLO:          DB SEND,7,00001000B
+                DB LENGTH,4,WOBBLE,12,2,2
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,04H,1
+                DB FOR,8,52,ENVON,0
+                DB 55,59,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XUSON:          DB SEND,7,00001000B
+                DB LENGTH,0,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0A0H,0,2
+                DB SEND,7,00001001B
+                DB STOP
+                
+XUSOF:          DB SEND,7,00001000B
+                DB LENGTH,0,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0A0H,0,2
+                DB SEND,7,00001001B
+                DB STOP
+                
+;======================================
+                
+SILENT:         DB STOP
+                
+;======================================
+                
+TITLE_A:        DB STOP
+;.....................................
+                
+TITLE_B:        DB STOP
+;.....................................
+                
+TITLE_C:        DB STOP
+;......................................
+                
+;======================================
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                
+                END

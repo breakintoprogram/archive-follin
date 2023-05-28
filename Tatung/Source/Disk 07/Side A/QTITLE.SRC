@@ -1,1 +1,364 @@
-                                ORG 50000                LOAD 0C000H                TUNES:          EQU 1EFFECTS:        EQU 0                                ;--------------------------------------                DW CALC                DB TUNES                DB EFFECTS;--------------------------------------                DATA_TOP:                                       KEY 3"|J|\A|M"                KEY 4"|J|\O|M"                KEY 7"|\STITLE"                                TUNES_A:        DW TITLE_A                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_B:        DW TITLE_B                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_C:        DW TITLE_C                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                FX_TAB:         DW FIRE;--------------------------------------FOR:            EQU 080HNEXT:           EQU 081HLENGTH:         EQU 082HSTOP:           EQU 083HGOSUB:          EQU 084HRETURN:         EQU 085HTRANS:          EQU 086HDISTORT:        EQU 087HSEND:           EQU 088HADSR:           EQU 089HENVON:          EQU 08AHWOBBLE:         EQU 08BHPORT:           EQU 08CHVIB:            EQU 08DHIGNORE:         EQU 08EHEFFECT:         EQU 08FHGOTO:           EQU 090HGATE_CON:       EQU 091HENDIT:          EQU 092H                ;======================================; SOUND FX DATA                FIRE:           DB 0                DW FIRE                DB 0FFH                ;======================================                SILENT:         DB STOP                ;======================================                TITLE_A:        DB GATE_CON,255,ENDIT,255ACYC:           DB SEND,7,0                DB ADSR,0F0H,0,1                DB ENVON,1,SEND,6,9                DB 39,16                DB GOSUB                DW HISE                DB FOR,5,39,16,NEXT                DB FOR,2                DB GOSUB                DW HISE                DB 39,16                DB GOSUB                DW SNSE                DB 39,6,39,5,39,5,39,16                DB NEXT                DB GOSUB                DW HISE                DB FOR,3,39,16,NEXT                DB GOSUB                DW SNSE                DB 39,11,39,5                DB GOSUB                DW HISE                DB 39,11                DB GOSUB                DW SNSE                DB 39,6,39,5,39,5                DB 39,5                DB FOR,8                DB GOSUB                DW BEAT                DB GOSUB                DW BEAT2                DB GOSUB                DW FILL                DB NEXT                                DB GOTO                DW ACYC;.....................................                TITLE_B:        DB GATE_CON,32,ENDIT,255BCYC:           DB SEND,7,00010010B                DB TRANS,0,32,16                DB SEND,7,00010000B                DB ADSR,0D0H,04H,1                DB WOBBLE,244,12,4                DB ENVON,1,DISTORT,2                DB GOSUB                DW INTR                DB WOBBLE,6,4,4                DB GATE_CON,255                DB DISTORT,0                DB ADSR,0D0H,04H,1                DB WOBBLE,6,3,4,42,96                DB WOBBLE,9,3,4,42,96                DB WOBBLE,6,3,4,37,96                DB WOBBLE,9,3,4,37,96                DB WOBBLE,6,3,4,42,96                DB WOBBLE,9,3,4,42,96                DB ADSR,0D0H,01H,1                DB WOBBLE,6,2,2,44,16                DB 44,16,44,16,44,16                DB 44,16,44,16                DB WOBBLE,9,2,2,44,16                DB 44,16,44,16,44,16                DB 44,16,44,16                DB WOBBLE,0,0,0                DB ADSR,0C9H,07H,1                DB VIB,16,2,2,0                DB 52,2,53,2,54,38,51,6                DB GATE_CON,12,56,48                DB FOR,3                DB 54,11,51,5,NEXT                DB GATE_CON,6                DB 56,16,54,16,49,16                DB GATE_CON,255                DB 51,32,56,16,54,2                DB 55,30                DB 58,16,63,36,63,6,62,6                DB 61,32,58,16,FOR,6                DB 63,11,61,5,NEXT                DB 66,11,63,5                DB GATE_CON,6                DB 61,16,58,16,57,16,56,16                DB 54,16,58,16,56,16,58,16                DB 61,2,62,14,58,16,56,16                DB GATE_CON,255                DB FOR,5                DB 57,2,58,9,61,5,NEXT                DB 57,2,58,9,56,5                DB FOR,3                DB 57,2,58,9,61,5,NEXT                DB FOR,3                DB 57,2,56,9,54,5,NEXT                DB GATE_CON,6,57,11                DB 54,5,56,16,54,16                DB 56,5,54,5,51,6                DB 56,16,58,16                DB GATE_CON,11                DB GATE_CON,6,FOR,3                DB 55,5,53,6,51,5,NEXT                DB FOR,3                DB 49,5,48,6,46,5,NEXT                DB FOR,3                DB 42,5,43,6,39,5,NEXT                DB 41,16,42,16,43,16                DB FOR,2                DB 44,5,48,5,51,6,54,16                DB 51,11,48,5,NEXT                DB FOR,3                DB 44,5,48,5,51,6,NEXT                DB FOR,3                DB 54,5,51,5,48,6,NEXT                DB FOR,3                DB 58,5,53,5,50,6,NEXT                DB 62,11,58,5,56,11,53,5                DB 56,11,53,5,58,16,56,16                DB 53,16,FOR,3,58,5,56,5                DB 53,6,NEXT                DB GATE_CON,255                DB VIB,0,0,0,0                DB ADSR,0D0H,04H,1                DB WOBBLE,6,3,4,42,96                DB WOBBLE,9,3,4,42,96                DB WOBBLE,6,3,4,37,96                DB WOBBLE,9,3,4,37,96                DB WOBBLE,6,3,4,42,96                DB WOBBLE,9,3,4,42,96                DB WOBBLE,6,3,4,44,96                DB WOBBLE,9,3,4                DB FOR,6,44,16,NEXT                DB GOTO                DW BCYC;.....................................                TITLE_C:        DB GATE_CON,32,ENDIT,255CCYC:           DB SEND,7,00100100B                DB 32,16                DB SEND,7,00100000B                DB ADSR,0D0H,03H,1                DB ENVON,1,TRANS,244                DB GOSUB                DW INTR                DB GATE_CON,16                DB TRANS,244,GOSUB                DW BUPA                DB TRANS,239,GOSUB                DW BUPA                DB TRANS,244,GOSUB                DW BUPA                DB TRANS,246,GOSUB                DW BUPA                DB FOR,2                DB TRANS,244,GOSUB                DW BAPA                DB TRANS,239,GOSUB                DW BAPA                DB TRANS,244,GOSUB                DW BAPA                DB TRANS,246,GOSUB                DW BAPA                DB NEXT,TRANS,244                DB 32,11,32,5,36,16,32,11                DB 30,5,32,11,30,5,27,16                DB 30,11,27,5,LENGTH,16                DB 32,30,32,36,37,38                DB 39,37,36,34,32,30                DB LENGTH,0,31,11,27,5                DB 31,11,27,5,25,11,22,5                DB 27,11,25,5,27,11,25,5                DB 22,11,18,5,LENGTH,16                DB 20,24,27,32,36,39                DB 44,42,41,39,37,36                DB LENGTH,0,FOR,3                DB 34,16,34,11,32,5                DB 34,16,38,11,32,5,NEXT                DB GOTO                DW CCYC;......................................                BUPA:           DB 32,26,30,6,32,16                DB 44,16,30,16,27,16                DB 32,16,32,11,30,5,32,16                DB 39,16,32,11,30,5                DB 27,11,25,5,RETURN                BAPA:           DB 32,26,30,6,32,16                DB ADSR,0C0H,02H,1                DB WOBBLE,9,2,2,54,16                DB WOBBLE,0,0,0                DB ADSR,0D0H,03H,1                DB 30,16,27,16                DB 32,16,32,11,30,5,32,16                DB ADSR,0C0H,02H,1                DB WOBBLE,6,2,2,54,16                DB WOBBLE,0,0,0                DB ADSR,0D0H,03H,1                DB 32,11,30,5                DB 27,11,25,5,RETURN                BEAT:           DB GOSUB                DW HISE                DB 39,16,39,11,39,5,39,16                DB GOSUB                DW SNSE                DB 39,16                DB GOSUB                DW HISE                DB 39,10                DB GOSUB                DW SNSE                DB 39,6                DB GOSUB                DW HISE                DB 39,11,39,5BEAT2:          DB GOSUB                DW HISE                DB 39,16,39,11,39,5,39,16                DB GOSUB                DW SNSE                DB 39,11                DB 39,5,ADSR,010H,0,0                DB 39,11                DB GOSUB                DW HISE                DB 39,5                DB GOSUB                DW SNSE                DB 39,11,39,5                DB RETURN                FILL:           DB GOSUB                DW HISE                DB 39,16,39,11                DB GOSUB                DW SNSE                DB 39,16                DB GOSUB                DW HISE                DB 39,5                DB GOSUB                DW SNSE                DB 39,16                DB GOSUB                DW HISE                DB 39,11                DB GOSUB                DW SNSE                DB 39,5,39,6,39,5,39,5                DB RETURN                INTR:           DB 34,16,33,16,32,16,30,16                DB 25,16,27,48,30,48                DB FOR,2,34,16,NEXT                DB 33,1,34,15,FOR,2                DB 32,1,33,1,34,14,NEXT                DB 33,16                DB RETURN                SNSE:           DB SEND,7,0                DB ADSR,0F0H,0,1                DB SEND,6,9,RETURN                HISE:           DB SEND,7,00000001B                DB ADSR,0D0H,01H,1                DB SEND,6,1,RETURN                ;======================================DATA_BOT:       CALC:           EQU DATA_BOT-DATA_TOP                                                END
+                
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 1
+EFFECTS:        EQU 0
+                
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+                
+DATA_TOP:       
+                
+                KEY 3"|J|\A|M"
+                KEY 4"|J|\O|M"
+                KEY 7"|\STITLE"
+                
+                
+TUNES_A:        DW TITLE_A
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_B:        DW TITLE_B
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_C:        DW TITLE_C
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+FX_TAB:         DW FIRE
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+                
+;======================================
+; SOUND FX DATA
+                
+FIRE:           DB 0
+                DW FIRE
+                DB 0FFH
+                
+;======================================
+                
+SILENT:         DB STOP
+                
+;======================================
+                
+TITLE_A:        DB GATE_CON,255,ENDIT,255
+ACYC:           DB SEND,7,0
+                DB ADSR,0F0H,0,1
+                DB ENVON,1,SEND,6,9
+                DB 39,16
+                DB GOSUB
+                DW HISE
+                DB FOR,5,39,16,NEXT
+                DB FOR,2
+                DB GOSUB
+                DW HISE
+                DB 39,16
+                DB GOSUB
+                DW SNSE
+                DB 39,6,39,5,39,5,39,16
+                DB NEXT
+                DB GOSUB
+                DW HISE
+                DB FOR,3,39,16,NEXT
+                DB GOSUB
+                DW SNSE
+                DB 39,11,39,5
+                DB GOSUB
+                DW HISE
+                DB 39,11
+                DB GOSUB
+                DW SNSE
+                DB 39,6,39,5,39,5
+                DB 39,5
+                DB FOR,8
+                DB GOSUB
+                DW BEAT
+                DB GOSUB
+                DW BEAT2
+                DB GOSUB
+                DW FILL
+                DB NEXT
+                
+                DB GOTO
+                DW ACYC
+;.....................................
+                
+TITLE_B:        DB GATE_CON,32,ENDIT,255
+BCYC:           DB SEND,7,00010010B
+                DB TRANS,0,32,16
+                DB SEND,7,00010000B
+                DB ADSR,0D0H,04H,1
+                DB WOBBLE,244,12,4
+                DB ENVON,1,DISTORT,2
+                DB GOSUB
+                DW INTR
+                DB WOBBLE,6,4,4
+                DB GATE_CON,255
+                DB DISTORT,0
+                DB ADSR,0D0H,04H,1
+                DB WOBBLE,6,3,4,42,96
+                DB WOBBLE,9,3,4,42,96
+                DB WOBBLE,6,3,4,37,96
+                DB WOBBLE,9,3,4,37,96
+                DB WOBBLE,6,3,4,42,96
+                DB WOBBLE,9,3,4,42,96
+                DB ADSR,0D0H,01H,1
+                DB WOBBLE,6,2,2,44,16
+                DB 44,16,44,16,44,16
+                DB 44,16,44,16
+                DB WOBBLE,9,2,2,44,16
+                DB 44,16,44,16,44,16
+                DB 44,16,44,16
+                DB WOBBLE,0,0,0
+                DB ADSR,0C9H,07H,1
+                DB VIB,16,2,2,0
+                DB 52,2,53,2,54,38,51,6
+                DB GATE_CON,12,56,48
+                DB FOR,3
+                DB 54,11,51,5,NEXT
+                DB GATE_CON,6
+                DB 56,16,54,16,49,16
+                DB GATE_CON,255
+                DB 51,32,56,16,54,2
+                DB 55,30
+                DB 58,16,63,36,63,6,62,6
+                DB 61,32,58,16,FOR,6
+                DB 63,11,61,5,NEXT
+                DB 66,11,63,5
+                DB GATE_CON,6
+                DB 61,16,58,16,57,16,56,16
+                DB 54,16,58,16,56,16,58,16
+                DB 61,2,62,14,58,16,56,16
+                DB GATE_CON,255
+                DB FOR,5
+                DB 57,2,58,9,61,5,NEXT
+                DB 57,2,58,9,56,5
+                DB FOR,3
+                DB 57,2,58,9,61,5,NEXT
+                DB FOR,3
+                DB 57,2,56,9,54,5,NEXT
+                DB GATE_CON,6,57,11
+                DB 54,5,56,16,54,16
+                DB 56,5,54,5,51,6
+                DB 56,16,58,16
+                DB GATE_CON,11
+                DB GATE_CON,6,FOR,3
+                DB 55,5,53,6,51,5,NEXT
+                DB FOR,3
+                DB 49,5,48,6,46,5,NEXT
+                DB FOR,3
+                DB 42,5,43,6,39,5,NEXT
+                DB 41,16,42,16,43,16
+                DB FOR,2
+                DB 44,5,48,5,51,6,54,16
+                DB 51,11,48,5,NEXT
+                DB FOR,3
+                DB 44,5,48,5,51,6,NEXT
+                DB FOR,3
+                DB 54,5,51,5,48,6,NEXT
+                DB FOR,3
+                DB 58,5,53,5,50,6,NEXT
+                DB 62,11,58,5,56,11,53,5
+                DB 56,11,53,5,58,16,56,16
+                DB 53,16,FOR,3,58,5,56,5
+                DB 53,6,NEXT
+                DB GATE_CON,255
+                DB VIB,0,0,0,0
+                DB ADSR,0D0H,04H,1
+                DB WOBBLE,6,3,4,42,96
+                DB WOBBLE,9,3,4,42,96
+                DB WOBBLE,6,3,4,37,96
+                DB WOBBLE,9,3,4,37,96
+                DB WOBBLE,6,3,4,42,96
+                DB WOBBLE,9,3,4,42,96
+                DB WOBBLE,6,3,4,44,96
+                DB WOBBLE,9,3,4
+                DB FOR,6,44,16,NEXT
+                DB GOTO
+                DW BCYC
+;.....................................
+                
+TITLE_C:        DB GATE_CON,32,ENDIT,255
+CCYC:           DB SEND,7,00100100B
+                DB 32,16
+                DB SEND,7,00100000B
+                DB ADSR,0D0H,03H,1
+                DB ENVON,1,TRANS,244
+                DB GOSUB
+                DW INTR
+                DB GATE_CON,16
+                DB TRANS,244,GOSUB
+                DW BUPA
+                DB TRANS,239,GOSUB
+                DW BUPA
+                DB TRANS,244,GOSUB
+                DW BUPA
+                DB TRANS,246,GOSUB
+                DW BUPA
+                DB FOR,2
+                DB TRANS,244,GOSUB
+                DW BAPA
+                DB TRANS,239,GOSUB
+                DW BAPA
+                DB TRANS,244,GOSUB
+                DW BAPA
+                DB TRANS,246,GOSUB
+                DW BAPA
+                DB NEXT,TRANS,244
+                DB 32,11,32,5,36,16,32,11
+                DB 30,5,32,11,30,5,27,16
+                DB 30,11,27,5,LENGTH,16
+                DB 32,30,32,36,37,38
+                DB 39,37,36,34,32,30
+                DB LENGTH,0,31,11,27,5
+                DB 31,11,27,5,25,11,22,5
+                DB 27,11,25,5,27,11,25,5
+                DB 22,11,18,5,LENGTH,16
+                DB 20,24,27,32,36,39
+                DB 44,42,41,39,37,36
+                DB LENGTH,0,FOR,3
+                DB 34,16,34,11,32,5
+                DB 34,16,38,11,32,5,NEXT
+                DB GOTO
+                DW CCYC
+;......................................
+                
+BUPA:           DB 32,26,30,6,32,16
+                DB 44,16,30,16,27,16
+                DB 32,16,32,11,30,5,32,16
+                DB 39,16,32,11,30,5
+                DB 27,11,25,5,RETURN
+                
+BAPA:           DB 32,26,30,6,32,16
+                DB ADSR,0C0H,02H,1
+                DB WOBBLE,9,2,2,54,16
+                DB WOBBLE,0,0,0
+                DB ADSR,0D0H,03H,1
+                DB 30,16,27,16
+                DB 32,16,32,11,30,5,32,16
+                DB ADSR,0C0H,02H,1
+                DB WOBBLE,6,2,2,54,16
+                DB WOBBLE,0,0,0
+                DB ADSR,0D0H,03H,1
+                DB 32,11,30,5
+                DB 27,11,25,5,RETURN
+                
+BEAT:           DB GOSUB
+                DW HISE
+                DB 39,16,39,11,39,5,39,16
+                DB GOSUB
+                DW SNSE
+                DB 39,16
+                DB GOSUB
+                DW HISE
+                DB 39,10
+                DB GOSUB
+                DW SNSE
+                DB 39,6
+                DB GOSUB
+                DW HISE
+                DB 39,11,39,5
+BEAT2:          DB GOSUB
+                DW HISE
+                DB 39,16,39,11,39,5,39,16
+                DB GOSUB
+                DW SNSE
+                DB 39,11
+                DB 39,5,ADSR,010H,0,0
+                DB 39,11
+                DB GOSUB
+                DW HISE
+                DB 39,5
+                DB GOSUB
+                DW SNSE
+                DB 39,11,39,5
+                DB RETURN
+                
+FILL:           DB GOSUB
+                DW HISE
+                DB 39,16,39,11
+                DB GOSUB
+                DW SNSE
+                DB 39,16
+                DB GOSUB
+                DW HISE
+                DB 39,5
+                DB GOSUB
+                DW SNSE
+                DB 39,16
+                DB GOSUB
+                DW HISE
+                DB 39,11
+                DB GOSUB
+                DW SNSE
+                DB 39,5,39,6,39,5,39,5
+                DB RETURN
+                
+INTR:           DB 34,16,33,16,32,16,30,16
+                DB 25,16,27,48,30,48
+                DB FOR,2,34,16,NEXT
+                DB 33,1,34,15,FOR,2
+                DB 32,1,33,1,34,14,NEXT
+                DB 33,16
+                DB RETURN
+                
+SNSE:           DB SEND,7,0
+                DB ADSR,0F0H,0,1
+                DB SEND,6,9,RETURN
+                
+HISE:           DB SEND,7,00000001B
+                DB ADSR,0D0H,01H,1
+                DB SEND,6,1,RETURN
+                
+;======================================
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                
+                END

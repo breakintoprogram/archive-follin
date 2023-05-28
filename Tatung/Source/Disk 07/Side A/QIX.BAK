@@ -1,1 +1,1404 @@
-                                ;======================================                ORG 50000                LOAD 0C000H                TUNES:          EQU 10EFFECTS:        EQU 11                                ;--------------------------------------                DW CALC                DB TUNES                DB EFFECTS;--------------------------------------                DATA_TOP:                                       KEY 3"|J|\A|M"                KEY 4"|J|\O|M"                KEY 7"|\SQIX"                                TUNES_A:        DW TUNE1_A                DW TUNE2_A                DW TUNE3_A                DW TUNE4_A                DW TUNE5_A                DW TUNE6_A                DW TUNE7_A                DW TUNE8_A                DW TUNE9_A                DW TUNE10_A                TUNES_B:        DW TUNE1_B                DW TUNE2_B                DW TUNE3_B                DW TUNE4_B                DW TUNE5_B                DW TUNE6_B                DW TUNE7_B                DW TUNE8_B                DW TUNE9_B                DW TUNE10_B                TUNES_C:        DW TUNE1_C                DW TUNE2_C                DW TUNE3_C                DW TUNE4_C                DW TUNE5_C                DW TUNE6_C                DW TUNE7_C                DW TUNE8_C                DW TUNE9_C                DW TUNE10_C                FX_TAB:         DW BIG,SMALL,TWIST,TRAVEL                DW ALARM,LIFE,FILL1,FILL2                DW EXPLO,FUSON,FUSOF;--------------------------------------FOR:            EQU 080HNEXT:           EQU 081HLENGTH:         EQU 082HSTOP:           EQU 083HGOSUB:          EQU 084HRETURN:         EQU 085HTRANS:          EQU 086HDISTORT:        EQU 087HSEND:           EQU 088HADSR:           EQU 089HENVON:          EQU 08AHWOBBLE:         EQU 08BHPORT:           EQU 08CHVIB:            EQU 08DHIGNORE:         EQU 08EHEFFECT:         EQU 08FHGOTO:           EQU 090HGATE_CON:       EQU 091HENDIT:          EQU 092H                ;======================================; SOUND FX DATA                BIG:            DB 0                DW XIG                DB 0FFH                SMALL:          DB 0                DW XMALL                DB 0FFH                TWIST:          DB 2                DW XWISA                DB 4                DW XWISB                DB 0FFH                TRAVEL:         DB 2                DW XWISA                DB 4                DW XRAVB                DB 0FFH                ALARM:          DB 0                DW XLARM                DB 0FFH                LIFE:           DB 0                DW XIFE                DB 0FFH                FILL1:          DB 0                DW XILL1                DB 0FFH                FILL2:          DB 0                DW XILL2                DB 0FFH                EXPLO:          DB 0                DW XXPLO                DB 0FFH                FUSON:          DB 0                DW XUSON                DB 0FFH                FUSOF:          DB 0                DW XUSOF                DB 0FFH                XIG:            DB LENGTH,3                DB ADSR,02FH,070H,0ROUTX:          DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB WOBBLE,0,0,0                DB SEND,7,00001001B                DB 10                DB SEND,7,00000001B                DB SEND,6,3,10                DB ENVON,0                DB SEND,6,4,10                DB SEND,6,5,10                DB SEND,6,6,10                DB SEND,6,7,10                DB SEND,6,8,10                DB SEND,6,9,10                DB SEND,6,10,10                DB SEND,6,11,10                DB SEND,6,12,10                DB SEND,6,13,10                DB SEND,6,14,10                DB SEND,6,15,10                DB SEND,6,16,10                DB SEND,6,17,10                DB SEND,6,18,10                DB SEND,6,19,10                DB SEND,6,20,10                DB SEND,6,21,10                DB SEND,6,22,10                DB SEND,6,23,10                DB SEND,6,24,10                DB SEND,6,25,10                DB SEND,6,26,10                DB SEND,6,27,10                DB SEND,6,28,10                DB SEND,6,29,10                DB SEND,6,30,10                DB SEND,6,31,20                DB SEND,7,00001001B                DB STOP                XMALL:          DB LENGTH,2                DB ADSR,02FH,040H,0                DB GOTO                DW ROUTX                XWISA:          DB SEND,7,00010000B                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB 16,1                DB STOP                XWISB:          DB SEND,7,00100000B                DB VIB,0,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB DISTORT,10,16,1                DB STOP                XRAVB:          DB SEND,7,00100000B                DB DISTORT,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,080H,0,2                DB VIB,1,4,12,1XRAVY:          DB 16,24,GOTO                DW XRAVY                XLARM:          DB SEND,7,00001001B                DB LENGTH,0,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,1                DB ENVON,1,ADSR,090H,0,2                DB 50,1                DB SEND,7,00001000B                DB 50,8,55,4,59,4,62,8                DB STOP                XIFE:           DB SEND,7,00001000B                DB LENGTH,4,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,090H,0,2                DB 64,69,71,73,76,73,71,69                DB 64,SEND,7,00001001B                DB STOP                XILL1:          DB SEND,7,00001000B                DB LENGTH,7,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,06H,1                DB FOR,4                DB 64,ENVON,0,63,59,NEXT                DB SEND,7,00001001B                DB STOP                XILL2:          DB SEND,7,00001000B                DB LENGTH,7,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,06H,1                DB FOR,6                DB 57,ENVON,0,56,52,NEXT                DB SEND,7,00001001B                DB STOP                XXPLO:          DB SEND,7,00001000B                DB LENGTH,4,WOBBLE,12,2,2                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0B0H,04H,1                DB FOR,8,52,ENVON,0                DB 55,59,NEXT                DB SEND,7,00001001B                DB STOP                XUSON:          DB SEND,7,00000001B                DB LENGTH,4,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,090H,0,1XFCY:           DB SEND,6,4,50                DB SEND,6,8,50                DB SEND,6,12,50                DB SEND,6,16,50                DB SEND,6,20,50                DB SEND,6,24,50                DB GOTO                DW XFCY                XUSOF:          DB SEND,7,00001001B                DB LENGTH,0,WOBBLE,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0,0,2                DB 50,2                DB STOP                ;======================================                TUNE1_A:        DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,0D0H,03H,1                DB SEND,7,00001000B                DB LENGTH,2                DB FOR,2                DB TRANS,0,GOSUB                DW T1J3                DB GOSUB                DW T1J3A                DB TRANS,254,GOSUB                DW T1J2A                DB TRANS,0,GOSUB                DW T1J3B                DB LENGTH,0                DB ADSR,0,0,2,50,60                DB ADSR,0D0H,03H,1                DB LENGTH,2                DB TRANS,254,GOSUB                DW T1J3                DB GOSUB                DW T1J3A                DB TRANS,254,GOSUB                DW T1J2                DB TRANS,249,GOSUB                DW T1J3                DB TRANS,249,GOSUB                DW T1J3                DB TRANS,251,GOSUB                DW T1J2                DB WOBBLE,12,1,1                DB NEXT                DB TRANS,0,GOSUB                DW T1J3                                DB SEND,7,00001001B                DB STOP;.....................................                TUNE1_B:        DB GATE_CON,255,ENDIT,255                DB SEND,7,00010000B                DB ADSR,0D0H,02H,1,ENVON,1                DB WOBBLE,1,1,255                DB FOR,2                DB TRANS,0,GOSUB                DW TU1B                DB TRANS,253,GOSUB                DW TU1B                DB TRANS,254,GOSUB                DW TU1B                DB TRANS,251,GOSUB                DW TU1B                DB NEXT,TRANS,0                DB 27,12                                DB SEND,7,00010010B                DB STOP;.....................................                TUNE1_C:        DB GATE_CON,255,ENDIT,255                DB SEND,7,00100000B                DB ADSR,0BBH,0,2                DB ENVON,1,LENGTH,12                DB FOR,2,DISTORT,1                DB 63,PORT,2,58,55                DB 62,58,53,60,56,58                DB DISTORT,0                DB 55,51,48,51,55,58,55                DB DISTORT,1                DB 56,53,49,56,51,48,56,53                DB 56,51,48,56,51,48,58,62                DB NEXT                DB 63                                                DB SEND,7,00100100B                DB STOP;.....................................                T1J2:           DB 55,ENVON,0,58,63,55,58                DB 63,55,58,63,55,58,63                DB ENVON,1,RETURN                T1J2A:          DB 53,ENVON,0,58,62,53,58                DB 62,53,58,62,53,58,63                DB ENVON,1,RETURN                T1J3:           DB 55,ENVON,0,58,63,55,58                DB 63,55,58,63,55,58                DB 63,55,58,63,55,58,63                DB ENVON,1,RETURN                T1J3A:          DB 53,ENVON,0,58,62,53,58                DB 62,53,58,62,53,58                DB 62,53,58,62,53,58,63                DB ENVON,1,RETURN                T1J3B:          DB 51,ENVON,0,55,58,51,55                DB 58,51,55,58,51,55                DB 58,51,55,58,51,55,58                DB ENVON,1,RETURN                TU1B:           DB 27,12,39,12,GOSUB                DW HIT                DB 27,12,SEND,7,00010010B                DB 27,12,SEND,7,00010000B                DB 27,12,GOSUB                DW HIT                DB 39,6,27,6,RETURN                HIT:            DB ADSR,0F0H,01H,1                DB SEND,7,0,SEND,6,9                DB VIB,1,30,0,1                DB IGNORE,42,12                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB SEND,6,4                DB VIB,0,0,0,0                DB RETURN                ;=====================================                TUNE2_A:        DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB ADSR,0D0H,0,1                DB SEND,7,00001000B                DB LENGTH,6                DB FOR,2                DB TRANS,0,GOSUB                DW T2LI                DB TRANS,2,GOSUB                DW T2LI                DB TRANS,3,GOSUB                DW T2LI                DB TRANS,5,GOSUB                DW T2LI                DB WOBBLE,7,3,3                DB NEXT,TRANS,0                DB LENGTH,0,84,12                                DB SEND,7,00001001B,STOP;.....................................                TUNE2_B:        DB GATE_CON,255,ENDIT,255                DB SEND,7,00010000B                DB ENVON,1                DB ADSR,0D0H,02H,1                DB WOBBLE,1,1,255                DB FOR,2                DB TRANS,0,GOSUB                DW TU2B                DB TRANS,254,GOSUB                DW TU2B                DB TRANS,252,GOSUB                DW TU2B                DB TRANS,254                DB 24,12,GOSUB                DW HIT                DB 36,12,21,12,28,12                DB 33,12,GOSUB                DW HIT                DB 21,12                DB NEXT,TRANS,0                DB 24,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE2_C:        DB GATE_CON,255,ENDIT,255                DB SEND,7,00100000B                DB VIB,12,2,2,0                DB ENVON,1                DB ADSR,060H,0F0H,0,60,96                DB PORT,1,62,96,63,96                DB 65,96,PORT,0                DB LENGTH,2                DB ADSR,0D0H,01H,1                DB FOR,2                DB TRANS,0,GOSUB                DW T1J3                DB GOSUB                DW T1J3                DB GOSUB                DW T1J2                DB TRANS,251,GOSUB                DW T1J3A                DB GOSUB                DW T1J3A                DB GOSUB                DW T1J2A                DB NEXT                DB TRANS,0,GOSUB                DW T1J3                                DB SEND,7,00100100B,STOP;.....................................                T2LI:           DB 60,72,48,84,60,36,60,48                DB 72,48,60,36,72,84,48,60                DB RETURN                TU2B:           DB 24,12,GOSUB                DW HIT                DB 36,12,24,12,31,12                DB 36,12,GOSUB                DW HIT                DB 36,12,RETURN                ;=====================================                TUNE3_A:        DB ENDIT,1,ENVON,1                DB ADSR,0CCH,0,2                DB SEND,7,00001000B                DB VIB,6,1,2,0                DB FOR,2                DB GATE_CON,6                DB 62,6,64,12,66,12,67,12                DB 66,12,69,12,67,6,66,6                DB 67,6,66,12                DB GATE_CON,255                DB 64,12,64,6,64,6                DB 64,8,62,9,62,9                DB 62,8,61,8,61,8                DB 61,7,59,7,57,8                DB NEXT,GATE_CON,6,FOR,2                DB SEND,7,00001001B                DB 69,6,SEND,7,00001000B                DB 69,6,69,6,71,6,69,24                DB SEND,7,00001001B                DB 69,6,SEND,7,00001000B                DB 69,6,69,6,71,6,69,24                DB SEND,7,00001001B                DB 69,6,SEND,7,00001000B                DB 69,6,69,6,69,6,69,8                DB 67,8,67,8                DB 67,8,66,8,66,8                DB 64,6,62,6,61,12                DB NEXT                DB 74,12                                DB SEND,7,00001001B,STOP;.....................................                TUNE3_B:        DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB FOR,4                DB TRANS,5,GOSUB                DW TU3B                DB TRANS,0,GOSUB                DW TU3B                DB NEXT,TRANS,0                DB 26,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE3_C:        DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB ADSR,0E0H,01H,1                DB SEND,7,00100000B                DB TRANS,255                DB GOSUB                DW CTR                DB GOSUB                DW CTR                DB GOSUB                DW CTR                DB GOSUB                DW CTR                                DB SEND,7,00100100B,STOP;.....................................                CTR:            DB FOR,2                DB SEND,7,00100100B                DB ADSR,0B0H,0,1,70,12                DB SEND,7,00100000B                DB 58,6,60,6,LENGTH,2                DB ADSR,0E0H,01H,1                DB GOSUB                DW T1J2                DB LENGTH,0                DB NEXT                DB FOR,2                DB SEND,7,00100100B                DB ADSR,0B0H,0,1,70,12                DB SEND,7,00100000B                DB 58,6,60,6,LENGTH,2                DB ADSR,0E0H,01H,1                DB GOSUB                DW T3J                DB LENGTH,0                DB NEXT                DB RETURN                T3J:            DB 56,ENVON,0,62,65,56,62                DB 65,56,62,65,56,62,65                DB ENVON,1,RETURN                TU3B:           DB 21,12,33,12,GOSUB                DW HIT                DB 37,12,26,12,38,12                DB GOSUB                DW HIT                DB 40,12,RETURN;=====================================                TUNE4_A:        DB ENDIT,255,GATE_CON,255                DB ADSR,0D0H,0,1                DB SEND,7,00001000B                DB ENVON,1                DB WOBBLE,12,1,255                DB TRANS,0,GOSUB                DW ONIC                DB GOSUB                DW ONIC                DB TRANS,5,GOSUB                DW ONIC                DB GOSUB                DW ONIC                DB TRANS,7,GOSUB                DW ONIC                DB TRANS,5,GOSUB                DW ONIC                DB TRANS,0,GOSUB                DW ONIC                DB TRANS,7,GOSUB                DW ONIC                DB 65,12                                DB SEND,7,00001001B,STOP;.....................................                TUNE4_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB TRANS,0,GOSUB                DW TU4B                DB GOSUB                DW TU4B                DB TRANS,5,GOSUB                DW TU4B                DB GOSUB                DW TU4B                DB TRANS,7,GOSUB                DW TU4B                DB TRANS,5,GOSUB                DW TU4B                DB TRANS,0,GOSUB                DW TU4B                DB TRANS,7,GOSUB                DW TU4B                DB TRANS,0                DB 24,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE4_C:        DB GATE_CON,255,ENDIT,255                DB ADSR,0C9H,05H,1                DB SEND,7,00100000B                DB ENVON,1                DB 60,72                DB PORT,2,64,6,60,6,58,6                DB 55,6,60,12,55,6,58,12                DB 55,6,53,6,51,6,52,6                DB 48,6,46,6,43,6,48,24                DB GATE_CON,6                DB 53,6,51,12,53,12,51,12                DB 53,12,GATE_CON,255                DB 53,6,51,6,48,6,46,6                DB 45,6,46,6,45,6,53,12                DB 57,6,51,12,57,6,53,12                DB 57,6,51,12,50,6,53,6                DB 51,6,53,6,54,6                DB 55,12,55,12,59,12                DB 55,6,62,12,55,6                DB 65,12,55,6,67,12,66,6                DB 65,12,63,12,65,12,60,12                DB 63,6,60,6,58,6,60,6                DB 56,6,57,6,53,6,51,6                DB 48,6,46,6,48,6,46,6                DB 51,6,52,6,48,6,46,6                DB 48,6,46,6,48,6,46,6                DB 43,6,41,6,40,6,36,6                DB 38,12,41,12,43,12,47,12                DB 50,12,53,12,55,12,59,12                DB 60,12                                                DB SEND,7,00100100B,STOP;.....................................                ONIC:           DB 48,12,52,12,53,6,50,12                DB 52,12,48,12,46,6,50,12                DB 53,12,RETURN                TU4B:           DB 24,12,36,12,GOSUB                DW HIT                DB 22,6,24,12,36,6,24,12                DB GOSUB                DW HIT                DB 36,6,22,6,RETURN                ;=====================================                TUNE5_A:        DB ENDIT,255                DB ADSR,0B0H,0,2                DB SEND,7,00001000B                DB ENVON,1,TRANS,244                DB GOSUB                DW FART                DB 54,12,56,12                                DB SEND,7,00001001B,STOP;.....................................                TUNE5_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB FOR,4                DB 32,12,20,12,GOSUB                DW HIT                DB 32,12                DB SEND,7,00010010B                DB 32,24,SEND,7,00010000B                DB GOSUB                DW HIT                DB 30,12                DB NEXT                DB TRANS,3,GOSUB                DW TU5B                DB TRANS,254,GOSUB                DW TU5B                DB TRANS,252,GOSUB                DW TU5B                DB TRANS,254,GOSUB                DW TU5B                DB TRANS,0                DB 30,12,32,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE5_C:        DB GATE_CON,255,ENDIT,255                DB ADSR,0B0H,0,2,TRANS,244                DB SEND,7,00100000B                DB ENVON,1,DISTORT,1                DB GOSUB                DW FART                DB DISTORT,0                DB 58,12,59,12                                DB SEND,7,00100100B,STOP;.....................................                TU5B:           DB 20,12,32,12,GOSUB                DW HIT                DB 32,12,20,12,32,12                DB GOSUB                DW HIT                DB 32,12,RETURN                FART:           DB WOBBLE,1,1,255,FOR,2                DB GATE_CON,255,61,24                DB GATE_CON,12,63,36                DB GATE_CON,6,66,18,68,18                DB GATE_CON,255,61,24                DB GATE_CON,12,63,36                DB GATE_CON,6,61,18,59,18                DB NEXT,FOR,2,GATE_CON,12                DB 63,12,GATE_CON,6,64,12                DB NEXT,GATE_CON,12                DB 63,6,61,12,59,18                DB 63,12,66,12,61,24                DB 61,24,68,12,66,12,71,12                DB GATE_CON,18                DB 68,24,68,24,66,24                DB 63,24,61,12,63,12,61,12                DB 59,12,58,24,61,24                DB RETURN                ;=====================================                TUNE6_A:        DB ENDIT,255,GATE_CON,255                DB ADSR,0E0H,05H,1                DB SEND,7,00001000B                DB ENVON,1                DB LENGTH,2,WOBBLE,244,1,1                DB FOR,2                DB TRANS,0,GOSUB                DW T6BL                DB LENGTH,0                DB ENVON,0,54,48,ENVON,1                DB LENGTH,2                DB TRANS,252                DB GOSUB                DW T6BJ                DB TRANS,254                DB GOSUB                DW T6BJ                DB NEXT                DB WOBBLE,0,0,0                DB FOR,2,TRANS,249                DB GOSUB                DW T6BN                DB LENGTH,0                DB ENVON,0,54,48,ENVON,1                DB LENGTH,2                DB TRANS,251,GOSUB                DW T6BN                DB LENGTH,0                DB ENVON,0,54,48,ENVON,1                DB LENGTH,2                DB NEXT                DB ADSR,0E0H,02H,1                DB TRANS,0,GOSUB                DW T6BL                                DB SEND,7,00001001B,STOP;.....................................                TUNE6_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB FOR,2                DB TRANS,0,GOSUB                DW TU6B                DB TRANS,249,GOSUB                DW TU6C                DB TRANS,251,GOSUB                DW TU6C                DB NEXT                DB FOR,2                DB TRANS,249,GOSUB                DW TU6B                DB TRANS,251,GOSUB                DW TU6B                DB NEXT                DB TRANS,0                DB 27,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE6_C:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,0,1                DB SEND,7,00100000B                DB WOBBLE,12,1,255                DB LENGTH,6                DB ENVON,1                DB FOR,2                DB TRANS,254,GOSUB                DW PAG                DB TRANS,0,GOSUB                DW PAG                DB TRANS,3,GOSUB                DW PAG                DB TRANS,5,GOSUB                DW PAG                DB TRANS,254,GOSUB                DW PAG                DB TRANS,0,GOSUB                DW PAG                DB TRANS,3,GOSUB                DW PAG                DB TRANS,2,GOSUB                DW PAG                DB NEXT                DB FOR,2                DB TRANS,0,GOSUB                DW PAG                DB GOSUB                DW PAG                DB TRANS,3,GOSUB                DW PAG                DB TRANS,5,GOSUB                DW PAG                DB TRANS,2,GOSUB                DW PAG                DB GOSUB                DW PAG                DB TRANS,3,GOSUB                DW PAG                DB TRANS,2,GOSUB                DW PAG                DB NEXT                                DB SEND,7,00100100B,STOP;.....................................                PAG:            DB 63,75,51,39,RETURN                T6BN:           DB 70,ENVON,0                DB 66,61,70,66,61                DB 70,66,61,70,66,61                DB 70,66,61,70,66,61                DB 70,66,61,70,66,61                DB ENVON,1                DB RETURN                T6BL:           DB 63,ENVON,0                DB 65,66,70,73                DB 63,65,66,70,73                DB 63,65,66,70,73                DB 63,65,66,70,73                DB 63,65,66,70                DB ENVON,1                DB RETURN                T6BJ:           DB 63,ENVON,0                DB 67,70,74,77                DB 63,67,70,74,77                DB 63,67,70,74,77                DB 63,67,70,74,77                DB 63,67,70,74                DB ENVON,1                DB RETURN                TU6B:           DB 39,12,27,12,GOSUB                DW HIT                DB 25,6,27,6TU6C:           DB 27,12,39,12                DB GOSUB                DW HIT                DB 39,12                DB RETURN                ;=====================================                TUNE7_A:        DB ENDIT,255,GATE_CON,255                DB ADSR,0BBH,0,2                DB SEND,7,00001000B                DB ENVON,1                DB LENGTH,6                DB TRANS,0,GOSUB                DW TU7A                DB GOSUB                DW TU7A                DB TRANS,254,GOSUB                DW TU7A                DB GOSUB                DW TU7A                DB WOBBLE,12,2,255                DB TRANS,0,FOR,2                DB 68,64,59,69,64,61                DB 71,66,63,69,64,61                DB 68,64,59,61,NEXT                DB TRANS,254                DB 68,64,59,69,64,61                DB 71,66,62,69,64,61                DB 68,64,59,61                DB 66,65,63,61,68,65,68,71                DB 73,71,70,68,66,65,63,61                DB ENDIT,1,66                                DB SEND,7,00001001B,STOP;.....................................                TUNE7_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB LENGTH,6                DB TRANS,0,GOSUB                DW TU7B                DB GOSUB                DW TU7B                DB TRANS,254,GOSUB                DW TU7B                DB GOSUB                DW TU7B                DB TRANS,0,GOSUB                DW TU7B                DB GOSUB                DW TU7B                DB TRANS,254,GOSUB                DW TU7B                DB TRANS,251,GOSUB                DW TU7B                                DB TRANS,0,LENGTH,0                DB 28,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE7_C:        DB GATE_CON,255,ENDIT,255                DB ADSR,0C0H,0AH,1                DB SEND,7,00100000B                DB ENVON,1,52,72,PORT,2                DB 54,24,57,24,56,24                DB 52,48,54,48,50,48,45,48                DB 50,48                DB 47,72,52,24,54,24,57,24                DB 56,24,52,24                DB 50,48,45,48,52,24,51,24                DB 54,24,59,24,64,24                                DB SEND,7,00100100B,STOP;.....................................                TU7B:           DB 15,28,40,28                DB LENGTH,0,GOSUB                DW HIT                DB LENGTH,6,40,28                DB 15,28,40,28                DB LENGTH,0,GOSUB                DW HIT                DB LENGTH,6,30,28                DB RETURN                TU7A:           DB 68,64,59,69,64,61                DB 68,64,59,69,64,61                DB 68,64,69,64,RETURN                ;=====================================                TUNE8_A:        DB ENDIT,255,GATE_CON,255                DB ADSR,0D0H,00DH,1                DB SEND,7,00001000B                DB LENGTH,2,FOR,2                DB ENVON,1                DB TRANS,0,GOSUB                DW T7J                DB ENVON,1                DB TRANS,2,GOSUB                DW T7N                DB ENVON,1                DB TRANS,254,GOSUB                DW T7JD                DB GOSUB                DW T7JD                DB WOBBLE,12,1,1                DB NEXT                DB ENVON,1                DB ADSR,0D0H,04H,1                DB TRANS,0,GOSUB                DW T7J                                DB SEND,7,00001001B,STOP;.....................................                TUNE8_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1,FOR,2                DB TRANS,0,GOSUB                DW T7BA                DB 19,6,21,6                DB GOSUB                DW T7BA                DB 19,6,22,6                DB GOSUB                DW T7BA                DB 22,6,21,6                DB TRANS,251,GOSUB                DW T7BA                DB 24,6,26,6,NEXT                                DB TRANS,0,LENGTH,0                DB 24,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE8_C:        DB GATE_CON,255,ENDIT,255                DB SEND,7,00100000B                DB ENVON,1,DISTORT,1                DB ADSR,0D0H,00DH,1                DB LENGTH,2,FOR,2                DB ENVON,1                DB TRANS,0,GOSUB                DW T7J                DB ENVON,1                DB TRANS,2,GOSUB                DW T7N                DB ENVON,1                DB TRANS,254,GOSUB                DW T7JD                DB GOSUB                DW T7JD                DB WOBBLE,244,1,1                DB NEXT                DB ENVON,1                DB ADSR,0D0H,04H,1                DB TRANS,0,GOSUB                DW T7J                                DB SEND,7,00100100B,STOP;.....................................                T7BA:           DB 24,12,36,12,GOSUB                DW HIT                DB 19,6,24,6                DB SEND,7,00010010B                DB 24,24                DB SEND,7,00010000B                DB GOSUB                DW HIT                DB RETURN                T7N:            DB GOSUB                DW T7IN                DB GOSUB                DW T7IN                DB GOSUB                DW T7IN                DB GOSUB                DW T7IN                DB RETURN                T7J:            DB GOSUB                DW T7AJ                DB GOSUB                DW T7AJ                DB GOSUB                DW T7AJ                DB GOSUB                DW T7AJ                DB RETURN                T7JD:           DB GOSUB                DW T7AJD                DB GOSUB                DW T7AJD                DB GOSUB                DW T7AJD                DB GOSUB                DW T7AJD                DB RETURN                T7AJD:          DB 55,ENVON,0                DB 60,64,53,60,64                DB 55,60,64,53,60,64                DB RETURN                T7AJ:           DB 55,ENVON,0                DB 60,64,55,60,64                DB 55,60,64,55,60,64                DB RETURN                T7IN:           DB 55,ENVON,0                DB 60,63,55,60,63                DB 55,60,63,55,60,63                DB RETURN                ;=====================================                TUNE9_A:        DB ENDIT,255,GATE_CON,255                DB ADSR,0A0H,0,2                DB SEND,7,00001000B                DB ENVON,1                DB FOR,6,95,1,PORT,2                DB 1,23,PORT,0,NEXT                DB LENGTH,6                DB ADSR,0D0H,0,1                DB TRANS,244                DB FOR,2                DB 62,64,64,67,64,64                DB 62,64,64,67,64,64                DB 62,64,64,67,64,67                DB 69,70,69,67,64,59                DB WOBBLE,7,1,255                DB NEXT,FOR,2                DB 67,64,64,62,59,62                DB 67,64,64,62,59,62                DB 67,64,67,64,62,64                DB 67,69,70,71,69,67                DB WOBBLE,12,1,255                DB NEXT                DB 76                                DB SEND,7,00001001B,STOP;.....................................                TUNE9_B:        DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB TRANS,0,GOSUB                DW TU9B                DB GOSUB                DW TU9B                DB TRANS,3,GOSUB                DW TU9B                DB GOSUB                DW TU9B                DB FOR,2                DB TRANS,0,GOSUB                DW TU9B                DB GOSUB                DW TU9B                DB TRANS,3,GOSUB                DW TU9B                DB TRANS,5,GOSUB                DW TU9B                DB TRANS,0,GOSUB                DW TU9B                DB GOSUB                DW TU9B                DB TRANS,5,GOSUB                DW TU9B                DB TRANS,3,GOSUB                DW TU9B                DB NEXT,TRANS,0                DB 16,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE9_C:        DB GATE_CON,255,ENDIT,255                DB ADSR,0A0H,0,2                DB SEND,7,00100000B                DB ENVON,1                DB VIB,1,1,0,1,96,144                DB ADSR,0E0H,0,2                DB VIB,12,2,2,0,FOR,2                DB GATE_CON,255                DB 59,18,62,12,59,6,64,12                DB GATE_CON,12                DB 62,24,59,12,57,24                DB 57,12,55,18,57,6                DB GATE_CON,255                DB 59,18,62,12,59,6,64,12                DB GATE_CON,12                DB 62,24,69,18,69,12,67,6                DB 70,12,69,6,67,12,69,6                DB WOBBLE,12,1,255                DB NEXT                DB 64,6                                DB SEND,7,00100100B,STOP;.....................................                TU9B:           DB 16,12,28,6,GOSUB                DW HIT                DB 26,6,RETURN                ;=====================================                TUNE10_A:       DB ENDIT,255,GATE_CON,255                DB ADSR,0D0H,04H,1                DB SEND,7,00001000B                DB ENVON,1                DB LENGTH,2                DB FOR,2                DB TRANS,255,GOSUB                DW T10J3                DB TRANS,4,GOSUB                DW T10N3                DB GOSUB                DW T10N2                DB TRANS,253,GOSUB                DW T10J3                DB TRANS,4,GOSUB                DW T10N3                DB GOSUB                DW T10J2                DB WOBBLE,12,1,1                DB NEXT,WOBBLE,0,0,0                DB FOR,2                DB TRANS,255,GOSUB                DW T10N3                DB TRANS,250,GOSUB                DW T10J3                DB TRANS,255,GOSUB                DW T10N3                DB LENGTH,0                DB SEND,7,00001001B                DB 1,84,SEND,7,00001000B                DB LENGTH,2                DB TRANS,255,GOSUB                DW T10N3                DB TRANS,250,GOSUB                DW T10J3                DB TRANS,255,GOSUB                DW T10N3                DB GOSUB                DW T10J3                DB TRANS,248,GOSUB                DW T10J2                DB TRANS,250,GOSUB                DW T10J2                DB WOBBLE,12,1,1                DB NEXT,FOR,3                DB TRANS,255,GOSUB                DW T10N3                DB TRANS,250,GOSUB                DW T10J3                DB GOSUB                DW T10J2                DB TRANS,253,GOSUB                DW T10N3                DB TRANS,248,GOSUB                DW T10J3                DB TRANS,253,GOSUB                DW T10N2                DB NEXT                DB TRANS,255,GOSUB                DW T10N3                DB TRANS,250,GOSUB                DW T10J3                DB TRANS,253,GOSUB                DW T10N3                DB TRANS,248,GOSUB                DW T10J3                DB TRANS,251,GOSUB                DW T10N2                DB TRANS,253,GOSUB                DW T10N2                DB TRANS,255,GOSUB                DW T10N2                                DB SEND,7,00001001B,STOP;.....................................                TUNE10_B:       DB GATE_CON,255,ENDIT,255                DB ADSR,0D0H,02H,1                DB SEND,7,00010000B                DB ENVON,1                DB WOBBLE,1,1,255                DB FOR,4                DB 23,12,35,12,GOSUB                DW HIT                DB 23,12                DB SEND,7,00010010B                DB 23,12,SEND,7,00010000B                DB 35,12,GOSUB                DW HIT                DB 30,12,NEXT                DB FOR,2                DB TRANS,253,GOSUB                DW TU10B                DB 21,12,GOSUB                DW TU10B                DB 21,12,TRANS,249,GOSUB                DW TU10B                DB 27,12,TRANS,251,GOSUB                DW TU10B                DB 23,12,NEXT                DB FOR,3                DB TRANS,0,GOSUB                DW TU10B                DB 23,12,TRANS,249,GOSUB                DW TU10C                DB 25,12,TRANS,251,GOSUB                DW TU10C                DB 25,12,NEXT,TRANS,254                DB 25,12,37,12,GOSUB                DW HIT                DB 24,12,36,12,GOSUB                DW HIT                DB 23,12,35,12,GOSUB                DW HIT                DB 22,12,34,12,GOSUB                DW HIT                DB 23,12,GOSUB                DW HIT                DB 20,12,GOSUB                DW HIT                DB 25,12                                DB SEND,7,00010010B,STOP;.....................................                TUNE10_C:       DB GATE_CON,255,ENDIT,255                DB ADSR,020H,0F0H,0                DB SEND,7,00100000B                DB ENVON,1,FOR,8,71,12                DB PORT,2,ENVON,0,68,6                DB 66,6,NEXT                DB ENVON,1,FOR,8                DB 71,12,ENVON,0,68,6                DB 66,6,NEXT                DB ADSR,0D0H,009H,1                DB TRANS,244,PORT,0                DB FOR,2                DB ENVON,1,71,12                DB PORT,2,73,6,70,12,71,6                DB 68,18,66,6,68,6,71,6                DB 73,6,74,6,75,6,73,6                DB 71,12,73,6,70,12,71,6                DB 68,18,68,6,66,6,63,6                DB 66,6,68,6,71,6,73,6                DB 78,12,80,6,75,12,78,6                DB 73,36,75,12,71,12                DB 78,6,80,6,78,12                DB 73,6,75,6,73,12                DB 71,6,73,6,71,12                DB 70,6,71,6,70,12                DB NEXT,FOR,2                DB 71,12,78,6,83,12,78,6                DB 71,12,76,6,75,6                DB 76,6,75,6,76,6,75,6                DB 78,24,71,24,76,24,75,12                DB 73,24,NEXT                                DB SEND,7,00100100B,STOP;.....................................                T10J3:          DB 60,ENVON,0                DB 64,55,60,64,55                DB 60,64,55,60,64,55                DB 60,64,55,60,64,55                DB ENVON,1,RETURN                T10J2:          DB 60,ENVON,0                DB 64,55,60,64,55                DB 60,64,55,60,64,55                DB ENVON,1,RETURN                T10N3:          DB 60,ENVON,0                DB 52,55,60,52,55                DB 60,52,55,60,52,55                DB 60,52,55,60,52,55                DB ENVON,1,RETURN                T10N2:          DB 60,ENVON,0                DB 52,55,60,52,55                DB 60,52,55,60,52,55                DB ENVON,1,RETURN                TU10B:          DB 23,12,23,12,GOSUB                DW HIT                DB 23,12TU10C:          DB 23,12,23,12,GOSUB                DW HIT                DB RETURN                ;=====================================DATA_BOT:       CALC:           EQU DATA_BOT-DATA_TOP                                                END
+                
+                
+;======================================
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 10
+EFFECTS:        EQU 11
+                
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+                
+DATA_TOP:       
+                
+                KEY 3"|J|\A|M"
+                KEY 4"|J|\O|M"
+                KEY 7"|\SQIX"
+                
+                
+TUNES_A:        DW TUNE1_A
+                DW TUNE2_A
+                DW TUNE3_A
+                DW TUNE4_A
+                DW TUNE5_A
+                DW TUNE6_A
+                DW TUNE7_A
+                DW TUNE8_A
+                DW TUNE9_A
+                DW TUNE10_A
+                
+TUNES_B:        DW TUNE1_B
+                DW TUNE2_B
+                DW TUNE3_B
+                DW TUNE4_B
+                DW TUNE5_B
+                DW TUNE6_B
+                DW TUNE7_B
+                DW TUNE8_B
+                DW TUNE9_B
+                DW TUNE10_B
+                
+TUNES_C:        DW TUNE1_C
+                DW TUNE2_C
+                DW TUNE3_C
+                DW TUNE4_C
+                DW TUNE5_C
+                DW TUNE6_C
+                DW TUNE7_C
+                DW TUNE8_C
+                DW TUNE9_C
+                DW TUNE10_C
+                
+FX_TAB:         DW BIG,SMALL,TWIST,TRAVEL
+                DW ALARM,LIFE,FILL1,FILL2
+                DW EXPLO,FUSON,FUSOF
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+                
+;======================================
+; SOUND FX DATA
+                
+BIG:            DB 0
+                DW XIG
+                DB 0FFH
+                
+SMALL:          DB 0
+                DW XMALL
+                DB 0FFH
+                
+TWIST:          DB 2
+                DW XWISA
+                DB 4
+                DW XWISB
+                DB 0FFH
+                
+TRAVEL:         DB 2
+                DW XWISA
+                DB 4
+                DW XRAVB
+                DB 0FFH
+                
+ALARM:          DB 0
+                DW XLARM
+                DB 0FFH
+                
+LIFE:           DB 0
+                DW XIFE
+                DB 0FFH
+                
+FILL1:          DB 0
+                DW XILL1
+                DB 0FFH
+                
+FILL2:          DB 0
+                DW XILL2
+                DB 0FFH
+                
+EXPLO:          DB 0
+                DW XXPLO
+                DB 0FFH
+                
+FUSON:          DB 0
+                DW XUSON
+                DB 0FFH
+                
+FUSOF:          DB 0
+                DW XUSOF
+                DB 0FFH
+                
+XIG:            DB LENGTH,3
+                DB ADSR,02FH,070H,0
+ROUTX:          DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB WOBBLE,0,0,0
+                DB SEND,7,00001001B
+                DB 10
+                DB SEND,7,00000001B
+                DB SEND,6,3,10
+                DB ENVON,0
+                DB SEND,6,4,10
+                DB SEND,6,5,10
+                DB SEND,6,6,10
+                DB SEND,6,7,10
+                DB SEND,6,8,10
+                DB SEND,6,9,10
+                DB SEND,6,10,10
+                DB SEND,6,11,10
+                DB SEND,6,12,10
+                DB SEND,6,13,10
+                DB SEND,6,14,10
+                DB SEND,6,15,10
+                DB SEND,6,16,10
+                DB SEND,6,17,10
+                DB SEND,6,18,10
+                DB SEND,6,19,10
+                DB SEND,6,20,10
+                DB SEND,6,21,10
+                DB SEND,6,22,10
+                DB SEND,6,23,10
+                DB SEND,6,24,10
+                DB SEND,6,25,10
+                DB SEND,6,26,10
+                DB SEND,6,27,10
+                DB SEND,6,28,10
+                DB SEND,6,29,10
+                DB SEND,6,30,10
+                DB SEND,6,31,20
+                DB SEND,7,00001001B
+                DB STOP
+                
+XMALL:          DB LENGTH,2
+                DB ADSR,02FH,040H,0
+                DB GOTO
+                DW ROUTX
+                
+XWISA:          DB SEND,7,00010000B
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB 16,1
+                DB STOP
+                
+XWISB:          DB SEND,7,00100000B
+                DB VIB,0,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB DISTORT,10,16,1
+                DB STOP
+                
+XRAVB:          DB SEND,7,00100000B
+                DB DISTORT,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,080H,0,2
+                DB VIB,1,4,12,1
+XRAVY:          DB 16,24,GOTO
+                DW XRAVY
+                
+XLARM:          DB SEND,7,00001001B
+                DB LENGTH,0,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,1
+                DB ENVON,1,ADSR,090H,0,2
+                DB 50,1
+                DB SEND,7,00001000B
+                DB 50,8,55,4,59,4,62,8
+                DB STOP
+                
+XIFE:           DB SEND,7,00001000B
+                DB LENGTH,4,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,0,2
+                DB 64,69,71,73,76,73,71,69
+                DB 64,SEND,7,00001001B
+                DB STOP
+                
+XILL1:          DB SEND,7,00001000B
+                DB LENGTH,7,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,06H,1
+                DB FOR,4
+                DB 64,ENVON,0,63,59,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XILL2:          DB SEND,7,00001000B
+                DB LENGTH,7,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,06H,1
+                DB FOR,6
+                DB 57,ENVON,0,56,52,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XXPLO:          DB SEND,7,00001000B
+                DB LENGTH,4,WOBBLE,12,2,2
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0B0H,04H,1
+                DB FOR,8,52,ENVON,0
+                DB 55,59,NEXT
+                DB SEND,7,00001001B
+                DB STOP
+                
+XUSON:          DB SEND,7,00000001B
+                DB LENGTH,4,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,0,1
+XFCY:           DB SEND,6,4,50
+                DB SEND,6,8,50
+                DB SEND,6,12,50
+                DB SEND,6,16,50
+                DB SEND,6,20,50
+                DB SEND,6,24,50
+                DB GOTO
+                DW XFCY
+                
+XUSOF:          DB SEND,7,00001001B
+                DB LENGTH,0,WOBBLE,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0,0,2
+                DB 50,2
+                DB STOP
+                
+;======================================
+                
+TUNE1_A:        DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,0D0H,03H,1
+                DB SEND,7,00001000B
+                DB LENGTH,2
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW T1J3
+                DB GOSUB
+                DW T1J3A
+                DB TRANS,254,GOSUB
+                DW T1J2A
+                DB TRANS,0,GOSUB
+                DW T1J3B
+                DB LENGTH,0
+                DB ADSR,0,0,2,50,60
+                DB ADSR,0D0H,03H,1
+                DB LENGTH,2
+                DB TRANS,254,GOSUB
+                DW T1J3
+                DB GOSUB
+                DW T1J3A
+                DB TRANS,254,GOSUB
+                DW T1J2
+                DB TRANS,249,GOSUB
+                DW T1J3
+                DB TRANS,249,GOSUB
+                DW T1J3
+                DB TRANS,251,GOSUB
+                DW T1J2
+                DB WOBBLE,12,1,1
+                DB NEXT
+                DB TRANS,0,GOSUB
+                DW T1J3
+                
+                DB SEND,7,00001001B
+                DB STOP
+;.....................................
+                
+TUNE1_B:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00010000B
+                DB ADSR,0D0H,02H,1,ENVON,1
+                DB WOBBLE,1,1,255
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW TU1B
+                DB TRANS,253,GOSUB
+                DW TU1B
+                DB TRANS,254,GOSUB
+                DW TU1B
+                DB TRANS,251,GOSUB
+                DW TU1B
+                DB NEXT,TRANS,0
+                DB 27,12
+                
+                DB SEND,7,00010010B
+                DB STOP
+;.....................................
+                
+TUNE1_C:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00100000B
+                DB ADSR,0BBH,0,2
+                DB ENVON,1,LENGTH,12
+                DB FOR,2,DISTORT,1
+                DB 63,PORT,2,58,55
+                DB 62,58,53,60,56,58
+                DB DISTORT,0
+                DB 55,51,48,51,55,58,55
+                DB DISTORT,1
+                DB 56,53,49,56,51,48,56,53
+                DB 56,51,48,56,51,48,58,62
+                DB NEXT
+                DB 63
+                
+                
+                DB SEND,7,00100100B
+                DB STOP
+;.....................................
+                
+T1J2:           DB 55,ENVON,0,58,63,55,58
+                DB 63,55,58,63,55,58,63
+                DB ENVON,1,RETURN
+                
+T1J2A:          DB 53,ENVON,0,58,62,53,58
+                DB 62,53,58,62,53,58,63
+                DB ENVON,1,RETURN
+                
+T1J3:           DB 55,ENVON,0,58,63,55,58
+                DB 63,55,58,63,55,58
+                DB 63,55,58,63,55,58,63
+                DB ENVON,1,RETURN
+                
+T1J3A:          DB 53,ENVON,0,58,62,53,58
+                DB 62,53,58,62,53,58
+                DB 62,53,58,62,53,58,63
+                DB ENVON,1,RETURN
+                
+T1J3B:          DB 51,ENVON,0,55,58,51,55
+                DB 58,51,55,58,51,55
+                DB 58,51,55,58,51,55,58
+                DB ENVON,1,RETURN
+                
+TU1B:           DB 27,12,39,12,GOSUB
+                DW HIT
+                DB 27,12,SEND,7,00010010B
+                DB 27,12,SEND,7,00010000B
+                DB 27,12,GOSUB
+                DW HIT
+                DB 39,6,27,6,RETURN
+                
+HIT:            DB ADSR,0F0H,01H,1
+                DB SEND,7,0,SEND,6,9
+                DB VIB,1,30,0,1
+                DB IGNORE,42,12
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB SEND,6,4
+                DB VIB,0,0,0,0
+                DB RETURN
+                
+;=====================================
+                
+TUNE2_A:        DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB ADSR,0D0H,0,1
+                DB SEND,7,00001000B
+                DB LENGTH,6
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW T2LI
+                DB TRANS,2,GOSUB
+                DW T2LI
+                DB TRANS,3,GOSUB
+                DW T2LI
+                DB TRANS,5,GOSUB
+                DW T2LI
+                DB WOBBLE,7,3,3
+                DB NEXT,TRANS,0
+                DB LENGTH,0,84,12
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE2_B:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB ADSR,0D0H,02H,1
+                DB WOBBLE,1,1,255
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW TU2B
+                DB TRANS,254,GOSUB
+                DW TU2B
+                DB TRANS,252,GOSUB
+                DW TU2B
+                DB TRANS,254
+                DB 24,12,GOSUB
+                DW HIT
+                DB 36,12,21,12,28,12
+                DB 33,12,GOSUB
+                DW HIT
+                DB 21,12
+                DB NEXT,TRANS,0
+                DB 24,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE2_C:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00100000B
+                DB VIB,12,2,2,0
+                DB ENVON,1
+                DB ADSR,060H,0F0H,0,60,96
+                DB PORT,1,62,96,63,96
+                DB 65,96,PORT,0
+                DB LENGTH,2
+                DB ADSR,0D0H,01H,1
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW T1J3
+                DB GOSUB
+                DW T1J3
+                DB GOSUB
+                DW T1J2
+                DB TRANS,251,GOSUB
+                DW T1J3A
+                DB GOSUB
+                DW T1J3A
+                DB GOSUB
+                DW T1J2A
+                DB NEXT
+                DB TRANS,0,GOSUB
+                DW T1J3
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+T2LI:           DB 60,72,48,84,60,36,60,48
+                DB 72,48,60,36,72,84,48,60
+                DB RETURN
+                
+TU2B:           DB 24,12,GOSUB
+                DW HIT
+                DB 36,12,24,12,31,12
+                DB 36,12,GOSUB
+                DW HIT
+                DB 36,12,RETURN
+                
+;=====================================
+                
+TUNE3_A:        DB ENDIT,1,ENVON,1
+                DB ADSR,0CCH,0,2
+                DB SEND,7,00001000B
+                DB VIB,6,1,2,0
+                DB FOR,2
+                DB GATE_CON,6
+                DB 62,6,64,12,66,12,67,12
+                DB 66,12,69,12,67,6,66,6
+                DB 67,6,66,12
+                DB GATE_CON,255
+                DB 64,12,64,6,64,6
+                DB 64,8,62,9,62,9
+                DB 62,8,61,8,61,8
+                DB 61,7,59,7,57,8
+                DB NEXT,GATE_CON,6,FOR,2
+                DB SEND,7,00001001B
+                DB 69,6,SEND,7,00001000B
+                DB 69,6,69,6,71,6,69,24
+                DB SEND,7,00001001B
+                DB 69,6,SEND,7,00001000B
+                DB 69,6,69,6,71,6,69,24
+                DB SEND,7,00001001B
+                DB 69,6,SEND,7,00001000B
+                DB 69,6,69,6,69,6,69,8
+                DB 67,8,67,8
+                DB 67,8,66,8,66,8
+                DB 64,6,62,6,61,12
+                DB NEXT
+                DB 74,12
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE3_B:        DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB FOR,4
+                DB TRANS,5,GOSUB
+                DW TU3B
+                DB TRANS,0,GOSUB
+                DW TU3B
+                DB NEXT,TRANS,0
+                DB 26,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE3_C:        DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB ADSR,0E0H,01H,1
+                DB SEND,7,00100000B
+                DB TRANS,255
+                DB GOSUB
+                DW CTR
+                DB GOSUB
+                DW CTR
+                DB GOSUB
+                DW CTR
+                DB GOSUB
+                DW CTR
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+CTR:            DB FOR,2
+                DB SEND,7,00100100B
+                DB ADSR,0B0H,0,1,70,12
+                DB SEND,7,00100000B
+                DB 58,6,60,6,LENGTH,2
+                DB ADSR,0E0H,01H,1
+                DB GOSUB
+                DW T1J2
+                DB LENGTH,0
+                DB NEXT
+                DB FOR,2
+                DB SEND,7,00100100B
+                DB ADSR,0B0H,0,1,70,12
+                DB SEND,7,00100000B
+                DB 58,6,60,6,LENGTH,2
+                DB ADSR,0E0H,01H,1
+                DB GOSUB
+                DW T3J
+                DB LENGTH,0
+                DB NEXT
+                DB RETURN
+                
+T3J:            DB 56,ENVON,0,62,65,56,62
+                DB 65,56,62,65,56,62,65
+                DB ENVON,1,RETURN
+                
+TU3B:           DB 21,12,33,12,GOSUB
+                DW HIT
+                DB 37,12,26,12,38,12
+                DB GOSUB
+                DW HIT
+                DB 40,12,RETURN
+;=====================================
+                
+TUNE4_A:        DB ENDIT,255,GATE_CON,255
+                DB ADSR,0D0H,0,1
+                DB SEND,7,00001000B
+                DB ENVON,1
+                DB WOBBLE,12,1,255
+                DB TRANS,0,GOSUB
+                DW ONIC
+                DB GOSUB
+                DW ONIC
+                DB TRANS,5,GOSUB
+                DW ONIC
+                DB GOSUB
+                DW ONIC
+                DB TRANS,7,GOSUB
+                DW ONIC
+                DB TRANS,5,GOSUB
+                DW ONIC
+                DB TRANS,0,GOSUB
+                DW ONIC
+                DB TRANS,7,GOSUB
+                DW ONIC
+                DB 65,12
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE4_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB TRANS,0,GOSUB
+                DW TU4B
+                DB GOSUB
+                DW TU4B
+                DB TRANS,5,GOSUB
+                DW TU4B
+                DB GOSUB
+                DW TU4B
+                DB TRANS,7,GOSUB
+                DW TU4B
+                DB TRANS,5,GOSUB
+                DW TU4B
+                DB TRANS,0,GOSUB
+                DW TU4B
+                DB TRANS,7,GOSUB
+                DW TU4B
+                DB TRANS,0
+                DB 24,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE4_C:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0C9H,05H,1
+                DB SEND,7,00100000B
+                DB ENVON,1
+                DB 60,72
+                DB PORT,2,64,6,60,6,58,6
+                DB 55,6,60,12,55,6,58,12
+                DB 55,6,53,6,51,6,52,6
+                DB 48,6,46,6,43,6,48,24
+                DB GATE_CON,6
+                DB 53,6,51,12,53,12,51,12
+                DB 53,12,GATE_CON,255
+                DB 53,6,51,6,48,6,46,6
+                DB 45,6,46,6,45,6,53,12
+                DB 57,6,51,12,57,6,53,12
+                DB 57,6,51,12,50,6,53,6
+                DB 51,6,53,6,54,6
+                DB 55,12,55,12,59,12
+                DB 55,6,62,12,55,6
+                DB 65,12,55,6,67,12,66,6
+                DB 65,12,63,12,65,12,60,12
+                DB 63,6,60,6,58,6,60,6
+                DB 56,6,57,6,53,6,51,6
+                DB 48,6,46,6,48,6,46,6
+                DB 51,6,52,6,48,6,46,6
+                DB 48,6,46,6,48,6,46,6
+                DB 43,6,41,6,40,6,36,6
+                DB 38,12,41,12,43,12,47,12
+                DB 50,12,53,12,55,12,59,12
+                DB 60,12
+                
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+ONIC:           DB 48,12,52,12,53,6,50,12
+                DB 52,12,48,12,46,6,50,12
+                DB 53,12,RETURN
+                
+TU4B:           DB 24,12,36,12,GOSUB
+                DW HIT
+                DB 22,6,24,12,36,6,24,12
+                DB GOSUB
+                DW HIT
+                DB 36,6,22,6,RETURN
+                
+;=====================================
+                
+TUNE5_A:        DB ENDIT,255
+                DB ADSR,0B0H,0,2
+                DB SEND,7,00001000B
+                DB ENVON,1,TRANS,244
+                DB GOSUB
+                DW FART
+                DB 54,12,56,12
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE5_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB FOR,4
+                DB 32,12,20,12,GOSUB
+                DW HIT
+                DB 32,12
+                DB SEND,7,00010010B
+                DB 32,24,SEND,7,00010000B
+                DB GOSUB
+                DW HIT
+                DB 30,12
+                DB NEXT
+                DB TRANS,3,GOSUB
+                DW TU5B
+                DB TRANS,254,GOSUB
+                DW TU5B
+                DB TRANS,252,GOSUB
+                DW TU5B
+                DB TRANS,254,GOSUB
+                DW TU5B
+                DB TRANS,0
+                DB 30,12,32,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE5_C:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0B0H,0,2,TRANS,244
+                DB SEND,7,00100000B
+                DB ENVON,1,DISTORT,1
+                DB GOSUB
+                DW FART
+                DB DISTORT,0
+                DB 58,12,59,12
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+TU5B:           DB 20,12,32,12,GOSUB
+                DW HIT
+                DB 32,12,20,12,32,12
+                DB GOSUB
+                DW HIT
+                DB 32,12,RETURN
+                
+FART:           DB WOBBLE,1,1,255,FOR,2
+                DB GATE_CON,255,61,24
+                DB GATE_CON,12,63,36
+                DB GATE_CON,6,66,18,68,18
+                DB GATE_CON,255,61,24
+                DB GATE_CON,12,63,36
+                DB GATE_CON,6,61,18,59,18
+                DB NEXT,FOR,2,GATE_CON,12
+                DB 63,12,GATE_CON,6,64,12
+                DB NEXT,GATE_CON,12
+                DB 63,6,61,12,59,18
+                DB 63,12,66,12,61,24
+                DB 61,24,68,12,66,12,71,12
+                DB GATE_CON,18
+                DB 68,24,68,24,66,24
+                DB 63,24,61,12,63,12,61,12
+                DB 59,12,58,24,61,24
+                DB RETURN
+                
+;=====================================
+                
+TUNE6_A:        DB ENDIT,255,GATE_CON,255
+                DB ADSR,0E0H,05H,1
+                DB SEND,7,00001000B
+                DB ENVON,1
+                DB LENGTH,2,WOBBLE,244,1,1
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW T6BL
+                DB LENGTH,0
+                DB ENVON,0,54,48,ENVON,1
+                DB LENGTH,2
+                DB TRANS,252
+                DB GOSUB
+                DW T6BJ
+                DB TRANS,254
+                DB GOSUB
+                DW T6BJ
+                DB NEXT
+                DB WOBBLE,0,0,0
+                DB FOR,2,TRANS,249
+                DB GOSUB
+                DW T6BN
+                DB LENGTH,0
+                DB ENVON,0,54,48,ENVON,1
+                DB LENGTH,2
+                DB TRANS,251,GOSUB
+                DW T6BN
+                DB LENGTH,0
+                DB ENVON,0,54,48,ENVON,1
+                DB LENGTH,2
+                DB NEXT
+                DB ADSR,0E0H,02H,1
+                DB TRANS,0,GOSUB
+                DW T6BL
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE6_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW TU6B
+                DB TRANS,249,GOSUB
+                DW TU6C
+                DB TRANS,251,GOSUB
+                DW TU6C
+                DB NEXT
+                DB FOR,2
+                DB TRANS,249,GOSUB
+                DW TU6B
+                DB TRANS,251,GOSUB
+                DW TU6B
+                DB NEXT
+                DB TRANS,0
+                DB 27,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE6_C:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,0,1
+                DB SEND,7,00100000B
+                DB WOBBLE,12,1,255
+                DB LENGTH,6
+                DB ENVON,1
+                DB FOR,2
+                DB TRANS,254,GOSUB
+                DW PAG
+                DB TRANS,0,GOSUB
+                DW PAG
+                DB TRANS,3,GOSUB
+                DW PAG
+                DB TRANS,5,GOSUB
+                DW PAG
+                DB TRANS,254,GOSUB
+                DW PAG
+                DB TRANS,0,GOSUB
+                DW PAG
+                DB TRANS,3,GOSUB
+                DW PAG
+                DB TRANS,2,GOSUB
+                DW PAG
+                DB NEXT
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW PAG
+                DB GOSUB
+                DW PAG
+                DB TRANS,3,GOSUB
+                DW PAG
+                DB TRANS,5,GOSUB
+                DW PAG
+                DB TRANS,2,GOSUB
+                DW PAG
+                DB GOSUB
+                DW PAG
+                DB TRANS,3,GOSUB
+                DW PAG
+                DB TRANS,2,GOSUB
+                DW PAG
+                DB NEXT
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+PAG:            DB 63,75,51,39,RETURN
+                
+T6BN:           DB 70,ENVON,0
+                DB 66,61,70,66,61
+                DB 70,66,61,70,66,61
+                DB 70,66,61,70,66,61
+                DB 70,66,61,70,66,61
+                DB ENVON,1
+                DB RETURN
+                
+T6BL:           DB 63,ENVON,0
+                DB 65,66,70,73
+                DB 63,65,66,70,73
+                DB 63,65,66,70,73
+                DB 63,65,66,70,73
+                DB 63,65,66,70
+                DB ENVON,1
+                DB RETURN
+                
+T6BJ:           DB 63,ENVON,0
+                DB 67,70,74,77
+                DB 63,67,70,74,77
+                DB 63,67,70,74,77
+                DB 63,67,70,74,77
+                DB 63,67,70,74
+                DB ENVON,1
+                DB RETURN
+                
+TU6B:           DB 39,12,27,12,GOSUB
+                DW HIT
+                DB 25,6,27,6
+TU6C:           DB 27,12,39,12
+                DB GOSUB
+                DW HIT
+                DB 39,12
+                DB RETURN
+                
+;=====================================
+                
+TUNE7_A:        DB ENDIT,255,GATE_CON,255
+                DB ADSR,0BBH,0,2
+                DB SEND,7,00001000B
+                DB ENVON,1
+                DB LENGTH,6
+                DB TRANS,0,GOSUB
+                DW TU7A
+                DB GOSUB
+                DW TU7A
+                DB TRANS,254,GOSUB
+                DW TU7A
+                DB GOSUB
+                DW TU7A
+                DB WOBBLE,12,2,255
+                DB TRANS,0,FOR,2
+                DB 68,64,59,69,64,61
+                DB 71,66,63,69,64,61
+                DB 68,64,59,61,NEXT
+                DB TRANS,254
+                DB 68,64,59,69,64,61
+                DB 71,66,62,69,64,61
+                DB 68,64,59,61
+                DB 66,65,63,61,68,65,68,71
+                DB 73,71,70,68,66,65,63,61
+                DB ENDIT,1,66
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE7_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB LENGTH,6
+                DB TRANS,0,GOSUB
+                DW TU7B
+                DB GOSUB
+                DW TU7B
+                DB TRANS,254,GOSUB
+                DW TU7B
+                DB GOSUB
+                DW TU7B
+                DB TRANS,0,GOSUB
+                DW TU7B
+                DB GOSUB
+                DW TU7B
+                DB TRANS,254,GOSUB
+                DW TU7B
+                DB TRANS,251,GOSUB
+                DW TU7B
+                
+                DB TRANS,0,LENGTH,0
+                DB 28,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE7_C:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0C0H,0AH,1
+                DB SEND,7,00100000B
+                DB ENVON,1,52,72,PORT,2
+                DB 54,24,57,24,56,24
+                DB 52,48,54,48,50,48,45,48
+                DB 50,48
+                DB 47,72,52,24,54,24,57,24
+                DB 56,24,52,24
+                DB 50,48,45,48,52,24,51,24
+                DB 54,24,59,24,64,24
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+TU7B:           DB 15,28,40,28
+                DB LENGTH,0,GOSUB
+                DW HIT
+                DB LENGTH,6,40,28
+                DB 15,28,40,28
+                DB LENGTH,0,GOSUB
+                DW HIT
+                DB LENGTH,6,30,28
+                DB RETURN
+                
+TU7A:           DB 68,64,59,69,64,61
+                DB 68,64,59,69,64,61
+                DB 68,64,69,64,RETURN
+                
+;=====================================
+                
+TUNE8_A:        DB ENDIT,255,GATE_CON,255
+                DB ADSR,0D0H,00DH,1
+                DB SEND,7,00001000B
+                DB LENGTH,2,FOR,2
+                DB ENVON,1
+                DB TRANS,0,GOSUB
+                DW T7J
+                DB ENVON,1
+                DB TRANS,2,GOSUB
+                DW T7N
+                DB ENVON,1
+                DB TRANS,254,GOSUB
+                DW T7JD
+                DB GOSUB
+                DW T7JD
+                DB WOBBLE,12,1,1
+                DB NEXT
+                DB ENVON,1
+                DB ADSR,0D0H,04H,1
+                DB TRANS,0,GOSUB
+                DW T7J
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE8_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1,FOR,2
+                DB TRANS,0,GOSUB
+                DW T7BA
+                DB 19,6,21,6
+                DB GOSUB
+                DW T7BA
+                DB 19,6,22,6
+                DB GOSUB
+                DW T7BA
+                DB 22,6,21,6
+                DB TRANS,251,GOSUB
+                DW T7BA
+                DB 24,6,26,6,NEXT
+                
+                DB TRANS,0,LENGTH,0
+                DB 24,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE8_C:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00100000B
+                DB ENVON,1,DISTORT,1
+                DB ADSR,0D0H,00DH,1
+                DB LENGTH,2,FOR,2
+                DB ENVON,1
+                DB TRANS,0,GOSUB
+                DW T7J
+                DB ENVON,1
+                DB TRANS,2,GOSUB
+                DW T7N
+                DB ENVON,1
+                DB TRANS,254,GOSUB
+                DW T7JD
+                DB GOSUB
+                DW T7JD
+                DB WOBBLE,244,1,1
+                DB NEXT
+                DB ENVON,1
+                DB ADSR,0D0H,04H,1
+                DB TRANS,0,GOSUB
+                DW T7J
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+T7BA:           DB 24,12,36,12,GOSUB
+                DW HIT
+                DB 19,6,24,6
+                DB SEND,7,00010010B
+                DB 24,24
+                DB SEND,7,00010000B
+                DB GOSUB
+                DW HIT
+                DB RETURN
+                
+T7N:            DB GOSUB
+                DW T7IN
+                DB GOSUB
+                DW T7IN
+                DB GOSUB
+                DW T7IN
+                DB GOSUB
+                DW T7IN
+                DB RETURN
+                
+T7J:            DB GOSUB
+                DW T7AJ
+                DB GOSUB
+                DW T7AJ
+                DB GOSUB
+                DW T7AJ
+                DB GOSUB
+                DW T7AJ
+                DB RETURN
+                
+T7JD:           DB GOSUB
+                DW T7AJD
+                DB GOSUB
+                DW T7AJD
+                DB GOSUB
+                DW T7AJD
+                DB GOSUB
+                DW T7AJD
+                DB RETURN
+                
+T7AJD:          DB 55,ENVON,0
+                DB 60,64,53,60,64
+                DB 55,60,64,53,60,64
+                DB RETURN
+                
+T7AJ:           DB 55,ENVON,0
+                DB 60,64,55,60,64
+                DB 55,60,64,55,60,64
+                DB RETURN
+                
+T7IN:           DB 55,ENVON,0
+                DB 60,63,55,60,63
+                DB 55,60,63,55,60,63
+                DB RETURN
+                
+;=====================================
+                
+TUNE9_A:        DB ENDIT,255,GATE_CON,255
+                DB ADSR,0A0H,0,2
+                DB SEND,7,00001000B
+                DB ENVON,1
+                DB FOR,6,95,1,PORT,2
+                DB 1,23,PORT,0,NEXT
+                DB LENGTH,6
+                DB ADSR,0D0H,0,1
+                DB TRANS,244
+                DB FOR,2
+                DB 62,64,64,67,64,64
+                DB 62,64,64,67,64,64
+                DB 62,64,64,67,64,67
+                DB 69,70,69,67,64,59
+                DB WOBBLE,7,1,255
+                DB NEXT,FOR,2
+                DB 67,64,64,62,59,62
+                DB 67,64,64,62,59,62
+                DB 67,64,67,64,62,64
+                DB 67,69,70,71,69,67
+                DB WOBBLE,12,1,255
+                DB NEXT
+                DB 76
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE9_B:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB TRANS,0,GOSUB
+                DW TU9B
+                DB GOSUB
+                DW TU9B
+                DB TRANS,3,GOSUB
+                DW TU9B
+                DB GOSUB
+                DW TU9B
+                DB FOR,2
+                DB TRANS,0,GOSUB
+                DW TU9B
+                DB GOSUB
+                DW TU9B
+                DB TRANS,3,GOSUB
+                DW TU9B
+                DB TRANS,5,GOSUB
+                DW TU9B
+                DB TRANS,0,GOSUB
+                DW TU9B
+                DB GOSUB
+                DW TU9B
+                DB TRANS,5,GOSUB
+                DW TU9B
+                DB TRANS,3,GOSUB
+                DW TU9B
+                DB NEXT,TRANS,0
+                DB 16,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE9_C:        DB GATE_CON,255,ENDIT,255
+                DB ADSR,0A0H,0,2
+                DB SEND,7,00100000B
+                DB ENVON,1
+                DB VIB,1,1,0,1,96,144
+                DB ADSR,0E0H,0,2
+                DB VIB,12,2,2,0,FOR,2
+                DB GATE_CON,255
+                DB 59,18,62,12,59,6,64,12
+                DB GATE_CON,12
+                DB 62,24,59,12,57,24
+                DB 57,12,55,18,57,6
+                DB GATE_CON,255
+                DB 59,18,62,12,59,6,64,12
+                DB GATE_CON,12
+                DB 62,24,69,18,69,12,67,6
+                DB 70,12,69,6,67,12,69,6
+                DB WOBBLE,12,1,255
+                DB NEXT
+                DB 64,6
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+TU9B:           DB 16,12,28,6,GOSUB
+                DW HIT
+                DB 26,6,RETURN
+                
+;=====================================
+                
+TUNE10_A:       DB ENDIT,255,GATE_CON,255
+                DB ADSR,0D0H,04H,1
+                DB SEND,7,00001000B
+                DB ENVON,1
+                DB LENGTH,2
+                DB FOR,2
+                DB TRANS,255,GOSUB
+                DW T10J3
+                DB TRANS,4,GOSUB
+                DW T10N3
+                DB GOSUB
+                DW T10N2
+                DB TRANS,253,GOSUB
+                DW T10J3
+                DB TRANS,4,GOSUB
+                DW T10N3
+                DB GOSUB
+                DW T10J2
+                DB WOBBLE,12,1,1
+                DB NEXT,WOBBLE,0,0,0
+                DB FOR,2
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB TRANS,250,GOSUB
+                DW T10J3
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB LENGTH,0
+                DB SEND,7,00001001B
+                DB 1,84,SEND,7,00001000B
+                DB LENGTH,2
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB TRANS,250,GOSUB
+                DW T10J3
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB GOSUB
+                DW T10J3
+                DB TRANS,248,GOSUB
+                DW T10J2
+                DB TRANS,250,GOSUB
+                DW T10J2
+                DB WOBBLE,12,1,1
+                DB NEXT,FOR,3
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB TRANS,250,GOSUB
+                DW T10J3
+                DB GOSUB
+                DW T10J2
+                DB TRANS,253,GOSUB
+                DW T10N3
+                DB TRANS,248,GOSUB
+                DW T10J3
+                DB TRANS,253,GOSUB
+                DW T10N2
+                DB NEXT
+                DB TRANS,255,GOSUB
+                DW T10N3
+                DB TRANS,250,GOSUB
+                DW T10J3
+                DB TRANS,253,GOSUB
+                DW T10N3
+                DB TRANS,248,GOSUB
+                DW T10J3
+                DB TRANS,251,GOSUB
+                DW T10N2
+                DB TRANS,253,GOSUB
+                DW T10N2
+                DB TRANS,255,GOSUB
+                DW T10N2
+                
+                DB SEND,7,00001001B,STOP
+;.....................................
+                
+TUNE10_B:       DB GATE_CON,255,ENDIT,255
+                DB ADSR,0D0H,02H,1
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB WOBBLE,1,1,255
+                DB FOR,4
+                DB 23,12,35,12,GOSUB
+                DW HIT
+                DB 23,12
+                DB SEND,7,00010010B
+                DB 23,12,SEND,7,00010000B
+                DB 35,12,GOSUB
+                DW HIT
+                DB 30,12,NEXT
+                DB FOR,2
+                DB TRANS,253,GOSUB
+                DW TU10B
+                DB 21,12,GOSUB
+                DW TU10B
+                DB 21,12,TRANS,249,GOSUB
+                DW TU10B
+                DB 27,12,TRANS,251,GOSUB
+                DW TU10B
+                DB 23,12,NEXT
+                DB FOR,3
+                DB TRANS,0,GOSUB
+                DW TU10B
+                DB 23,12,TRANS,249,GOSUB
+                DW TU10C
+                DB 25,12,TRANS,251,GOSUB
+                DW TU10C
+                DB 25,12,NEXT,TRANS,254
+                DB 25,12,37,12,GOSUB
+                DW HIT
+                DB 24,12,36,12,GOSUB
+                DW HIT
+                DB 23,12,35,12,GOSUB
+                DW HIT
+                DB 22,12,34,12,GOSUB
+                DW HIT
+                DB 23,12,GOSUB
+                DW HIT
+                DB 20,12,GOSUB
+                DW HIT
+                DB 25,12
+                
+                DB SEND,7,00010010B,STOP
+;.....................................
+                
+TUNE10_C:       DB GATE_CON,255,ENDIT,255
+                DB ADSR,020H,0F0H,0
+                DB SEND,7,00100000B
+                DB ENVON,1,FOR,8,71,12
+                DB PORT,2,ENVON,0,68,6
+                DB 66,6,NEXT
+                DB ENVON,1,FOR,8
+                DB 71,12,ENVON,0,68,6
+                DB 66,6,NEXT
+                DB ADSR,0D0H,009H,1
+                DB TRANS,244,PORT,0
+                DB FOR,2
+                DB ENVON,1,71,12
+                DB PORT,2,73,6,70,12,71,6
+                DB 68,18,66,6,68,6,71,6
+                DB 73,6,74,6,75,6,73,6
+                DB 71,12,73,6,70,12,71,6
+                DB 68,18,68,6,66,6,63,6
+                DB 66,6,68,6,71,6,73,6
+                DB 78,12,80,6,75,12,78,6
+                DB 73,36,75,12,71,12
+                DB 78,6,80,6,78,12
+                DB 73,6,75,6,73,12
+                DB 71,6,73,6,71,12
+                DB 70,6,71,6,70,12
+                DB NEXT,FOR,2
+                DB 71,12,78,6,83,12,78,6
+                DB 71,12,76,6,75,6
+                DB 76,6,75,6,76,6,75,6
+                DB 78,24,71,24,76,24,75,12
+                DB 73,24,NEXT
+                
+                DB SEND,7,00100100B,STOP
+;.....................................
+                
+T10J3:          DB 60,ENVON,0
+                DB 64,55,60,64,55
+                DB 60,64,55,60,64,55
+                DB 60,64,55,60,64,55
+                DB ENVON,1,RETURN
+                
+T10J2:          DB 60,ENVON,0
+                DB 64,55,60,64,55
+                DB 60,64,55,60,64,55
+                DB ENVON,1,RETURN
+                
+T10N3:          DB 60,ENVON,0
+                DB 52,55,60,52,55
+                DB 60,52,55,60,52,55
+                DB 60,52,55,60,52,55
+                DB ENVON,1,RETURN
+                
+T10N2:          DB 60,ENVON,0
+                DB 52,55,60,52,55
+                DB 60,52,55,60,52,55
+                DB ENVON,1,RETURN
+                
+TU10B:          DB 23,12,23,12,GOSUB
+                DW HIT
+                DB 23,12
+TU10C:          DB 23,12,23,12,GOSUB
+                DW HIT
+                DB RETURN
+                
+;=====================================
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                
+                END
