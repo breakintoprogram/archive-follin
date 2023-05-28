@@ -1,1 +1,1235 @@
-;¬´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´¾;¸********** A VERY DODGY ************¸;¸                                    ¸;¸ ßß  ß   ß   àà  ààà  à à à ààà ààà ¸;¸ß  ß  ß ß    à à à  à à à à à   à  à¸;¸ßßßß   ß     à à ààà  à à à àà  ààà ¸;¸ß  ß   ß     à à à  à à à à à   à  à¸;¸ß  ß   ß     àà  à  à à  à  ààà à  à¸;¸                                    ¸;ñ´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´Ñ;¸´´´´´´´´´(C)1988 Tim Follin´´´´´´´´´¸;ñ´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´Ñ;¸ BBBBBB     OOO    DDDDD   Y     Y  ¸;¸ B     B   O   O   D    D   Y   Y   ¸;¸ B     B  O     O  D     D   Y Y    ¸;¸ BBBBBB   O     O  D     D    Y     ¸;¸ B     B  O     O  D     D    Y     ¸;¸ B     B  O     O  D     D    Y     ¸;¸ B     B   O   O   D    D     Y     ¸;¸ BBBBBB     OOO    DDDDD      Y     ¸;¸                                    ¸;¸ LAST UPDATED:9/2/88 ¸;¸                                    ¸;¼´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´®                                ORG 50000                LOAD 49152                                KEY 4 '|\A|M|MO|M'                KEY 7 '|\SBODY|M'                                CALL TOP                LOOP:           LD A,0F7H                IN A,(254)                AND 1                JP Z,FAST                                HALT                                 LD BC,200BOROB:          DEC BC                LD A,B                OR C                JP NZ,BOROB                FAST:           LD BC,330BOBOR:          DEC BC                LD A,B                OR C                JP NZ,BOBOR                                CALL SPLAT                HOLD:           LD A,0F7H                IN A,(254)                AND 4                JP Z,HOLD                                LD A,07FH                IN A,(254)                AND 1                JP NZ,LOOP                                PUSH BC                LD BC,65533                LD A,7                OUT (C),A                LD BC,49149                LD A,63                OUT (C),A                POP BC                RET                TOP:            LD HL,DATA1                LD (DATAA+1),HL                LD HL,DATA2                LD (DATAB+1),HL                LD HL,DATA3                LD (DATAC+1),HL                LD A,1                LD (CHANA+1),A                LD (CHANB+1),A                LD (CHANC+1),A                LD (EFO+1),A                RET                CHANA:          LD A,000                DEC A                LD (CHANA+1),A                JP NZ,EFODATAA:          LD HL,000DATR:           LD A,(HL)                INC HL                AND A                JR Z,TOP                CP 1                JR NZ,NEA1AREM:           LD A,000                DEC A                JR Z,DATR                LD (AREM+1),A                LD HL,(ARST)                JP DATRNEA1:           CP 2                JR NZ,NEA2                LD A,(HL)                INC HL                LD (AREM+1),A                LD (ARST),HL                JP DATRNEA2:           CP 3                JR NZ,NEA3                LD BC,65533                LD A,8                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD (AENV+1),A                LD (AVOL),A                LD (A%ENV%),A                INC HL                LD A,(HL)                LD (AENA+1),A                LD (A%ENA%+1),A                INC HL                LD A,(HL)                LD (AEND+1),A                LD (A%END%+1),A                LD (ATAGE+1),A                INC HL                LD A,(HL)                LD (AENS+1),A                INC HL                LD A,(HL)                LD (GATE+1),A                INC HL                JP DATRNEA3:           CP 4                JR NZ,NEA4                XOR A                LD (AEINI+1),A                JP DATRNEA4:           CP 5                JR NZ,NEA5                LD A,1                LD (AEINI+1),A                JP DATRNEA5:           CP 6                JR NZ,NEA6                LD A,(HL)                LD (VIB+1),A                LD (DELAY+1),A                INC HL                JP DATRNEA6:           CP 9                JP NZ,NEA7                LD A,(HL)                LD (NEA9+1),A                INC HL                JP DATRNEA7:           CP 10                JP NZ,NEA8                LD E,(HL)                INC HL                LD D,(HL)                INC HL                LD (GAST),HL                PUSH DE                POP HL                JP DATRNEA8:           CP 11                JP NZ,NEA10                LD HL,(GAST)                JP DATRNEA10:          CP 15                JP NZ,NEA11                LD A,(HL)                INC HL                LD (WOBM+1),A                LD (WOBR+1),A                LD A,(HL)                INC HL                LD (WEX+1),A                JP DATRNEA11:          CP 16                JP NZ,NEA9                LD B,(HL)                INC HL                LD A,(IAD+1)                ADD B                AND 63                LD (IAD+1),A                JP DATRNEA9:           ADD 000IAD:            ADD 0                LD E,A                LD (WOBP+1),A                XOR A                LD (WOX+1),A                LD A,(HL)                LD (CHANA+1),A                INC HL                LD (DATAA+1),HL                LD D,0                LD HL,NOTES                ADD HL,DE                ADD HL,DE                LD BC,65533                LD A,1                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD BC,65533                XOR A                OUT (C),A                LD BC,49149                INC HL                LD A,(HL)                LD (APITCH+1),A                OUT (C),ADELAY:          LD A,000                LD (VIB+1),AAEINI:          LD A,000                DEC A                JR NZ,EFO                LD A,(A%ENV%)                LD (AVOL),A                LD (AENV+1),A                LD A,(A%END%+1)                LD (ATAGE+1),A                XOR A                LD (IAD+1),AEFO:            LD A,001                DEC A                JP Z,CHANB                LD (EFO+1),A                DEC A                JP NZ,CHANB                LD BC,65533                LD A,7                OUT (C),A                LD BC,49149                LD A,(GTST)                OUT (C),ACHANB:          LD A,000                DEC A                LD (CHANB+1),A                JP NZ,CHANCDATAB:          LD HL,000DBTR:           LD A,(HL)                INC HL                AND A                JP Z,TOP                CP 1                JR NZ,NEB1BREM:           LD A,000                DEC A                JR Z,DBTR                LD (BREM+1),A                LD HL,(BRST)                JP DBTRNEB1:           CP 2                JR NZ,NEB2                LD A,(HL)                INC HL                LD (BREM+1),A                LD (BRST),HL                JP DBTRNEB2:           CP 3                JR NZ,NEB3                LD BC,65533                LD A,9                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD (BENV+1),A                LD (BVOL),A                LD (B%ENV%),A                INC HL                LD A,(HL)                LD (BENA+1),A                LD (B%ENA%+1),A                INC HL                LD A,(HL)                LD (BEND+1),A                LD (B%END%+1),A                INC HL                LD A,(HL)                LD (BENS+1),A                INC HL                JP DBTRNEB3:           CP 4                JR NZ,NEB4                XOR A                LD (BEINI+1),A                JP DBTRNEB4:           CP 5                JR NZ,NEB5                LD A,1                LD (BEINI+1),A                JP DBTRNEB5:           CP 7                JR NZ,NEB6                LD BC,65533                LD A,7                OUT (C),A                LD BC,49149                LD A,(HL)                LD (GTST),A                INC HL                OUT (C),A                LD BC,65533                LD A,6                OUT (C),A                LD BC,49149                LD A,(HL)                LD (NODE),A                INC HL                OUT (C),A                XOR A                LD (NOSP+1),A                JP DBTRNEB6:           CP 8                JP NZ,NEB7                LD A,(HL)                INC HL                INC A                LD (EFO+1),A                LD (EFOI),A                JP DBTRNEB7:           CP 9                JP NZ,NEB8                LD A,(HL)                LD (NEB10+1),A                INC HL                JP DBTRNEB8:           CP 10                JP NZ,NEB9                LD E,(HL)                INC HL                LD D,(HL)                INC HL                LD (GBST),HL                PUSH DE                POP HL                JP DBTRNEB9:           CP 11                JP NZ,NEB10                LD HL,(GBST)                JP DBTRNEB10:          ADD 000                                ADD 0            ;                                LD E,A                LD A,(HL)                LD (CHANB+1),A                INC HL                LD (DATAB+1),HL                LD D,0                LD HL,NOTES                ADD HL,DE                ADD HL,DE                LD BC,65533                LD A,3                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD BC,65533                LD A,2                OUT (C),A                LD BC,49149                INC HL                LD A,(HL)                OUT (C),A                LD A,(EFOI)                LD (EFO+1),A                DEC A                JP Z,BEINI                LD BC,65533                LD A,7                OUT (C),A                LD A,(GTST)                SUB 16                LD BC,49149                OUT (C),ABEINI:          LD A,000                DEC A                JR NZ,CHANC                LD A,(B%ENV%)                LD (BVOL),A                LD (BENV+1),ACHANC:          LD A,000                DEC A                LD (CHANC+1),A                JP NZ,AENVDATAC:          LD HL,000DCTR:           LD A,(HL)                INC HL                AND A                JP Z,TOP                CP 1                JR NZ,NEC1CREM:           LD A,000                DEC A                JR Z,DCTR                LD (CREM+1),A                LD HL,(CRST)                JP DCTRNEC1:           CP 2                JR NZ,NEC2                LD A,(HL)                INC HL                LD (CREM+1),A                LD (CRST),HL                JP DCTRNEC2:           CP 3                JR NZ,NEC3                LD BC,65533                LD A,10                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD (CENV+1),A                LD (CVOL),A                LD (C%ENV%),A                INC HL                LD A,(HL)                LD (CENA+1),A                LD (C%ENA%+1),A                INC HL                LD A,(HL)                LD (CEND+1),A                LD (C%END%+1),A                INC HL                LD A,(HL)                LD (CENS+1),A                INC HL                JP DCTRNEC3:           CP 4                JR NZ,NEC4                XOR A                LD (CEINI+1),A                JP DCTRNEC4:           CP 5                JR NZ,NEC5                LD A,1                LD (CEINI+1),A                JP DCTRNEC5:           CP 7                JR NZ,NEC90                LD BC,65533                LD A,7                OUT (C),A                LD BC,49149                LD A,(HL)                LD (GTST),A                INC HL                OUT (C),A                LD BC,65533                LD A,6                OUT (C),A                LD BC,49149                LD A,(HL)                LD (NODE),A                INC HL                OUT (C),A                XOR A                LD (NOSP+1),A                JP DCTRNEC90:          CP 9                JP NZ,NEC6                LD A,(HL)                LD (NEC8+1),A                INC HL                JP DCTRNEC6:           CP 10                JP NZ,NEC7                LD E,(HL)                INC HL                LD D,(HL)                INC HL                LD (GCST),HL                PUSH DE                POP HL                JP DCTRNEC7:           CP 11                JP NZ,NEC9                LD HL,(GCST)                JP DCTRNEC9:           CP 12                JP NZ,NEC91                LD A,(HL)                INC HL                LD (CHEN+1),A                LD (NOSR+1),A                LD A,30                LD (NODE),A                LD A,1                LD (NOSP+1),A                JP DCTRNEC91:          CP 13                JP NZ,NEC92                LD A,(NEC8+1)                LD (CANC+1),A                JP DCTRNEC92:          CP 14                JP NZ,NEC8                XOR A                LD (CANC+1),A                JP DCTRNEC8:           ADD 000CANC:           SUB 000                                ADD 0            ;                                LD E,A                LD A,(HL)                LD (CHANC+1),A                INC HL                LD (DATAC+1),HL                LD D,0                LD HL,NOTES                ADD HL,DE                ADD HL,DE                LD BC,65533                LD A,5                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD BC,65533                LD A,4                OUT (C),A                LD BC,49149                INC HL                LD A,(HL)                OUT (C),ACEINI:          LD A,000                DEC A                JR NZ,AENV                LD A,(C%ENV%)                LD (CVOL),A                LD (CENV+1),AAENV:           LD A,000                CP 13                JP Z,AENDAENA:           LD A,000                DEC A                LD (AENA+1),A                JR NZ,GATEA%ENA%:         LD A,000                LD (AENA+1),A                LD BC,65533                LD A,8                OUT (C),A                LD BC,49149                LD A,(AVOL)                INC A                LD (AVOL),A                LD (AENV+1),A                OUT (C),A                JP GATEAEND:           LD A,000                DEC A                LD (AEND+1),A                JR NZ,GATEA%END%:         LD A,000                LD (AEND+1),AATAGE:          LD A,000                LD (AEND+1),A                LD BC,65533                LD A,8                OUT (C),A                LD BC,49149                LD A,(AVOL)                DEC A                OUT (C),AAENS:           CP 000                JP Z,GATE                LD (AVOL),AGATE:           LD A,000                AND A                JR Z,BENV                LD B,A                LD A,(CHANA+1)                CP B                JR NZ,BENV                LD A,13                LD (AENV+1),A                LD A,1                LD (AEND+1),A                LD (ATAGE+1),ABENV:           LD A,000                CP 13                JP Z,BENDBENA:           LD A,000                DEC A                LD (BENA+1),A                JP NZ,CENVB%ENA%:         LD A,000                LD (BENA+1),A                LD BC,65533                LD A,9                OUT (C),A                LD BC,49149                LD A,(BVOL)                INC A                LD (BVOL),A                LD (BENV+1),A                OUT (C),A                JP CENVBEND:           LD A,000                DEC A                LD (BEND+1),A                JP NZ,CENVB%END%:         LD A,000                LD (BEND+1),A                LD BC,65533                LD A,9                OUT (C),A                LD BC,49149                LD A,(BVOL)                DEC A                OUT (C),ABENS:           CP 000                JR Z,CENV                LD (BVOL),ACENV:           LD A,000                CP 13                JP Z,CENDCENA:           LD A,000                DEC A                LD (CENA+1),A                JP NZ,VIBC%ENA%:         LD A,000                LD (CENA+1),A                LD BC,65533                LD A,10                OUT (C),A                LD BC,49149                LD A,(CVOL)                INC A                OUT (C),A                LD (CVOL),A                LD (CENV+1),A                JP VIBCEND:           LD A,000                DEC A                LD (CEND+1),A                JP NZ,VIBC%END%:         LD A,000                LD (CEND+1),A                LD BC,65533                LD A,10                OUT (C),A                LD BC,49149                LD A,(CVOL)                DEC A                OUT (C),ACENS:           CP 000                JR Z,VIB                LD (CVOL),AVIB:            LD A,000                DEC A                LD (VIB+1),A                JR NZ,CHEN                INC A                LD (VIB+1),A                LD HL,TABLEBIV1:           LD A,000                INC A                AND 7                LD (BIV1+1),A                LD E,A                LD D,0                ADD HL,DE                LD A,(HL)APITCH:         ADD 000                LD D,A                LD BC,65533                XOR A                OUT (C),A                LD BC,49149                LD A,D                OUT (C),ACHEN:           LD A,000                CP 255                JP Z,WOBM                DEC A                LD (CHEN+1),A                JP NZ,WOBMNOSR:           LD A,000                LD (CHEN+1),ANOSP:           LD A,000                DEC A                JP Z,NOSU                LD A,(NODE)                INC A                LD (NODE),A                CP 29                JP NZ,NSET                LD A,(NOSP+1)                XOR 1                LD (NOSP+1),A                LD A,31                JP NSETNOSU:           LD A,(NODE)                DEC A                LD (NODE),A                CP 5                JP NZ,NSET                LD A,(NOSP+1)                XOR 1                LD (NOSP+1),ANSET:           LD D,A                LD BC,65533                LD A,6                OUT (C),A                LD BC,49149                LD A,D                OUT (C),AWOBM:           LD A,000                AND A                JP Z,COME                DEC A                LD (WOBM+1),A                JP NZ,COMEWOBR:           LD A,000                LD (WOBM+1),AWOX:            LD A,000WEX:            XOR 000                LD (WOX+1),A                LD E,AWOBP:           LD A,000                ADD E                LD E,A                LD D,0                LD HL,NOTES                ADD HL,DE                ADD HL,DE                LD BC,65533                LD A,1                OUT (C),A                LD BC,49149                LD A,(HL)                OUT (C),A                LD BC,65533                XOR A                OUT (C),A                LD BC,49149                INC HL                LD A,(HL)                OUT (C),ACOME:           RET                TABLE:          DB 0-4,0-2,2,4,4,2,0-2,0-4                AVOL:           DB 0BVOL:           DB 0CVOL:           DB 0                ARST:           DW 0BRST:           DW 0CRST:           DW 0                A%ENV%:         DB 0B%ENV%:         DB 0C%ENV%:         DB 0                GTST:           DB 0EFOI:           DB 0NODE:           DB 0GAST:           DW 0GBST:           DW 0GCST:           DW 0                NOTES:          EQU $-16                DBH 0EEE0E180D4D0C8E0BDA                DBH 0B2F0A8F09F7096808E1                DBH 086107E90777070C06A7                DBH 064705ED0598054704FC                DBH 04B40470043103F403BC                DBH 03860353032402F602CC                DBH 02A4027E025A02380218                DBH 01FA01DE01C301AA0192                DBH 017B01660152013F012D                DBH 011C010C00FD00EF00E1                DBH 00D500C900BE00B300A9                DBH 009F0096008E0086007F                DBH 00770071006A0064005F                DBH 005900540050004B0047                DBH 0043003F003C00380035                DBH 0032002F002D002A0028                DBH 0026002400220020001E                DBH 001C001B001900180016                DBH 00150014001300120011                DBH 00100010001000100010                STOP:           EQU 0NEXT:           EQU 1FOR:            EQU 2ADSR:           EQU 3EOF:            EQU 4EON:            EQU 5VIBRA:          EQU 6ONOI:           EQU 7EFFECT:         EQU 8TRANS:          EQU 9GOSUB:          EQU 10GOTO:           EQU 10RETURN:         EQU 11NOISE:          EQU 12CANON:          EQU 13CANOF:          EQU 14WOBBLE:         EQU 15INCADD:         EQU 16                ;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ                DATA1:          DB ADSR,0,8,0,0,0,EON                DB VIBRA,0,WOBBLE,0,0                DB TRANS,0,49,96REST1:          DB ADSR,4,17,0,0,0                DB WOBBLE,1,12,VIBRA,0                                DB FOR,24                DB 61,2,EOF,64,2,68,2                DB NEXT                DB ADSR,12,1,6,0,0,EON                DB FOR,4                DB 61,2,EOF,64,2,69,2                DB NEXT,EON                DB FOR,4                DB 63,2,EOF,66,2,71,2                DB NEXT                                DB WOBBLE,2,7                DB ADSR,4,17,0,0,0,EON                DB VIBRA,12                DB 73,192                DB ADSR,9,1,17,1,3,EON                DB WOBBLE,0,0                DB GOSUB                DW LEAD1                DB ADSR,12,1,5,9,3,EON                DB WOBBLE,1,12,VIBRA,0                DB GOSUB                DW LEAD2                DB WOBBLE,1,7                DB FOR,3,68,16,66,16,NEXT                DB WOBBLE,0,0,TRANS,12                                DB ADSR,4,15,0,0,0,EOF                DB FOR,8                DB 49,6,51,6,52,6,56,6,NEXT                DB FOR,8                DB 47,6,49,6,51,6,54,6,NEXT                DB WOBBLE,1,7,FOR,8                DB 45,6,47,6,49,6,52,6,NEXT                DB FOR,8                DB 47,6,49,6,51,6,54,6,NEXT                DB WOBBLE,1,12,FOR,4                DB 49,6,51,6,52,6,56,6,NEXT                DB TRANS,5,FOR,4                DB 49,6,51,6,53,6,56,6,NEXT                                DB ADSR,9,1,4,9,2,EON                DB WOBBLE,1,7                DB TRANS,0,GOSUB                DW LEAD2                                DB ADSR,12,1,3,0,0                DB WOBBLE,1,7                DB FOR,3,68,16,66,16,NEXT                DB WOBBLE,0,0,VIBRA,24                DB ADSR,0,7,0,12,0                DB 73,96,75,96,78,96,80,96                DB 61,96,63,96,66,96,68,96                DB ADSR,12,1,10,9,0                DB VIBRA,16                DB 71,6,73,66                DB 73,8,71,4,68,12,66,8                DB 68,4,ADSR,0,0,0,0,0                DB 66,24                DB ADSR,4,1,0,0,0,71,24                DB ADSR,12,1,15,5,0                DB 64,8,63,4                DB 64,8,66,4,78,12                DB 73,60,71,8,70,4,71,8                DB 73,4,70,12,68,60                DB 66,8,64,4,66,8,68,4                DB 64,12,63,84,64,8,63,4                DB 61,96,66,84,68,8,70,4                DB 71,96                DB ADSR,7,40,0,0,0,EOF                DB FOR,192,20,2                DB INCADD,51,NEXT                DB VIBRA,0,EON                DB ADSR,5,30,0,0,0,EOF                DB WOBBLE,12,12                DB 85,192,85,192                                DB GOTO                DW REST1;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ                DATA2:          DB ADSR,0,8,0,0,EON                DB 52,96REST2:          DB ADSR,12,1,3,0                DB ONOI,56,25                DB EFFECT,2                                DB FOR,4                DB GOSUB                DW BAS1                DB NEXT                DB GOSUB                DW FILL                                DB FOR,3,71,16,69,16,NEXT                                DB FOR,9                DB 25,12,23,6,25,6                DB 28,12,25,6,23,6                DB 28,6,25,6,25,12,30,6                DB 25,6,32,6,35,6                DB NEXT                                DB 20,12,20,6,20,12,20,6                DB 20,12,20,6,20,12,20,6                DB 20,6,22,6,23,6,24,6                                DB GOSUB                DW BAS1                DB GOSUB                DW FILL                                DB FOR,3,71,16,69,16,NEXT                                DB FOR,4                DB 25,12,28,12,30,12,31,12                DB 32,12,34,12,35,12                DB 36,8,32,4                DB 37,12,35,12,32,12                DB 31,8,28,4                DB 30,12,28,12,23,12                DB 24,8,27,4                DB NEXT                DB FOR,4                DB 25,12,28,8,25,4                DB 30,8,25,4,31,8,32,12                DB 32,4,30,8,28,4,30,8                DB 28,4,25,8,23,4                DB NEXT                DB EFFECT,1                DB FOR,4                DB 23,6,25,6,25,6,25,6                DB 28,6,25,6,25,6,30,6                DB 25,6,25,6,32,6,30,6                DB 28,6,27,6,28,6,30,6                DB NEXT                DB FOR,8                DB 23,6,25,6,37,6,25,6                DB 28,6,23,6,22,6,20,6                DB NEXT                DB FOR,16                DB 25,12,37,12                DB NEXT                                DB GOTO                DW REST2;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ                DATA3:          DB ADSR,0,8,0,0,EON                DB ONOI,0,28                DB NOISE,4,54,96REST3:          DB ADSR,12,1,3,0                                DB TRANS,254,GOSUB                DW MAJOR                DB TRANS,252,GOSUB                DW MAJOR                DB TRANS,0,FOR,16                DB GOSUB                DW MINOR                DB NEXT                                DB TRANS,7,GOSUB                DW DRUM1                DB GOSUB                DW DRUM1                DB TRANS,5,GOSUB                DW DRUM2                DB GOSUB                DW DRUM1                DB TRANS,3,GOSUB                DW DRUM2                DB GOSUB                DW DRUM1                DB TRANS,1,GOSUB                DW DRUM2                DB TRANS,255,GOSUB                DW DRUM1                DB TRANS,253,GOSUB                DW DRUM1                DB TRANS,251,GOSUB                DW DRUM2                DB TRANS,248,GOSUB                DW DRUM1                DB TRANS,246,GOSUB                DW DRUM1                                DB TRANS,0,GOSUB                DW MINOR                DB GOSUB                DW MINOR                DB TRANS,254,GOSUB                DW MAJOR                DB GOSUB                DW MAJOR                DB TRANS,0,GOSUB                DW MINOR                DB GOSUB                DW MINOR                DB TRANS,254,GOSUB                DW MAJOR                DB GOSUB                DW MAJOR                DB TRANS,0                DB GOSUB                DW MINOR                                DB TRANS,7,GOSUB                DW DRUM1                DB GOSUB                DW DRUM1                DB TRANS,4,GOSUB                DW DRUM2                                DB FOR,3                DB TRANS,5,GOSUB                DW DRUM1                DB TRANS,8,GOSUB                DW DRUM2                DB NEXT                                DB FOR,3                DB TRANS,7,GOSUB                DW DRUM1                DB NEXT                                DB TRANS,0,GOSUB                DW MINOR                DB TRANS,3,GOSUB                DW MAJOR                DB FOR,2,TRANS,0,GOSUB                DW MINOR                DB TRANS,5,GOSUB                DW MAJOR                DB NEXT                                DB FOR,5                DB TRANS,5,GOSUB                DW DRUM1                DB TRANS,8,GOSUB                DW DRUM2                DB NEXT                DB TRANS,2,GOSUB                DW DRUM1                                DB FOR,5,TRANS,0                DB GOSUB                DW MINOR                DB TRANS,254,GOSUB                DW MAJOR                DB TRANS,5,GOSUB                DW MAJOR                DB TRANS,3,GOSUB                DW MAJOR                DB NEXT                                DB FOR,4,TRANS,0                DB GOSUB                DW MINOR                DB NEXT                                DB GOTO                DW REST3                ;ææææææææææææææææææææææææææææææææææææææMINOR:          DB ADSR,12,1,3,0,CANOF                DB 61,1,EOF,52,1,56,1,51,1                DB 52,1,56,1,61,1,52,1                DB 56,1,51,1,52,1,56,1                DB 61,1,52,1,56,1,52,1                DB 52,1,56,1,51,1,52,1                DB 56,1,61,1,52,1,56,1                DB ONOI,24,10                                DB ADSR,12,1,2,0,CANON                DB EON,49,1,EOF                DB 48,1,47,1,46,1,45,1                DB 44,1,43,1,43,1,42,1,41,1                DB 41,1,40,1                DB EON,47,1,EOF                DB 46,1,45,1,44,1,43,1                DB 42,1,41,1,41,1,40,1,39,1                DB 39,1,38,1                DB ONOI,56,25,EON                                DB ADSR,12,1,3,0,CANOF                DB 61,1,EOF,52,1,56,1,51,1                DB 52,1,56,1,61,1,52,1                DB 56,1,51,1,52,1,56,1                DB 61,1,52,1,56,1,52,1                DB 52,1,56,1,51,1,52,1                DB 56,1,61,1,52,1,56,1                DB ONOI,24,10                                DB ADSR,12,1,2,0,CANON                DB EON,47,1,EOF                DB 46,1,45,1,44,1,43,1                DB 42,1,41,1,41,1,40,1,39,1                DB 39,1,38,1,37,1,37,1,36,1                DB 36,1,35,1,35,1,34,1,34,1                DB 34,1,33,1,33,1,33,1                DB ONOI,56,25,EON                                DB RETURN                MAJOR:          DB ADSR,12,1,3,0,CANOF                DB 61,1,EOF,53,1,56,1,49,1                DB 53,1,56,1,61,1,53,1                DB 56,1,49,1,53,1,56,1                DB 61,1,53,1,56,1,53,1                DB 53,1,56,1,49,1,53,1                DB 56,1,61,1,53,1,56,1                DB ONOI,24,10                                DB ADSR,12,1,2,0,CANON                DB EON,49,1,EOF                DB 48,1,47,1,46,1,45,1                DB 44,1,43,1,43,1,42,1,41,1                DB 41,1,40,1                DB EON,47,1,EOF                DB 46,1,45,1,44,1,43,1                DB 42,1,41,1,41,1,40,1,39,1                DB 39,1,38,1                DB ONOI,56,25,EON                                DB ADSR,12,1,3,0,CANOF                DB 61,1,EOF,53,1,56,1,49,1                DB 53,1,56,1,61,1,53,1                DB 56,1,49,1,53,1,56,1                DB 61,1,53,1,56,1,53,1                DB 53,1,56,1,61,1,53,1                DB 56,1,49,1,53,1,56,1                DB ONOI,24,10                                DB ADSR,12,1,2,0,CANON                DB EON,47,1,EOF                DB 46,1,45,1,44,1,43,1                DB 42,1,41,1,41,1,40,1,39,1                DB 39,1,38,1,37,1,37,1,36,1                DB 36,1,35,1,35,1,34,1,34,1                DB 34,1,33,1,33,1,33,1                DB ONOI,56,25,EON                                DB RETURN                DRUM1:          DB ADSR,12,1,1,0                DB ONOI,24,15                DB EON,51,1,EOF                DB 50,1,49,1,48,1,47,1                DB 46,1,ONOI,56,25,EON                DB RETURN                DRUM2:          DB ADSR,12,1,2,0                DB ONOI,24,15                DB EON,51,1,EOF                DB 50,1,49,1,48,1,47,1                DB 46,1,45,1,44,1,43,1,42,1                DB 41,1,40,1                DB ONOI,56,25,EON                DB RETURN                BAS1:           DB 25,6,25,12,25,6,25,12                DB 28,12,30,12,30,12                DB 28,12,28,12                DB 25,6,25,12,25,6,25,12                DB 28,12,30,6,30,6                DB 30,12                DB 28,12,23,12                DB 25,6,25,6,25,6,25,12                DB 25,6,28,12,30,12,30,12                DB 28,12,28,12                DB 25,6,25,12,25,6,25,12                DB 28,6,30,12,30,6                DB 30,6,30,6                DB 28,12,23,6,24,6,RETURN                LEAD1:          DB 61,12,63,24,64,48,64,12                DB 64,12,66,24,68,36,68,24                DB 71,24,69,24,68,24                DB 66,12,68,108                DB 61,6,64,6,66,6,68,78                DB 66,6,68,6,71,6,73,78                DB 76,12,73,96,80,84                DB RETURN                LEAD2:          DB 76,12,78,12,76,12,75,24                DB 76,12,75,12,73,24,75,12                DB 73,12,71,24,73,12,71,12                DB 69,12,68,120,73,24,71,24                DB 69,12,68,108,71,12,73,84                DB RETURN                FILL:           DB 25,6,25,12,25,6,25,12                DB 28,12,30,12,30,12                DB 28,12,28,12                DB 25,6,25,12,25,6,25,12                DB 28,12,30,6,30,6                DB 30,12                DB 28,12,23,12,RETURN                ;ÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆ                                END
+;¬´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´¾
+;¸********** A VERY DODGY ************¸
+;¸                                    ¸
+;¸ ßß  ß   ß   àà  ààà  à à à ààà ààà ¸
+;¸ß  ß  ß ß    à à à  à à à à à   à  à¸
+;¸ßßßß   ß     à à ààà  à à à àà  ààà ¸
+;¸ß  ß   ß     à à à  à à à à à   à  à¸
+;¸ß  ß   ß     àà  à  à à  à  ààà à  à¸
+;¸                                    ¸
+;ñ´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´Ñ
+;¸´´´´´´´´´(C)1988 Tim Follin´´´´´´´´´¸
+;ñ´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´Ñ
+;¸ BBBBBB     OOO    DDDDD   Y     Y  ¸
+;¸ B     B   O   O   D    D   Y   Y   ¸
+;¸ B     B  O     O  D     D   Y Y    ¸
+;¸ BBBBBB   O     O  D     D    Y     ¸
+;¸ B     B  O     O  D     D    Y     ¸
+;¸ B     B  O     O  D     D    Y     ¸
+;¸ B     B   O   O   D    D     Y     ¸
+;¸ BBBBBB     OOO    DDDDD      Y     ¸
+;¸                                    ¸
+;¸ LAST UPDATED:9/2/88 ¸
+;¸                                    ¸
+;¼´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´®
+                
+                ORG 50000
+                LOAD 49152
+                
+                KEY 4 '|\A|M|MO|M'
+                KEY 7 '|\SBODY|M'
+                
+                CALL TOP
+                
+LOOP:           LD A,0F7H
+                IN A,(254)
+                AND 1
+                JP Z,FAST
+                
+                HALT 
+                
+                LD BC,200
+BOROB:          DEC BC
+                LD A,B
+                OR C
+                JP NZ,BOROB
+                
+FAST:           LD BC,330
+BOBOR:          DEC BC
+                LD A,B
+                OR C
+                JP NZ,BOBOR
+                
+                CALL SPLAT
+                
+HOLD:           LD A,0F7H
+                IN A,(254)
+                AND 4
+                JP Z,HOLD
+                
+                LD A,07FH
+                IN A,(254)
+                AND 1
+                JP NZ,LOOP
+                
+                PUSH BC
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD BC,49149
+                LD A,63
+                OUT (C),A
+                POP BC
+                RET
+                
+TOP:            LD HL,DATA1
+                LD (DATAA+1),HL
+                LD HL,DATA2
+                LD (DATAB+1),HL
+                LD HL,DATA3
+                LD (DATAC+1),HL
+                LD A,1
+                LD (CHANA+1),A
+                LD (CHANB+1),A
+                LD (CHANC+1),A
+                LD (EFO+1),A
+                RET
+                
+CHANA:          LD A,000
+                DEC A
+                LD (CHANA+1),A
+                JP NZ,EFO
+DATAA:          LD HL,000
+DATR:           LD A,(HL)
+                INC HL
+                AND A
+                JR Z,TOP
+                CP 1
+                JR NZ,NEA1
+AREM:           LD A,000
+                DEC A
+                JR Z,DATR
+                LD (AREM+1),A
+                LD HL,(ARST)
+                JP DATR
+NEA1:           CP 2
+                JR NZ,NEA2
+                LD A,(HL)
+                INC HL
+                LD (AREM+1),A
+                LD (ARST),HL
+                JP DATR
+NEA2:           CP 3
+                JR NZ,NEA3
+                LD BC,65533
+                LD A,8
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD (AENV+1),A
+                LD (AVOL),A
+                LD (A%ENV%),A
+                INC HL
+                LD A,(HL)
+                LD (AENA+1),A
+                LD (A%ENA%+1),A
+                INC HL
+                LD A,(HL)
+                LD (AEND+1),A
+                LD (A%END%+1),A
+                LD (ATAGE+1),A
+                INC HL
+                LD A,(HL)
+                LD (AENS+1),A
+                INC HL
+                LD A,(HL)
+                LD (GATE+1),A
+                INC HL
+                JP DATR
+NEA3:           CP 4
+                JR NZ,NEA4
+                XOR A
+                LD (AEINI+1),A
+                JP DATR
+NEA4:           CP 5
+                JR NZ,NEA5
+                LD A,1
+                LD (AEINI+1),A
+                JP DATR
+NEA5:           CP 6
+                JR NZ,NEA6
+                LD A,(HL)
+                LD (VIB+1),A
+                LD (DELAY+1),A
+                INC HL
+                JP DATR
+NEA6:           CP 9
+                JP NZ,NEA7
+                LD A,(HL)
+                LD (NEA9+1),A
+                INC HL
+                JP DATR
+NEA7:           CP 10
+                JP NZ,NEA8
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                INC HL
+                LD (GAST),HL
+                PUSH DE
+                POP HL
+                JP DATR
+NEA8:           CP 11
+                JP NZ,NEA10
+                LD HL,(GAST)
+                JP DATR
+NEA10:          CP 15
+                JP NZ,NEA11
+                LD A,(HL)
+                INC HL
+                LD (WOBM+1),A
+                LD (WOBR+1),A
+                LD A,(HL)
+                INC HL
+                LD (WEX+1),A
+                JP DATR
+NEA11:          CP 16
+                JP NZ,NEA9
+                LD B,(HL)
+                INC HL
+                LD A,(IAD+1)
+                ADD B
+                AND 63
+                LD (IAD+1),A
+                JP DATR
+NEA9:           ADD 000
+IAD:            ADD 0
+                LD E,A
+                LD (WOBP+1),A
+                XOR A
+                LD (WOX+1),A
+                LD A,(HL)
+                LD (CHANA+1),A
+                INC HL
+                LD (DATAA+1),HL
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                ADD HL,DE
+                LD BC,65533
+                LD A,1
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD BC,65533
+                XOR A
+                OUT (C),A
+                LD BC,49149
+                INC HL
+                LD A,(HL)
+                LD (APITCH+1),A
+                OUT (C),A
+DELAY:          LD A,000
+                LD (VIB+1),A
+AEINI:          LD A,000
+                DEC A
+                JR NZ,EFO
+                LD A,(A%ENV%)
+                LD (AVOL),A
+                LD (AENV+1),A
+                LD A,(A%END%+1)
+                LD (ATAGE+1),A
+                XOR A
+                LD (IAD+1),A
+EFO:            LD A,001
+                DEC A
+                JP Z,CHANB
+                LD (EFO+1),A
+                DEC A
+                JP NZ,CHANB
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD BC,49149
+                LD A,(GTST)
+                OUT (C),A
+CHANB:          LD A,000
+                DEC A
+                LD (CHANB+1),A
+                JP NZ,CHANC
+DATAB:          LD HL,000
+DBTR:           LD A,(HL)
+                INC HL
+                AND A
+                JP Z,TOP
+                CP 1
+                JR NZ,NEB1
+BREM:           LD A,000
+                DEC A
+                JR Z,DBTR
+                LD (BREM+1),A
+                LD HL,(BRST)
+                JP DBTR
+NEB1:           CP 2
+                JR NZ,NEB2
+                LD A,(HL)
+                INC HL
+                LD (BREM+1),A
+                LD (BRST),HL
+                JP DBTR
+NEB2:           CP 3
+                JR NZ,NEB3
+                LD BC,65533
+                LD A,9
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD (BENV+1),A
+                LD (BVOL),A
+                LD (B%ENV%),A
+                INC HL
+                LD A,(HL)
+                LD (BENA+1),A
+                LD (B%ENA%+1),A
+                INC HL
+                LD A,(HL)
+                LD (BEND+1),A
+                LD (B%END%+1),A
+                INC HL
+                LD A,(HL)
+                LD (BENS+1),A
+                INC HL
+                JP DBTR
+NEB3:           CP 4
+                JR NZ,NEB4
+                XOR A
+                LD (BEINI+1),A
+                JP DBTR
+NEB4:           CP 5
+                JR NZ,NEB5
+                LD A,1
+                LD (BEINI+1),A
+                JP DBTR
+NEB5:           CP 7
+                JR NZ,NEB6
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                LD (GTST),A
+                INC HL
+                OUT (C),A
+                LD BC,65533
+                LD A,6
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                LD (NODE),A
+                INC HL
+                OUT (C),A
+                XOR A
+                LD (NOSP+1),A
+                JP DBTR
+NEB6:           CP 8
+                JP NZ,NEB7
+                LD A,(HL)
+                INC HL
+                INC A
+                LD (EFO+1),A
+                LD (EFOI),A
+                JP DBTR
+NEB7:           CP 9
+                JP NZ,NEB8
+                LD A,(HL)
+                LD (NEB10+1),A
+                INC HL
+                JP DBTR
+NEB8:           CP 10
+                JP NZ,NEB9
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                INC HL
+                LD (GBST),HL
+                PUSH DE
+                POP HL
+                JP DBTR
+NEB9:           CP 11
+                JP NZ,NEB10
+                LD HL,(GBST)
+                JP DBTR
+NEB10:          ADD 000
+                
+                ADD 0            ;
+                
+                LD E,A
+                LD A,(HL)
+                LD (CHANB+1),A
+                INC HL
+                LD (DATAB+1),HL
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                ADD HL,DE
+                LD BC,65533
+                LD A,3
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD BC,65533
+                LD A,2
+                OUT (C),A
+                LD BC,49149
+                INC HL
+                LD A,(HL)
+                OUT (C),A
+                LD A,(EFOI)
+                LD (EFO+1),A
+                DEC A
+                JP Z,BEINI
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD A,(GTST)
+                SUB 16
+                LD BC,49149
+                OUT (C),A
+BEINI:          LD A,000
+                DEC A
+                JR NZ,CHANC
+                LD A,(B%ENV%)
+                LD (BVOL),A
+                LD (BENV+1),A
+CHANC:          LD A,000
+                DEC A
+                LD (CHANC+1),A
+                JP NZ,AENV
+DATAC:          LD HL,000
+DCTR:           LD A,(HL)
+                INC HL
+                AND A
+                JP Z,TOP
+                CP 1
+                JR NZ,NEC1
+CREM:           LD A,000
+                DEC A
+                JR Z,DCTR
+                LD (CREM+1),A
+                LD HL,(CRST)
+                JP DCTR
+NEC1:           CP 2
+                JR NZ,NEC2
+                LD A,(HL)
+                INC HL
+                LD (CREM+1),A
+                LD (CRST),HL
+                JP DCTR
+NEC2:           CP 3
+                JR NZ,NEC3
+                LD BC,65533
+                LD A,10
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD (CENV+1),A
+                LD (CVOL),A
+                LD (C%ENV%),A
+                INC HL
+                LD A,(HL)
+                LD (CENA+1),A
+                LD (C%ENA%+1),A
+                INC HL
+                LD A,(HL)
+                LD (CEND+1),A
+                LD (C%END%+1),A
+                INC HL
+                LD A,(HL)
+                LD (CENS+1),A
+                INC HL
+                JP DCTR
+NEC3:           CP 4
+                JR NZ,NEC4
+                XOR A
+                LD (CEINI+1),A
+                JP DCTR
+NEC4:           CP 5
+                JR NZ,NEC5
+                LD A,1
+                LD (CEINI+1),A
+                JP DCTR
+NEC5:           CP 7
+                JR NZ,NEC90
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                LD (GTST),A
+                INC HL
+                OUT (C),A
+                LD BC,65533
+                LD A,6
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                LD (NODE),A
+                INC HL
+                OUT (C),A
+                XOR A
+                LD (NOSP+1),A
+                JP DCTR
+NEC90:          CP 9
+                JP NZ,NEC6
+                LD A,(HL)
+                LD (NEC8+1),A
+                INC HL
+                JP DCTR
+NEC6:           CP 10
+                JP NZ,NEC7
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                INC HL
+                LD (GCST),HL
+                PUSH DE
+                POP HL
+                JP DCTR
+NEC7:           CP 11
+                JP NZ,NEC9
+                LD HL,(GCST)
+                JP DCTR
+NEC9:           CP 12
+                JP NZ,NEC91
+                LD A,(HL)
+                INC HL
+                LD (CHEN+1),A
+                LD (NOSR+1),A
+                LD A,30
+                LD (NODE),A
+                LD A,1
+                LD (NOSP+1),A
+                JP DCTR
+NEC91:          CP 13
+                JP NZ,NEC92
+                LD A,(NEC8+1)
+                LD (CANC+1),A
+                JP DCTR
+NEC92:          CP 14
+                JP NZ,NEC8
+                XOR A
+                LD (CANC+1),A
+                JP DCTR
+NEC8:           ADD 000
+CANC:           SUB 000
+                
+                ADD 0            ;
+                
+                LD E,A
+                LD A,(HL)
+                LD (CHANC+1),A
+                INC HL
+                LD (DATAC+1),HL
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                ADD HL,DE
+                LD BC,65533
+                LD A,5
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD BC,65533
+                LD A,4
+                OUT (C),A
+                LD BC,49149
+                INC HL
+                LD A,(HL)
+                OUT (C),A
+CEINI:          LD A,000
+                DEC A
+                JR NZ,AENV
+                LD A,(C%ENV%)
+                LD (CVOL),A
+                LD (CENV+1),A
+AENV:           LD A,000
+                CP 13
+                JP Z,AEND
+AENA:           LD A,000
+                DEC A
+                LD (AENA+1),A
+                JR NZ,GATE
+A%ENA%:         LD A,000
+                LD (AENA+1),A
+                LD BC,65533
+                LD A,8
+                OUT (C),A
+                LD BC,49149
+                LD A,(AVOL)
+                INC A
+                LD (AVOL),A
+                LD (AENV+1),A
+                OUT (C),A
+                JP GATE
+AEND:           LD A,000
+                DEC A
+                LD (AEND+1),A
+                JR NZ,GATE
+A%END%:         LD A,000
+                LD (AEND+1),A
+ATAGE:          LD A,000
+                LD (AEND+1),A
+                LD BC,65533
+                LD A,8
+                OUT (C),A
+                LD BC,49149
+                LD A,(AVOL)
+                DEC A
+                OUT (C),A
+AENS:           CP 000
+                JP Z,GATE
+                LD (AVOL),A
+GATE:           LD A,000
+                AND A
+                JR Z,BENV
+                LD B,A
+                LD A,(CHANA+1)
+                CP B
+                JR NZ,BENV
+                LD A,13
+                LD (AENV+1),A
+                LD A,1
+                LD (AEND+1),A
+                LD (ATAGE+1),A
+BENV:           LD A,000
+                CP 13
+                JP Z,BEND
+BENA:           LD A,000
+                DEC A
+                LD (BENA+1),A
+                JP NZ,CENV
+B%ENA%:         LD A,000
+                LD (BENA+1),A
+                LD BC,65533
+                LD A,9
+                OUT (C),A
+                LD BC,49149
+                LD A,(BVOL)
+                INC A
+                LD (BVOL),A
+                LD (BENV+1),A
+                OUT (C),A
+                JP CENV
+BEND:           LD A,000
+                DEC A
+                LD (BEND+1),A
+                JP NZ,CENV
+B%END%:         LD A,000
+                LD (BEND+1),A
+                LD BC,65533
+                LD A,9
+                OUT (C),A
+                LD BC,49149
+                LD A,(BVOL)
+                DEC A
+                OUT (C),A
+BENS:           CP 000
+                JR Z,CENV
+                LD (BVOL),A
+CENV:           LD A,000
+                CP 13
+                JP Z,CEND
+CENA:           LD A,000
+                DEC A
+                LD (CENA+1),A
+                JP NZ,VIB
+C%ENA%:         LD A,000
+                LD (CENA+1),A
+                LD BC,65533
+                LD A,10
+                OUT (C),A
+                LD BC,49149
+                LD A,(CVOL)
+                INC A
+                OUT (C),A
+                LD (CVOL),A
+                LD (CENV+1),A
+                JP VIB
+CEND:           LD A,000
+                DEC A
+                LD (CEND+1),A
+                JP NZ,VIB
+C%END%:         LD A,000
+                LD (CEND+1),A
+                LD BC,65533
+                LD A,10
+                OUT (C),A
+                LD BC,49149
+                LD A,(CVOL)
+                DEC A
+                OUT (C),A
+CENS:           CP 000
+                JR Z,VIB
+                LD (CVOL),A
+VIB:            LD A,000
+                DEC A
+                LD (VIB+1),A
+                JR NZ,CHEN
+                INC A
+                LD (VIB+1),A
+                LD HL,TABLE
+BIV1:           LD A,000
+                INC A
+                AND 7
+                LD (BIV1+1),A
+                LD E,A
+                LD D,0
+                ADD HL,DE
+                LD A,(HL)
+APITCH:         ADD 000
+                LD D,A
+                LD BC,65533
+                XOR A
+                OUT (C),A
+                LD BC,49149
+                LD A,D
+                OUT (C),A
+CHEN:           LD A,000
+                CP 255
+                JP Z,WOBM
+                DEC A
+                LD (CHEN+1),A
+                JP NZ,WOBM
+NOSR:           LD A,000
+                LD (CHEN+1),A
+NOSP:           LD A,000
+                DEC A
+                JP Z,NOSU
+                LD A,(NODE)
+                INC A
+                LD (NODE),A
+                CP 29
+                JP NZ,NSET
+                LD A,(NOSP+1)
+                XOR 1
+                LD (NOSP+1),A
+                LD A,31
+                JP NSET
+NOSU:           LD A,(NODE)
+                DEC A
+                LD (NODE),A
+                CP 5
+                JP NZ,NSET
+                LD A,(NOSP+1)
+                XOR 1
+                LD (NOSP+1),A
+NSET:           LD D,A
+                LD BC,65533
+                LD A,6
+                OUT (C),A
+                LD BC,49149
+                LD A,D
+                OUT (C),A
+WOBM:           LD A,000
+                AND A
+                JP Z,COME
+                DEC A
+                LD (WOBM+1),A
+                JP NZ,COME
+WOBR:           LD A,000
+                LD (WOBM+1),A
+WOX:            LD A,000
+WEX:            XOR 000
+                LD (WOX+1),A
+                LD E,A
+WOBP:           LD A,000
+                ADD E
+                LD E,A
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                ADD HL,DE
+                LD BC,65533
+                LD A,1
+                OUT (C),A
+                LD BC,49149
+                LD A,(HL)
+                OUT (C),A
+                LD BC,65533
+                XOR A
+                OUT (C),A
+                LD BC,49149
+                INC HL
+                LD A,(HL)
+                OUT (C),A
+COME:           RET
+                
+TABLE:          DB 0-4,0-2,2,4,4,2,0-2,0-4
+                
+AVOL:           DB 0
+BVOL:           DB 0
+CVOL:           DB 0
+                
+ARST:           DW 0
+BRST:           DW 0
+CRST:           DW 0
+                
+A%ENV%:         DB 0
+B%ENV%:         DB 0
+C%ENV%:         DB 0
+                
+GTST:           DB 0
+EFOI:           DB 0
+NODE:           DB 0
+GAST:           DW 0
+GBST:           DW 0
+GCST:           DW 0
+                
+NOTES:          EQU $-16
+                DBH 0EEE0E180D4D0C8E0BDA
+                DBH 0B2F0A8F09F7096808E1
+                DBH 086107E90777070C06A7
+                DBH 064705ED0598054704FC
+                DBH 04B40470043103F403BC
+                DBH 03860353032402F602CC
+                DBH 02A4027E025A02380218
+                DBH 01FA01DE01C301AA0192
+                DBH 017B01660152013F012D
+                DBH 011C010C00FD00EF00E1
+                DBH 00D500C900BE00B300A9
+                DBH 009F0096008E0086007F
+                DBH 00770071006A0064005F
+                DBH 005900540050004B0047
+                DBH 0043003F003C00380035
+                DBH 0032002F002D002A0028
+                DBH 0026002400220020001E
+                DBH 001C001B001900180016
+                DBH 00150014001300120011
+                DBH 00100010001000100010
+                
+STOP:           EQU 0
+NEXT:           EQU 1
+FOR:            EQU 2
+ADSR:           EQU 3
+EOF:            EQU 4
+EON:            EQU 5
+VIBRA:          EQU 6
+ONOI:           EQU 7
+EFFECT:         EQU 8
+TRANS:          EQU 9
+GOSUB:          EQU 10
+GOTO:           EQU 10
+RETURN:         EQU 11
+NOISE:          EQU 12
+CANON:          EQU 13
+CANOF:          EQU 14
+WOBBLE:         EQU 15
+INCADD:         EQU 16
+                
+;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ
+                
+DATA1:          DB ADSR,0,8,0,0,0,EON
+                DB VIBRA,0,WOBBLE,0,0
+                DB TRANS,0,49,96
+REST1:          DB ADSR,4,17,0,0,0
+                DB WOBBLE,1,12,VIBRA,0
+                
+                DB FOR,24
+                DB 61,2,EOF,64,2,68,2
+                DB NEXT
+                DB ADSR,12,1,6,0,0,EON
+                DB FOR,4
+                DB 61,2,EOF,64,2,69,2
+                DB NEXT,EON
+                DB FOR,4
+                DB 63,2,EOF,66,2,71,2
+                DB NEXT
+                
+                DB WOBBLE,2,7
+                DB ADSR,4,17,0,0,0,EON
+                DB VIBRA,12
+                DB 73,192
+                DB ADSR,9,1,17,1,3,EON
+                DB WOBBLE,0,0
+                DB GOSUB
+                DW LEAD1
+                DB ADSR,12,1,5,9,3,EON
+                DB WOBBLE,1,12,VIBRA,0
+                DB GOSUB
+                DW LEAD2
+                DB WOBBLE,1,7
+                DB FOR,3,68,16,66,16,NEXT
+                DB WOBBLE,0,0,TRANS,12
+                
+                DB ADSR,4,15,0,0,0,EOF
+                DB FOR,8
+                DB 49,6,51,6,52,6,56,6,NEXT
+                DB FOR,8
+                DB 47,6,49,6,51,6,54,6,NEXT
+                DB WOBBLE,1,7,FOR,8
+                DB 45,6,47,6,49,6,52,6,NEXT
+                DB FOR,8
+                DB 47,6,49,6,51,6,54,6,NEXT
+                DB WOBBLE,1,12,FOR,4
+                DB 49,6,51,6,52,6,56,6,NEXT
+                DB TRANS,5,FOR,4
+                DB 49,6,51,6,53,6,56,6,NEXT
+                
+                DB ADSR,9,1,4,9,2,EON
+                DB WOBBLE,1,7
+                DB TRANS,0,GOSUB
+                DW LEAD2
+                
+                DB ADSR,12,1,3,0,0
+                DB WOBBLE,1,7
+                DB FOR,3,68,16,66,16,NEXT
+                DB WOBBLE,0,0,VIBRA,24
+                DB ADSR,0,7,0,12,0
+                DB 73,96,75,96,78,96,80,96
+                DB 61,96,63,96,66,96,68,96
+                DB ADSR,12,1,10,9,0
+                DB VIBRA,16
+                DB 71,6,73,66
+                DB 73,8,71,4,68,12,66,8
+                DB 68,4,ADSR,0,0,0,0,0
+                DB 66,24
+                DB ADSR,4,1,0,0,0,71,24
+                DB ADSR,12,1,15,5,0
+                DB 64,8,63,4
+                DB 64,8,66,4,78,12
+                DB 73,60,71,8,70,4,71,8
+                DB 73,4,70,12,68,60
+                DB 66,8,64,4,66,8,68,4
+                DB 64,12,63,84,64,8,63,4
+                DB 61,96,66,84,68,8,70,4
+                DB 71,96
+                DB ADSR,7,40,0,0,0,EOF
+                DB FOR,192,20,2
+                DB INCADD,51,NEXT
+                DB VIBRA,0,EON
+                DB ADSR,5,30,0,0,0,EOF
+                DB WOBBLE,12,12
+                DB 85,192,85,192
+                
+                DB GOTO
+                DW REST1
+;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ
+                
+DATA2:          DB ADSR,0,8,0,0,EON
+                DB 52,96
+REST2:          DB ADSR,12,1,3,0
+                DB ONOI,56,25
+                DB EFFECT,2
+                
+                DB FOR,4
+                DB GOSUB
+                DW BAS1
+                DB NEXT
+                DB GOSUB
+                DW FILL
+                
+                DB FOR,3,71,16,69,16,NEXT
+                
+                DB FOR,9
+                DB 25,12,23,6,25,6
+                DB 28,12,25,6,23,6
+                DB 28,6,25,6,25,12,30,6
+                DB 25,6,32,6,35,6
+                DB NEXT
+                
+                DB 20,12,20,6,20,12,20,6
+                DB 20,12,20,6,20,12,20,6
+                DB 20,6,22,6,23,6,24,6
+                
+                DB GOSUB
+                DW BAS1
+                DB GOSUB
+                DW FILL
+                
+                DB FOR,3,71,16,69,16,NEXT
+                
+                DB FOR,4
+                DB 25,12,28,12,30,12,31,12
+                DB 32,12,34,12,35,12
+                DB 36,8,32,4
+                DB 37,12,35,12,32,12
+                DB 31,8,28,4
+                DB 30,12,28,12,23,12
+                DB 24,8,27,4
+                DB NEXT
+                DB FOR,4
+                DB 25,12,28,8,25,4
+                DB 30,8,25,4,31,8,32,12
+                DB 32,4,30,8,28,4,30,8
+                DB 28,4,25,8,23,4
+                DB NEXT
+                DB EFFECT,1
+                DB FOR,4
+                DB 23,6,25,6,25,6,25,6
+                DB 28,6,25,6,25,6,30,6
+                DB 25,6,25,6,32,6,30,6
+                DB 28,6,27,6,28,6,30,6
+                DB NEXT
+                DB FOR,8
+                DB 23,6,25,6,37,6,25,6
+                DB 28,6,23,6,22,6,20,6
+                DB NEXT
+                DB FOR,16
+                DB 25,12,37,12
+                DB NEXT
+                
+                DB GOTO
+                DW REST2
+;ÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒÒ
+                
+DATA3:          DB ADSR,0,8,0,0,EON
+                DB ONOI,0,28
+                DB NOISE,4,54,96
+REST3:          DB ADSR,12,1,3,0
+                
+                DB TRANS,254,GOSUB
+                DW MAJOR
+                DB TRANS,252,GOSUB
+                DW MAJOR
+                DB TRANS,0,FOR,16
+                DB GOSUB
+                DW MINOR
+                DB NEXT
+                
+                DB TRANS,7,GOSUB
+                DW DRUM1
+                DB GOSUB
+                DW DRUM1
+                DB TRANS,5,GOSUB
+                DW DRUM2
+                DB GOSUB
+                DW DRUM1
+                DB TRANS,3,GOSUB
+                DW DRUM2
+                DB GOSUB
+                DW DRUM1
+                DB TRANS,1,GOSUB
+                DW DRUM2
+                DB TRANS,255,GOSUB
+                DW DRUM1
+                DB TRANS,253,GOSUB
+                DW DRUM1
+                DB TRANS,251,GOSUB
+                DW DRUM2
+                DB TRANS,248,GOSUB
+                DW DRUM1
+                DB TRANS,246,GOSUB
+                DW DRUM1
+                
+                DB TRANS,0,GOSUB
+                DW MINOR
+                DB GOSUB
+                DW MINOR
+                DB TRANS,254,GOSUB
+                DW MAJOR
+                DB GOSUB
+                DW MAJOR
+                DB TRANS,0,GOSUB
+                DW MINOR
+                DB GOSUB
+                DW MINOR
+                DB TRANS,254,GOSUB
+                DW MAJOR
+                DB GOSUB
+                DW MAJOR
+                DB TRANS,0
+                DB GOSUB
+                DW MINOR
+                
+                DB TRANS,7,GOSUB
+                DW DRUM1
+                DB GOSUB
+                DW DRUM1
+                DB TRANS,4,GOSUB
+                DW DRUM2
+                
+                DB FOR,3
+                DB TRANS,5,GOSUB
+                DW DRUM1
+                DB TRANS,8,GOSUB
+                DW DRUM2
+                DB NEXT
+                
+                DB FOR,3
+                DB TRANS,7,GOSUB
+                DW DRUM1
+                DB NEXT
+                
+                DB TRANS,0,GOSUB
+                DW MINOR
+                DB TRANS,3,GOSUB
+                DW MAJOR
+                DB FOR,2,TRANS,0,GOSUB
+                DW MINOR
+                DB TRANS,5,GOSUB
+                DW MAJOR
+                DB NEXT
+                
+                DB FOR,5
+                DB TRANS,5,GOSUB
+                DW DRUM1
+                DB TRANS,8,GOSUB
+                DW DRUM2
+                DB NEXT
+                DB TRANS,2,GOSUB
+                DW DRUM1
+                
+                DB FOR,5,TRANS,0
+                DB GOSUB
+                DW MINOR
+                DB TRANS,254,GOSUB
+                DW MAJOR
+                DB TRANS,5,GOSUB
+                DW MAJOR
+                DB TRANS,3,GOSUB
+                DW MAJOR
+                DB NEXT
+                
+                DB FOR,4,TRANS,0
+                DB GOSUB
+                DW MINOR
+                DB NEXT
+                
+                DB GOTO
+                DW REST3
+                
+;ææææææææææææææææææææææææææææææææææææææ
+MINOR:          DB ADSR,12,1,3,0,CANOF
+                DB 61,1,EOF,52,1,56,1,51,1
+                DB 52,1,56,1,61,1,52,1
+                DB 56,1,51,1,52,1,56,1
+                DB 61,1,52,1,56,1,52,1
+                DB 52,1,56,1,51,1,52,1
+                DB 56,1,61,1,52,1,56,1
+                DB ONOI,24,10
+                
+                DB ADSR,12,1,2,0,CANON
+                DB EON,49,1,EOF
+                DB 48,1,47,1,46,1,45,1
+                DB 44,1,43,1,43,1,42,1,41,1
+                DB 41,1,40,1
+                DB EON,47,1,EOF
+                DB 46,1,45,1,44,1,43,1
+                DB 42,1,41,1,41,1,40,1,39,1
+                DB 39,1,38,1
+                DB ONOI,56,25,EON
+                
+                DB ADSR,12,1,3,0,CANOF
+                DB 61,1,EOF,52,1,56,1,51,1
+                DB 52,1,56,1,61,1,52,1
+                DB 56,1,51,1,52,1,56,1
+                DB 61,1,52,1,56,1,52,1
+                DB 52,1,56,1,51,1,52,1
+                DB 56,1,61,1,52,1,56,1
+                DB ONOI,24,10
+                
+                DB ADSR,12,1,2,0,CANON
+                DB EON,47,1,EOF
+                DB 46,1,45,1,44,1,43,1
+                DB 42,1,41,1,41,1,40,1,39,1
+                DB 39,1,38,1,37,1,37,1,36,1
+                DB 36,1,35,1,35,1,34,1,34,1
+                DB 34,1,33,1,33,1,33,1
+                DB ONOI,56,25,EON
+                
+                DB RETURN
+                
+MAJOR:          DB ADSR,12,1,3,0,CANOF
+                DB 61,1,EOF,53,1,56,1,49,1
+                DB 53,1,56,1,61,1,53,1
+                DB 56,1,49,1,53,1,56,1
+                DB 61,1,53,1,56,1,53,1
+                DB 53,1,56,1,49,1,53,1
+                DB 56,1,61,1,53,1,56,1
+                DB ONOI,24,10
+                
+                DB ADSR,12,1,2,0,CANON
+                DB EON,49,1,EOF
+                DB 48,1,47,1,46,1,45,1
+                DB 44,1,43,1,43,1,42,1,41,1
+                DB 41,1,40,1
+                DB EON,47,1,EOF
+                DB 46,1,45,1,44,1,43,1
+                DB 42,1,41,1,41,1,40,1,39,1
+                DB 39,1,38,1
+                DB ONOI,56,25,EON
+                
+                DB ADSR,12,1,3,0,CANOF
+                DB 61,1,EOF,53,1,56,1,49,1
+                DB 53,1,56,1,61,1,53,1
+                DB 56,1,49,1,53,1,56,1
+                DB 61,1,53,1,56,1,53,1
+                DB 53,1,56,1,61,1,53,1
+                DB 56,1,49,1,53,1,56,1
+                DB ONOI,24,10
+                
+                DB ADSR,12,1,2,0,CANON
+                DB EON,47,1,EOF
+                DB 46,1,45,1,44,1,43,1
+                DB 42,1,41,1,41,1,40,1,39,1
+                DB 39,1,38,1,37,1,37,1,36,1
+                DB 36,1,35,1,35,1,34,1,34,1
+                DB 34,1,33,1,33,1,33,1
+                DB ONOI,56,25,EON
+                
+                DB RETURN
+                
+DRUM1:          DB ADSR,12,1,1,0
+                DB ONOI,24,15
+                DB EON,51,1,EOF
+                DB 50,1,49,1,48,1,47,1
+                DB 46,1,ONOI,56,25,EON
+                DB RETURN
+                
+DRUM2:          DB ADSR,12,1,2,0
+                DB ONOI,24,15
+                DB EON,51,1,EOF
+                DB 50,1,49,1,48,1,47,1
+                DB 46,1,45,1,44,1,43,1,42,1
+                DB 41,1,40,1
+                DB ONOI,56,25,EON
+                DB RETURN
+                
+BAS1:           DB 25,6,25,12,25,6,25,12
+                DB 28,12,30,12,30,12
+                DB 28,12,28,12
+                DB 25,6,25,12,25,6,25,12
+                DB 28,12,30,6,30,6
+                DB 30,12
+                DB 28,12,23,12
+                DB 25,6,25,6,25,6,25,12
+                DB 25,6,28,12,30,12,30,12
+                DB 28,12,28,12
+                DB 25,6,25,12,25,6,25,12
+                DB 28,6,30,12,30,6
+                DB 30,6,30,6
+                DB 28,12,23,6,24,6,RETURN
+                
+LEAD1:          DB 61,12,63,24,64,48,64,12
+                DB 64,12,66,24,68,36,68,24
+                DB 71,24,69,24,68,24
+                DB 66,12,68,108
+                DB 61,6,64,6,66,6,68,78
+                DB 66,6,68,6,71,6,73,78
+                DB 76,12,73,96,80,84
+                DB RETURN
+                
+LEAD2:          DB 76,12,78,12,76,12,75,24
+                DB 76,12,75,12,73,24,75,12
+                DB 73,12,71,24,73,12,71,12
+                DB 69,12,68,120,73,24,71,24
+                DB 69,12,68,108,71,12,73,84
+                DB RETURN
+                
+FILL:           DB 25,6,25,12,25,6,25,12
+                DB 28,12,30,12,30,12
+                DB 28,12,28,12
+                DB 25,6,25,12,25,6,25,12
+                DB 28,12,30,6,30,6
+                DB 30,12
+                DB 28,12,23,12,RETURN
+                
+;ÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆ
+                
+                END
