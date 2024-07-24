@@ -1,18 +1,30 @@
 # ARCHIVE-FOLLIN
 
+![In aid of Pancreatic Cancer UK](Resources/Images/pancreatic_cancer_uk_in_aid_of.png)
+
+Sadly Geoff Follin passed away in May 2024 after being diagnosed with pancreatic and liver cancer just three weeks before. I've been good friends with the Follin brothers since we worked together at Software Creations. His death has hit us all really hard. Pancreatic cancer is brutal.
+
+I've decided to run the Manchester 10K next May in his memory and in aid of Pancreatic Cancer UK.
+
+[Please visit my giving page for more details on this, and consider a small donation.](https://www.justgiving.com/page/dean-belfield-1719662311154)
+
 ## Introduction
 
 I was donated a box of 3" floppy disks by Tim Follin a couple of years ago that contained backups of the music he wrote in the late 80s and early 90s whilst working at Software Creations in Manchester (UK).
 
-The music was hand-coded by Tim and Geoff Follin in assembler as a series of DEFB's, with that data containing note pitch and duration, and control data.
+The music and sound effects were hand-coded by Tim and Geoff Follin in assembler as a series of DEFB's representing note pitch and duration for each channel. This data can also contains commands, for example to loop a sequence, call a subroutine or switch on an effect.
 
-This data was then played by a small driver, also written in assembly language, in the games.
+Once completed, their music source was included in the intended game along with a small music driver, also written in assembler.
 
-The assembler/editor was a custom application written by Mike Webb / Ste Ruddy and ran on a Tatung Einstein TC-01. The resultant source code was saved out on said 3" floppy disks.
+This could then be called from within the game for both in-game music and sound effects.
+
+The assembler/editor was a custom application written by Mike Webb / Ste Ruddy and ran on a Tatung Einstein TC-01.
+
+The resultant source code was saved out on said 3" floppy disks.
 
 ## The challenge
 
-I used to work with Tim at Software Creations, so was reasonably familiar with the workflow.
+I used to work with Tim at Software Creations, so am reasonably familiar with the workflow.
 
 I was hoping that:
 
@@ -27,9 +39,11 @@ I ended up purchasing a Tatung Einstein TC-01 for a reasonable price off eBay. T
 
 For the most part the disks are fine.
 
-One is physically damaged - it has a damaged shutter, which I need to repair, and there were the odd files that didn't read correctly.
+The disks target the C64 (6502) and Amstrad CPC/Spectrum 128K (Z80).
 
-There are a couple of disks that have unreadable sides - missing sector 0. I suspect that these are not formatted for the Einstein, maybe the Spectrum +3 or Amstrad CPC6128.
+One disk is physically damaged - it has a damaged shutter, which I need to repair, and there was the odd file that didn't read correctly.
+
+There are a couple of disks that have unreadable sides - reporting a missing sector 0. I suspect that these are not formatted for the Einstein, maybe the Spectrum +3 or Amstrad CPC6128.
 
 I've also noted that there are a handful of zero-byte files, which puzzled me at first. The working hypothesis is that as part of the workflow, disks were copied to a silicon RAM disk plugged into the Einstein at the start of the day, and edited/assembled from there as it was far quicker than working from floppy. The silicon disks were volatile, so at the end of the day, or at critical points during development, it was backed up to floppy. I suspect that this would sometimes result in a disk full error, with zero-byte files being written out for any files that didn't fit.
 
