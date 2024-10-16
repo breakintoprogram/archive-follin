@@ -1,0 +1,352 @@
+;*************************************
+;*************************************
+;**                                 **
+;**  INSTRUCTIONS FOR ASSEMBLER     **
+;**                                 **
+;**    4/6/86                       **
+;**                                 **
+;**                                 **
+;*************************************
+;*************************************
+
+
+;FUNCTION KEYS
+
+;F0 COMMAND MODE
+;F1 TO F7 REDEFINABLE
+;SHIFT AND FKEY IS POSITION MARKERS
+; SEE LATER
+
+;AFTER PRESSING F0 IE COMMAND MODE
+; COMMANDS ARE:-
+
+;A ASSEMBLE
+;===================================
+;B BUILD FILE
+;===================================
+;C CHANGE STRING SET BY FIND TO
+;  STRING FOLLOWING "C"
+;===================================
+;D DIRECTORY
+;FORMAT
+;D            DIR 0
+;D1:          DIR 1
+;D1:*.SRC     DIR SOURCE FILES ON 1
+;===================================
+;E EXECUTE BUILD FILE
+;===================================
+;F FIND STRING AFTER "F"
+;  IE FHELLO WILL FIND "HELLO"
+;  IF STRING IS FOLLOWED BY A
+;  COLON THEN ONLY LABELS WITH
+;  THAT NAME WILL BE FOUND
+;===================================
+;G NOTHING
+;===================================
+;H HOWBIG (TRY IT)
+;===================================
+;I INPUT (FROM SPECTRUM ONLY)
+;  FORMAT I 8000
+;  INPUTS DATA FILE FROM SPEC
+;  INTO MEMORY
+;  USE SAVE*"B"CODE ON SPECY
+;===================================
+;J NOTHING
+;===================================
+;K SET UP FUNCTION KEYS
+; FORMAT KN"STRING"
+; WHERE 3<=N=<7
+; REDEFINABLE KEYS CAN BE SETUP
+; IN SOURCE I.E.
+
+KEY 3'|T|^FMIKE|M'
+
+; | = CONTROL ( NEXT TO BREAK )
+; AFTER ABOVE
+; KEY3=TOP,F2,FMIKE,ENTER
+
+; USEFULL CONTROL CODES
+; FOR KEYS
+
+;  |D   CURSOR RIGHT
+;  |E   END
+;  |F   FIND
+;  |H   BACK SPACE
+;  |J   CURSOR DOWN
+;  |K   CURSOR UP
+;  |M   ENTER
+;  |T   TOP
+;  |Y   DELETE
+;  |Z   INSERT
+;  |[   ESCAPE
+;  |\   DOWN PAGE  (F0)
+;  |]   UP PAGE    (F1)
+;  |^   COMAND     (F2)
+
+;===================================
+;L LOAD
+;   SAVE AND LOAD
+
+;  SOURCE FILES
+;  FORMAT S FILENAME
+;         L FILENAME
+
+;  BINARY FILES
+;  FORMAT S FILENAME.ANY START END
+;         L FILENAME.ANY START
+;  ADDRESS'S IN HEX
+
+;  BACKUP FILES ARE AUTOMATICLLY
+;  MADE FOR SOME TYPES - THESE ARE
+
+;  SRC BECOMES BAK
+;  COM BECOMES COP
+;  DAT BECOMES DBU (DATA BACKUP)
+
+;  NOTE SOURCE FILES CANNOT BE LOADED
+;  TO AN ADDRESS
+
+;  X FILENAME
+;  ADDS FILE TO FILE IN MEMORY
+
+;===================================
+;M RETURN TO MOS
+;===================================
+;N NOTHING
+;===================================
+;O OUTPUT
+
+;  FORMAT O TYPE ADD1 ADD2 LENGTH
+;  WHERE TYPE IS EITHER
+;  P FOR AMSTRAD (PARALLEL)
+;  S FOR SPECTRUM (SERIAL) (DEFAULT)
+;  ADD1 IS ADDRESS OF DATA IN EINSTIEN
+;  ADD2 IS ADDRESS FOR TARGET MACHINE
+;  LENGTH HAVE A GUESS
+;  AFTER ASSEMBLY THE ADDRESS'S
+;  WILL BE SET FROM THE LOAD , ORG
+;  AND OBJECT LENGTH
+;  THEREFORE O ON IT'S OWN WILL OUTPUT
+;  THE OBJECT
+
+;===================================
+;P NOTHING
+;===================================
+;Q NOTHING
+;===================================
+;R NOTHING
+;===================================
+;S SAVE (SEE LOAD)
+;===================================
+;T GENERATE LABLE TABLE
+;  AS SOURCE
+;
+;  EI
+; FRED EQU 0E34H
+;
+; T1 GIVES VALUES IN DECIMAL
+;
+; USE CAREFULLY AS TABLE IS ADDED
+; TO END OF SOURCE
+
+;===================================
+;U NOTHING
+;===================================
+;V NOTHING
+;===================================
+;W NOTHING
+;===================================
+;X APPEND FILE
+;===================================
+;Y NOTHING
+;===================================
+;Z NOTHING
+
+
+;===================================
+;===================================
+;===================================
+
+; WHEN NOT IN COMMAND MODE FUNCTIONS
+; ARE SELECTED BY USING CTRL AND A-Z
+; THESE ARE:-
+
+;A NOT USED
+;===================================
+;B SET BLOCK MARKER  (SEE LATER)
+;===================================
+;C LINE OR BLOCK COPY
+;TO COPY SINGLE LINE
+; DO CTRL C ON LINE TO BE COPIED
+; DO CTRL H AT POSITION COPIED LINE
+; IS REQUIRED
+;TO COPY A NUMBER OF LINES
+; DO CTRL B ON FIRST LINE TO COPY
+; DO CTRL C ON LAST LINE TO COPY
+; DO CTRL H AT POSITION COPIED LINE
+
+;===================================
+;D DELETES CURRENT LINE
+;  OR BLOCK IF BLOCK MARKER SET
+;===================================
+;E GOTO END OF SOURCE
+;===================================
+;F FIND NEXT OCCURANCE OF STRING SET
+;  BY COMMAND F
+;===================================
+;G NOT USED
+;===================================
+;H (HERE) SETS TARGET LINE FOR
+;  LINE AND BLOCK MANIPULATION
+;  (SEE LATER)
+;===================================
+;I INSERT LINE
+;===================================
+;J NOT USED
+;===================================
+;K NOT USED
+;===================================
+;L NOT USED
+;===================================
+;M LINE OR BLOCK MOVE (SEE COPY)
+;===================================
+;N NOT USED
+;===================================
+;O OLD REPLACES DELETED LINE
+;  TRY "CTRL D" THEN "CTRL O"
+;===================================
+;P LINE OR BLOCK PRINT (TO PRINTER)
+;  (SEE LATER)
+;===================================
+;Q NOT USED
+;===================================
+;R NOT USED
+;===================================
+;S SPLIT LINE
+; CONVERTS
+LABLE:NOP
+; TO
+LABLE:
+NOP
+
+;===================================
+;T MOVE TO TOP OF SOURCE
+;===================================
+;U UNSPLIT
+;  OPOSITE OF SPLIT
+;===================================
+;V NOT USED
+;===================================
+;W NOT USED
+;===================================
+;X NOT USED
+;===================================
+;Y NOT USED
+;===================================
+;Z RESET BLOCK MARKERS
+
+
+;===================================
+;===================================
+
+; POSITION MARKERS
+
+; THESE MARK A POSITION IN SOURCE
+
+; TO SET POSITION MARKER
+; PRESS SHIFT GRAPH FN
+
+; WHERE FN IS FUNCTION KEY (0 TO 7)
+
+; TO GO TO POSITION MARKER
+; PRESS SHIFT FN
+
+;===================================
+;===================================
+
+
+; ASSEMBLE FILE FROM DISC
+
+
+; FORMAT IS
+
+;       INCL NAME
+; OR    INCL NAME.SRC
+; OR    INCL NAME.BAK
+; OR    INCL 1:NAME.BAK
+
+; NESTED INCLUDES ARE
+; NOT ALLOWED
+
+; AN END IN AN INCLUDED FILE
+; IS TACKEN AS END OF INCLUDE
+; AND NOT END OF SOURCE
+
+; I.E. FILE IN MEMORY MUST
+; HAVE END INSTRUCTION
+
+;===================================
+;===================================
+
+; ASSEMBLY LISTINGS
+
+; SYNTAX PRNT N
+; WHERE N=1 FOR PRINTER ON
+;         0 FOR PRINTER OFF
+
+; MAY BE FOLLOWED BY CONTROL
+; CODES IE
+
+
+PRNT 1,14
+; THIS IS BIG
+
+; USEFULL FOR MAIN TITLES
+
+PRNT 0,13,10
+
+; NOTE CTRL 14 ONLY PRINTS ONE
+; LINE IN ENLARGED MODE
+
+;         PRNT LABLE
+; IS ALSO VALID
+
+
+; IE
+
+PRINT:EQU 1
+PRINTOF:EQU 0
+
+
+; THEN
+
+PRNT PRINT
+
+; THIS IS ONLY PRINTED IF PRINT=1
+
+PRNT PRINTOF
+
+; THIS WILL NOT BE PRINTED IF
+; PRINTOF IS 0
+
+;===================================
+;===================================
+
+; OUTPUT WHILE ASSEMBLING
+
+; CHANGING THE LOAD INSTRUCTION
+; TO
+OUTP 
+
+; WILL SEND ALL ASSEMBLED CODE
+; DIRECT TO PARALLEL PORT
+
+
+; NOTE TATUNG WILL WAIT UNTILL
+; LOADER PROG ON AMSTRAD IS EXECUTED
+
+;===================================
+;===================================
+
+
+END
