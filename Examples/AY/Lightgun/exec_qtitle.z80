@@ -1,0 +1,28 @@
+;
+; Title:        Z80 AY MUSIC DRIVER
+; Author:       Ste Ruddy
+; Modified by:	Dean Belfield (to assemble on sjasmplus)
+; Started:      16/11/2024
+; Last Updated:	16/11/2024
+;
+; The files originate from the following disk images:
+;
+; Disk 3, Side B: AYDRIVE.SRC	AY driver/tracker
+; Disk 7, Side A: QTITLE.SRC
+;
+; Modinfo:
+;                 
+
+		DEVICE	ZXSPECTRUM128
+
+Code_Start:	EQU 40000	; Where the AY driver is loaded
+Data_Start:	EQU 50000	; Where the tunes are loaded
+
+                ORG Code_Start
+
+		EI		; This is required for some emulators
+
+		INCLUDE "aydrive.z80"
+		INCLUDE "qtitle.z80"
+
+		SAVESNA "Examples/AY/Lightgun/qtitle.sna", Code_Start
