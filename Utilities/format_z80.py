@@ -3,10 +3,11 @@
 # Title:		Formatter for Tatung Einstein Z80 SRC files
 # Author:		Dean Belfield
 # Created:		06/05/2023
-# Last Updated:	06/05/2023
+# Last Updated:	16/11/2024
 #
 # Modinfo:
 # 06/05/2023:	Tweaked for comments on first line, and file EOL
+# 16/11/2024:	Fixed for Windows line endings
 
 import sys
 import os
@@ -46,7 +47,7 @@ while True:
 	if asc == ":" and not comment and not string:		# If it is a colon (following a label) and not in comment or string then indent
 		line += " "*(indent-col)						# Indent
 		label = True	
-	if byte == 0x0D:									# If it is CR then
+	if byte == 0x0A:									# If it is LF then
 		if not label and line[0] != ";":				# If this line doesn't contain a label and the first character isn't a comment
 			line = (" "*indent) + line 					# Indent 
 		print(line, end="")								# Print the line
