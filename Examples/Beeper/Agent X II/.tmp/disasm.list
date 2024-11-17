@@ -1,0 +1,79 @@
+0028.R0 RST_28:
+0028.R0 E3           ex (sp),hl
+0029.R0 F5           push af
+002A.R0 7E           ld a,(hl)
+002B.R0 23           inc hl
+002C.R0 23           inc hl
+002D.R0 22 5A 5B     ld (DATA_5B5A),hl
+0030.R0 2B           dec hl
+0031.R0 66           ld h,(hl)
+0032.R0 6F           ld l,a
+0033.R0 F1           pop af
+0034.R0 C3 5C 00     jp SUB_005C
+
+005C.R0 SUB_005C:
+005C.R0 22 58 5B     ld (DATA_5B58),hl
+005F.R0 21 14 5B     ld hl,5B14h
+0062.R0 E3           ex (sp),hl
+0063.R0 E5           push hl
+0064.R0 2A 58 5B     ld hl,(DATA_5B58)
+0067.R0 E3           ex (sp),hl
+0068.R0 C3 00 5B     jp SUB_5B00
+
+3680.R0 SUB_3680:
+3680.R0 21 3B 5C     ld hl,5C3Bh
+
+3683.R0 .LOOP:
+3683.R0 CB 6E        bit 5,(hl)
+
+3685.R0 28 FC        jr z,.LOOP
+
+3687.R0 CB AE        res 5,(hl)
+3689.R0 3A 08 5C     ld a,(DATA_5C08)
+368C.R0 21 41 5C     ld hl,5C41h
+368F.R0 CB 86        res 0,(hl)
+3691.R0 FE 20        cp 20h
+3693.R0 30 0D        jr nc,.L1
+
+3695.R0 FE 10        cp 10h
+3697.R0 30 E7        jr nc,SUB_3680
+
+3699.R0 FE 06        cp 06h
+369B.R0 38 E3        jr c,SUB_3680
+
+369D.R0 CD A4 36     call SUB_36A4
+
+36A0.R0 30 DE        jr nc,SUB_3680
+
+36A2.R0 .L1:
+36A2.R0 E1           pop hl
+36A3.R0 C9           ret
+
+36A4.R0 SUB_36A4:
+36A4.R0 EF           rst RST_28
+
+36A5.R0 DB 10        in a,(0010h)
+36A7.R0 C9           ret
+
+5B00 SUB_5B00:
+5B00 F5           push af
+5B01 C5           push bc
+5B02 01 FD 7F     ld bc,7FFDh
+5B05 3A 5C 5B     ld a,(DATA_5B5C)
+5B08 EE 10        xor 10h
+5B0A F3           di
+5B0B 32 5C 5B     ld (DATA_5B5C),a
+5B0E ED 79        out (c),a
+5B10 FB           ei
+5B11 C1           pop bc
+5B12 F1           pop af
+5B13 C9           ret
+
+5B58 DATA_5B58:
+5B58 E9 22        DEFB E9 22 ; ASCII: ?"
+5B5A DATA_5B5A:
+5B5A 22 37        DEFB 22 37 ; ASCII: "7
+5B5C DATA_5B5C:
+5B5C 07 CF 00...  DEFB 07 CF 00 0B 00 00 00 00 ; ASCII: ????????
+5C08 DATA_5C08:
+5C08 00 23 02...  DEFB 00 23 02 00 00 00 16 0E ; ASCII: ?#??????
