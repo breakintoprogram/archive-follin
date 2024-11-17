@@ -25,5 +25,5 @@ Data_Start:	EQU 50000	; Where the tunes are loaded
 		INCLUDE "aydrive.z80"
 		INCLUDE "qix.z80"
 
-		SAVESNA "Examples/AY/Lightgun/qix.sna", Code_Start
+		SAVESNA "Examples/AY/Lightgun/exec_qix.sna", Code_Start
 	
