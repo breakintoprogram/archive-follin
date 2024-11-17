@@ -67,7 +67,13 @@ The Z80 assembler does not tokenise its source code - it's plain ASCII text.
 
 ## Assembling and running
 
-No attempts have been made (yet) to compile and run this code, though it is fairly standard Z80/6502 and should assemble, with perhaps some mollycoddling, using modern Z80/6502 assemblers, and run emulated or on actual hardware.
+I've started going through the files and making them assemble with modern tools. At the moment this is limited to the Z80 code targetting the AY-3-8912 as used in the Spectrum and Amstrad. The files can be found within the folder Examples.
+
+The assembler I'm using is [sjasmplus](https://github.com/sjasmplus/sjasmplus), and in the .vscode folder there are launch and tasks files for building and running from VSCode.
+
+To build, open any file that is prefixed with 'exec_' and in VSCode, select Terminal -> Run Build Task. This will make a '.sna' file. You can use this file in an emulator; I use ZEsarUX and simply drag the '.sna' file into the ZEsarUX emulator window to run.
+
+For the AY tracker, pressing keys 0-9 will start the appropriate tune, and the letter keys to start sound effects. Pressing Space will exit the tracker.
 
 The code is provided as-is, with no warranty or guarantees.
 
