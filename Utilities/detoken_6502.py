@@ -3,12 +3,13 @@
 # Title:		Decoder for Tatung Einstein 6502 SRC files
 # Author:		Dean Belfield
 # Created:		29/04/2023
-# Last Updated:	05/05/2023
+# Last Updated:	16/01/2025
 #
 # Modinfo:
 # 04/05/2023:	Added bounds checking on the tokens array
 # 05/05/2023:	Fixed python indenting, tweaked error handling
 #				Fixed indents in comments, added ENT back in
+# 16/01/2025:	Renamed to detoken_6502.py
 
 import sys
 import os
