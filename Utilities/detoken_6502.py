@@ -3,13 +3,14 @@
 # Title:		Decoder for Tatung Einstein 6502 SRC files
 # Author:		Dean Belfield
 # Created:		29/04/2023
-# Last Updated:	16/01/2025
+# Last Updated:	18/01/2025
 #
 # Modinfo:
 # 04/05/2023:	Added bounds checking on the tokens array
 # 05/05/2023:	Fixed python indenting, tweaked error handling
 #				Fixed indents in comments, added ENT back in
 # 16/01/2025:	Renamed to detoken_6502.py
+# 18/01/2025:	Fixed end of file bug and tokens in comments
 
 import sys
 import os
@@ -128,9 +129,9 @@ while True:
 		col = 0											# Reset the column to 0
 		comment = False									# Reset the comment flag
 		print("")										# Print a CR
-	elif byte == 0x1A :									# If it is EOF the
+	elif byte == 0x1A or byte == 0xFF:					# If it is EOF the
 		break;											# Exit the loop
-	elif byte < 0x8A:									# If it is a printable character
+	elif byte < 0x8A or comment:						# If it is a printable character or we are in a comment
 		asc = chr(byte)									# Get the ASCII character
 		print(asc, end="")								# Print it
 		col += 1										# Increment the column number
