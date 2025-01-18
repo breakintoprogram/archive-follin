@@ -1,0 +1,484 @@
+                 HEX
+                LD A,(V_RATE_B)
+                LD DE,5054H
+                CALL HEX
+                LD A,(V_RATE_C)
+                LD DE,505AH
+                CALL HEX
+                
+                LD A,(V_LIM2_A)
+                LD DE,506EH
+                CALL HEX
+                LD A,(V_LIM2_B)
+                LD DE,5074H
+                CALL HEX
+                LD A,(V_LIM2_C)
+                LD DE,507AH
+                CALL HEX
+                
+                LD A,(V_DIR_A)
+                LD DE,508EH
+                CALL HEX
+                LD A,(V_DIR_B)
+                LD DE,5094H
+                CALL HEX
+                LD A,(V_DIR_C)
+                LD DE,509AH
+                CALL HEX
+                
+                LD A,(LENGTH_A)
+                LD DE,50AEH
+                CALL HEX
+                LD A,(LENGTH_B)
+                LD DE,50B4H
+                CALL HEX
+                LD A,(LENGTH_C)
+                LD DE,50BAH
+                CALL HEX
+                
+                LD A,(VOLUME_A)
+                LD DE,50CEH
+                CALL HEX
+                LD A,(VOLUME_B)
+                LD DE,50D4H
+                CALL HEX
+                LD A,(VOLUME_C)
+                LD DE,50DAH
+                CALL HEX
+                
+                RET
+                
+Mgetaddr:       LD A,(McursorY)
+                AND 18H
+                OR 40H
+                LD D,A
+                LD A,(McursorY)
+                RRCA 
+                RRCA 
+                RRCA 
+                AND 0E0H
+                LD E,A
+                LD A,(McursorX)
+                ADD E
+                LD E,A
+                RET
+                
+Mat:            LD A,(IX+0)
+                LD (McursorX),A
+                INC IX
+                LD A,(IX+0)
+                LD (McursorY),A
+                INC IX
+                RET
+                
+PRattr:         LD A,D
+                RRA
+                RRA
+                RRA
+                AND 3
+                OR 58H
+                LD D,A
+                LD A,(Mcolour)
+                LD (DE),A
+                RET
+;======================================
+; AY MUSIC DRIVER V2 BY S.RUDDY
+                
+CODE_TOP:       
+                
+PC_A:           DW 0
+PC_B:           DW 0
+PC_C:           DW 0
+                
+RETURN_A:       DW 0
+RETURN_B:       DW 0
+RETURN_C:       DW 0
+                
+FREQ_A:         DW 0
+FREQ_B:         DW 0
+FREQ_C:         DW 0
+                
+LOOP_A:         DW 0
+LOOP_B:         DW 0
+LOOP_C:         DW 0
+                
+STOP_A:         DB 0
+STOP_B:         DB 0
+STOP_C:         DB 0
+                
+ENDIT_A:        DB 0
+ENDIT_B:        DB 0
+ENDIT_C:        DB 0
+                
+TRANS_A:        DB 0
+TRANS_B:        DB 0
+TRANS_C:        DB 0
+                
+LENGTH_A:       DB 0
+LENGTH_B:       DB 0
+LENGTH_C:       DB 0
+                
+IGNORE_A:       DB 0
+IGNORE_B:       DB 0
+IGNORE_C:       DB 0
+                
+W_WAIT_A:       DB 0
+W_WAIT_B:       DB 0
+W_WAIT_C:       DB 0
+                
+W_DEL1_A:       DB 0
+W_DEL1_B:       DB 0
+W_DEL1_C:       DB 0
+                
+W_DEL2_A:       DB 0
+W_DEL2_B:       DB 0
+W_DEL2_C:       DB 0
+                
+PORT_A:         DB 0
+PORT_B:         DB 0
+PORT_C:         DB 0
+                
+V_DEL_A:        DB 0
+V_DEL_B:        DB 0
+V_DEL_C:        DB 0
+                
+E_TIME_A:       DB 0
+E_TIME_B:       DB 0
+E_TIME_C:       DB 0
+                
+REPEAT_A:       DB 0
+REPEAT_B:       DB 0
+REPEAT_C:       DB 0
+                
+DISTORT_A:      DB 0
+DISTORT_B:      DB 0
+DISTORT_C:      DB 0
+                
+COUNT_A:        DB 0
+COUNT_B:        DB 0
+COUNT_C:        DB 0
+                
+OLDFREQ_A:      DB 0
+OLDFREQ_B:      DB 0
+OLDFREQ_C:      DB 0
+                
+A_CONT_A:       DB 0
+A_CONT_B:       DB 0
+A_CONT_C:       DB 0
+                
+VOLUME_A:       DB 0
+VOLUME_B:       DB 0
+VOLUME_C:       DB 0
+                
+FLIP1_A:        DB 0
+FLIP1_B:        DB 0
+FLIP1_C:        DB 0
+                
+OLDNOTE_A:      DB 0
+OLDNOTE_B:      DB 0
+OLDNOTE_C:      DB 0
+                
+A_INIT_A:       DB 0
+A_INIT_B:       DB 0
+A_INIT_C:       DB 0
+                
+A_ATT_A:        DB 0
+A_DEC_A:        DB 0
+A_ATT_B:        DB 0
+A_DEC_B:        DB 0
+A_ATT_C:        DB 0
+A_DEC_C:        DB 0
+                
+A_SUS_A:        DB 0
+A_SUS_B:        DB 0
+A_SUS_C:        DB 0
+                
+A_CYC_A:        DB 0
+A_CYC_B:        DB 0
+A_CYC_C:        DB 0
+                
+A_STAGE_A:      DB 0
+A_STAGE_B:      DB 0
+A_STAGE_C:      DB 0
+                
+A_TIME_A:       DB 0
+A_TIME_B:       DB 0
+A_TIME_C:       DB 0
+                
+W_OFF_A:        DB 0
+W_OFF_B:        DB 0
+W_OFF_C:        DB 0
+                
+TARGET_A:       DB 0
+TARGET_B:       DB 0
+TARGET_C:       DB 0
+                
+V_DEL1_A:       DB 0
+V_DEL1_B:       DB 0
+V_DEL1_C:       DB 0
+                
+V_RATE_A:       DB 0
+V_RATE_B:       DB 0
+V_RATE_C:       DB 0
+                
+V_LIM1_A:       DB 0
+V_LIM1_B:       DB 0
+V_LIM1_C:       DB 0
+                
+V_LIM2_A:       DB 0
+V_LIM2_B:       DB 0
+V_LIM2_C:       DB 0
+                
+V_DIR_A:        DB 0
+V_DIR_B:        DB 0
+V_DIR_C:        DB 0
+                
+E_FREQ_A:       DW 0
+E_FREQ_B:       DW 0
+E_FREQ_C:       DW 0
+                
+E_WAIT_A:       DB 0
+E_WAIT_B:       DB 0
+E_WAIT_C:       DB 0
+                
+E_BITS_A:       DB 0
+E_BITS_B:       DB 0
+E_BITS_C:       DB 0
+                
+MEMGATE_A:      DB 0
+MEMGATE_B:      DB 0
+MEMGATE_C:      DB 0
+                
+GATE_A:         DB 0
+GATE_B:         DB 0
+GATE_C:         DB 0
+                
+GATERES_A:      DB 0
+GATERES_B:      DB 0
+GATERES_C:      DB 0
+                
+FLESH_A:        DB 0
+FLESH_B:        DB 0
+FLESH_C:        DB 0
+                
+;--------------------------------------
+                
+; tune initialisation enter with
+; a = tune number.
+                
+TUNE:           
+                ADD A
+                LD C,A
+                LD B,0
+                LD HL,TUNES_A
+                ADD HL,BC
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD (PC_A),DE
+                
+                LD HL,TUNES_B
+                ADD HL,BC
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD (PC_B),DE
+                
+                LD HL,TUNES_C
+                ADD HL,BC
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD (PC_C),DE
+                
+                
+                LD HL,0FFFFH
+                
+                LD (STOP_A),HL
+                LD (STOP_A+2),HL
+                LD (STOP_A+4),HL
+                
+                
+TUNE_IN:        
+                LD (OLDFREQ_A),A
+                LD (OLDFREQ_B),A
+                LD (OLDFREQ_C),A
+                
+                LD HL,TRANS_A
+                LD DE,TRANS_A+1
+                LD BC,36
+                LD (HL),0
+                LDIR 
+                
+                LD A,1
+                LD (COUNT_A),A
+                LD (COUNT_B),A
+                LD (COUNT_C),A
+                
+                LD A,00001001B
+                LD (FLESH_A),A
+                SLA A
+                LD (FLESH_B),A
+                SLA A
+                LD (FLESH_A),A
+                
+                LD HL,STACK_A
+                LD (SP_A),HL
+                LD HL,STACK_B
+                LD (SP_B),HL
+                LD HL,STACK_C
+                LD (SP_C),HL
+                
+                JP OUT_FLESH
+                
+;--------------------------------------
+; call before initialising sound fx
+                
+                
+TUNEOFF:        
+                LD C,0
+                LD A,8
+                CALL OUT_CA_AY
+                LD C,0
+                LD A,9
+                CALL OUT_CA_AY
+                LD C,0
+                LD A,10
+                CALL OUT_CA_AY
+                
+                XOR A
+                LD (STOP_A),A
+                LD (STOP_B),A
+                LD (STOP_C),A
+                DEC A
+                
+                JP TUNE_IN
+                
+;--------------------------------------
+; do fx. enter with a = fx number
+                
+                
+FX:             
+                ADD A
+                LD HL,FX_TAB
+                CALL ADDHLA
+                LD A,(HL)
+                INC HL
+                LD H,(HL)
+                LD L,A
+                
+FLOOP:          
+                EX DE,HL
+                LD A,(DE)
+                OR A
+                RET M
+; RRA
+                SRL A
+                LD HL,STOP_A
+                CALL ADDHLA
+                LD (HL),255
+                LD HL,COUNT_A
+                LD A,(DE)
+                SRL A
+                CALL ADDHLA
+                LD (HL),1
+                
+                LD A,(DE)
+                LD HL,PC_A
+                CALL ADDHLA
+                INC DE
+                EX DE,HL
+                LDI
+                LDI
+                JR FLOOP
+                
+ADDHLA:         
+                ADD L
+                LD L,A
+                RET NC
+                INC H
+                RET
+                
+;-----------
+;--------------------------------------
+NOT_A_bug:      LD C,D
+                LD B,8
+PRloop:         LD A,(HL)
+                LD (DE),A
+                INC HL
+                INC D
+                DJNZ PRloop
+                LD D,C
+                RET
+                
+AT:             EQU 22
+INK:            EQU 16
+CLS:            EQU 15
+                
+DO_MESAGE:      POP IX
+                CALL DO_STRING
+                JP (IX)
+                
+DO_STRING:      LD A,(IX+0)
+                INC IX
+                OR A
+                RET M
+                CP 32
+                JR C,Mcontrol
+                CALL Mgetchar
+                CALL Mgetaddr
+                CALL NOT_A_bug
+                CALL PRattr
+                CALL INCcursor
+                JR MESS
+                
+Mcontrol:       LD HL,DO_STRING
+                PUSH HL
+                CP 15
+                JR Z,Mcls
+                CP 22
+                JP Z,Mat
+                CP 16
+                JR Z,Mink
+                RET
+                
+Mcolour:        DB 0
+McursorX:       DB 0
+McursorY:       DB 0
+                
+Mink:           LD A,(IX+0)
+                INC IX
+                LD (Mcolour),A
+                RET
+                
+Mcls:           LD HL,4000H
+                LD (HL),L
+                LD DE,4001H
+                LD BC,1AFFH
+                LDIR 
+                LD (McursorX),BC
+                RET
+                
+INCcursor:      LD HL,McursorX
+                LD A,(HL)
+                INC A
+                AND 31
+                LD (HL),A
+                RET NZ
+                INC HL
+                INC (HL)
+                RET
+                
+Mgetchar:       LD L,A
+                LD H,0
+                ADD HL,HL
+                ADD HL,HL
+                ADD HL,HL
+                LD BC,3C00H
+                ADD HL,BC
+                RET
+                
+                
+                
+                
+                

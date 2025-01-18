@@ -1,0 +1,516 @@
+                
+                LD (E_WAIT_A),A
+                LD A,(REGISTER2)
+                AND 00110110B
+                LD E,A
+                LD A,(E_BITS_A)
+                OR E
+                LD (REGISTER2),A
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+                LD A,(E_FREQ_A)
+                LD C,A
+                XOR A
+                CALL OUT_CA_AY
+                LD A,(E_FREQ_A+1)
+                LD C,A
+                LD A,1
+                CALL OUT_CA_AY
+                
+CHANNEL_B:      LD A,(STOP_B)
+                OR A
+                JP P,CHANNEL_C
+START_B:        LD A,(A_STAGE_B)
+                OR A
+                JP NZ,TESTDEC_B
+                LD HL,A_TIME_B
+                DEC (HL)
+                JP P,ENDADSR_B
+                LD A,(A_ATT_B)
+                LD (HL),A
+                LD HL,VOLUME_B
+                INC (HL)
+                LD A,(HL)
+                CP 15
+                JP NZ,ENDADSR_B
+                LD A,1
+                LD (A_STAGE_B),A
+                LD A,(A_DEC_B)
+                LD (A_TIME_B),A
+                JP ENDADSR_B
+TESTDEC_B:      CP 1
+                JP NZ,ENDADSR_B
+                LD HL,A_TIME_B
+                DEC (HL)
+                JP P,ENDADSR_B
+                LD A,(A_DEC_B)
+                LD (HL),A
+                LD A,(VOLUME_B)
+                LD HL,A_SUS_B
+                CP (HL)
+                JP Z,SET_SUS_B
+                DEC A
+                LD (VOLUME_B),A
+                JP P,ENDADSR_B
+SET_SUS_B:      LD A,2
+                LD (A_STAGE_B),A
+ENDADSR_B:      LD A,(VOLUME_B)
+                LD C,A
+                LD A,9
+                CALL OUT_CA_AY
+TESTEFF_B:      LD A,(E_TIME_B)
+                OR A
+                JP Z,TESTVIB_B
+                LD A,(E_WAIT_B)
+                OR A
+                JP Z,TESTVIB_B
+                DEC A
+                LD (E_WAIT_B),A
+                JP NZ,TSTCNT_B
+                LD A,(FREQ_B)
+                LD C,A
+                LD A,2
+                CALL OUT_CA_AY
+                LD A,(FREQ_B+1)
+                LD C,A
+                LD A,3
+                CALL OUT_CA_AY
+                LD A,(REGISTER)
+                AND 00010010B
+                LD E,A
+                LD A,(REGISTER2)
+                AND 00101101B
+                OR E
+                LD (REGISTER2),A
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+TESTVIB_B:      LD A,(V_DEL_B)
+                OR A
+                JP Z,TSTWOB_B
+                LD A,(V_DEL1_B)
+                OR A
+                JP Z,VSTART_B
+                DEC A
+                LD (V_DEL1_B),A
+                JP NZ,TSTWOB_B
+VSTART_B:       LD HL,(FREQ_B)
+                LD DE,(V_RATE_B)
+                LD D,0
+                LD A,(FLIP1_B)
+                OR A
+                JP Z,VIBDOWN_B
+VIBUP_B:        ADD HL,DE
+                JP VIBDONE_B
+VIBDOWN_B:      SBC HL,DE
+VIBDONE_B:      LD (FREQ_B),HL
+                LD C,L
+                LD A,2
+                CALL OUT_CA_AY
+                LD C,H
+                LD A,3
+                CALL OUT_CA_AY
+VIBCNT_B:       LD HL,V_LIM1_B
+                DEC (HL)
+                JP NZ,TSTPORT_B
+                LD A,(V_LIM2_B)
+                OR A
+                JP Z,TSTPORT_B
+                ADD A
+                LD (HL),A
+                LD A,(FLIP1_B)
+                CPL
+                LD (FLIP1_B),A
+                JP TSTPORT_B
+TSTWOB_B:       LD A,(W_WAIT_B)
+                OR A
+                JP Z,TSTPORT_B
+                DEC A
+                LD (W_WAIT_B),A
+                JP NZ,TSTPORT_B
+                LD A,(W_DELAY_B)
+                LD (W_WAIT_B),A
+                LD A,(W_OFF_B)
+                LD L,A
+                LD A,(FLIP1_B)
+                XOR 255
+                LD (FLIP1_B),A
+                LD A,(OLDNOTE_B)
+                JP Z,WOBDOWN_B
+WOBUP_B:        ADD L
+                JP RESOUND_B
+WOBDOWN_B:      SUB L
+                JP RESOUND_B
+TSTPORT_B:      LD A,(PORT_B)
+                OR A
+                JP Z,TSTCNT_B
+                LD HL,TARGET_B
+                LD E,A
+                LD A,(OLDNOTE_B)
+                CP (HL)
+                JP Z,TSTCNT_B
+                JP C,GO_UP_B
+                SUB E
+                CP (HL)
+                JP NC,RESOUND_B
+                JP GOTHERE_B
+GO_UP_B:        ADD E
+                CP (HL)
+                JP C,RESOUND_B
+GOTHERE_B:      LD A,(HL)
+RESOUND_B:      LD (OLDNOTE_B),A
+                ADD A
+                LD E,A
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD HL,(DISTORT_B)
+                LD H,0
+                ADD HL,DE
+                LD (FREQ_B),HL
+                LD C,L
+                LD A,2
+                CALL OUT_CA_AY
+                LD C,H
+                LD A,3
+                CALL OUT_CA_AY
+TSTCNT_B:       LD HL,COUNT_B
+                DEC (HL)
+                JP NZ,CHANNEL_C
+                LD BC,(PC_B)
+DO_B:           LD A,(BC)
+                INC BC
+                OR A
+                JP P,GOTNOTE_B
+COMMAND_B:      AND 127
+                ADD A
+                LD E,A
+                LD D,0
+                LD HL,JUMP_B
+                ADD HL,DE
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                EX DE,HL
+                JP (HL)
+GOTNOTE_B:      LD L,A
+                LD A,(IGNORE_B)
+                OR A
+                JP Z,NOTEOK_B
+                XOR A
+                LD (IGNORE_B),A
+                JP NOTRANS_B
+NOTEOK_B:       LD A,(TRANS_B)
+NOTRANS_B:      ADD L
+                LD L,A
+                LD A,(PORT_B)
+                OR A
+                LD A,L
+                JP Z,NOPORT_B
+                LD (TARGET_B),A
+                LD A,(OLDNOTE_B)
+NOPORT_B:       LD (OLDNOTE_B),A
+                ADD A
+                PUSH BC
+                LD E,A
+                LD D,0
+                LD HL,NOTES
+                ADD HL,DE
+                LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD HL,(DISTORT_B)
+                LD H,0
+                ADD HL,DE
+                LD (FREQ_B),HL
+                LD C,L
+                LD A,2
+                CALL OUT_CA_AY
+                LD C,H
+                LD A,3
+                CALL OUT_CA_AY
+                POP BC
+                LD A,(LENGTH_B)
+                OR A
+                JP NZ,GOTLEN_B
+                LD A,(BC)
+                INC BC
+GOTLEN_B:       LD (COUNT_B),A
+                LD (PC_B),BC
+                LD A,(W_DELAY_B)
+                LD (W_WAIT_B),A
+STARTVIBB:      LD A,(V_DEL_B)
+                OR A
+                JP Z,SETFLIP_B
+                LD (V_DEL1_B),A
+                LD A,(V_LIM2_B)
+                LD (V_LIM1_B),A
+                LD A,(V_DIR_B)
+SETFLIP_B:      LD (FLIP1_B),A
+STARTENVB:      LD A,(A_CONT_B)
+                OR A
+                JP Z,STARTEFFB
+                LD A,(A_CYC_B)
+                LD (A_STAGE_B),A
+                OR A
+                LD A,(A_ATT_B)
+                JP Z,STARTAT_B
+                LD A,(A_DEC_B)
+STARTAT_B:      LD (A_TIME_B),A
+                LD A,(A_INIT_B)
+                LD (VOLUME_B),A
+STARTEFFB:      LD A,(E_TIME_B)
+                OR A
+                JP Z,CHANNEL_C
+                LD (E_WAIT_B),A
+                LD A,(REGISTER2)
+                AND 00101101B
+                LD E,A
+                LD A,(E_BITS_B)
+                OR E
+                LD (REGISTER2),A
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+                LD A,(E_FREQ_B)
+                LD C,A
+                LD A,2
+                CALL OUT_CA_AY
+                LD A,(E_FREQ_B+1)
+                LD C,A
+                LD A,3
+                CALL OUT_CA_AY
+                
+CHANNEL_C:      LD A,(STOP_C)
+                OR A
+                RET P
+START_C:        LD A,(A_STAGE_C)
+                OR A
+                JP NZ,TESTDEC_C
+                LD HL,A_TIME_C
+                DEC (HL)
+                JP P,ENDADSR_C
+                LD A,(A_ATT_C)
+                LD (HL),A
+                LD HL,VOLUME_C
+                INC (HL)
+                LD A,(HL)
+                CP 15
+                JP NZ,ENDADSR_C
+                LD A,1
+                LD (A_STAGE_C),A
+                LD A,(A_DEC_C)
+                LD (A_TIME_C),A
+                JP ENDADSR_C
+TESTDEC_C:      CP 1
+                JP NZ,ENDADSR_C
+                LD HL,A_TIME_C
+                DEC (HL)
+                JP P,ENDADSR_C
+                LD A,(A_DEC_C)
+                LD (HL),A
+                LD A,(VOLUME_C)
+                LD HL,A_SUS_C
+                CP (HL)
+                JP Z,SET_SUS_C
+                DEC A
+                LD (VOLUME_C),A
+                JP P,ENDADSR_C
+SET_SUS_C:      LD A,2
+                LD (A_STAGE_C),A
+ENDADSR_C:      LD A,
+TIM_A:          ¡GOSUB
+                ¢TOPA
+                ¡GOSUB
+                ¢TOPA
+                ¡29,12
+                ¡30,24,30,12,30,24,30,12
+                ¡25,12,27,12
+                ¡30,24,30,12,30,24,30,24
+                ¡30,12
+                ¡29,24,29,12,29,24,29,24
+                ¡36,12,39,12
+                ¡41,12,39,24,36,12,34,12
+                ¡32,12,33,12
+                ¡34,24,34,12,34,24,34,12
+                ¡27,12,29,12
+                ¡22,12,22,24,22,24,34,12
+                ¡22,24
+                ¡30,12,30,24,30,24,30,12
+                ¡30,24
+                ¡32,24,32,12,32,24,32,24
+                ¡GOSUB
+                ¢TOPA
+                
+                ¡STOP
+                
+TOPA:           ¡GATE_CON,1
+                ¡SEND
+                ¡24,%00101111
+                ¡05,$0A
+                ¡06,$0A
+                ¡12,$02
+                ¡13,$AD
+                ¡END
+;TIM IS CACK
+                ¡GATE,64
+                ¡PULSE,20
+                ¢50
+                ¡24,12
+                ¡25,24,25,24,29,24,29,12
+                ¡30,36,30,24,32,24,32,12
+                ¡24,12
+                ¡25,24,25,24,29,24,29,12
+                ¡30,36,30,24,32,24,32,12
+                ¡24,12
+                ¡25,24,25,24,29,24,29,24
+                ¡30,24,30,24,31,24,31,24
+                ¡32,12,GATE,0,32,36
+                ¡32,24,32,24,GATE,64
+                ¡30,12,32,24,25,48
+                ¡RETURN
+                
+;.....................................
+                
+TIM_B:          ¡VIB,1,1,255,255
+                ¡GOSUB
+                ¢TOPB
+                ¡GOSUB
+                ¢TOPB
+                ¡GATE,64
+                ¡FILTER,0,0
+                ¢$3A0
+                ¡PULSE,200
+                ¢$4BA
+                ¡TRANSPOSE,12
+                
+                ¡41,12,42,48
+                ¡45,6,46,6,49,6,51,6
+                ¡54,6,56,6,57,6,58,6
+                ¡54,6,51,6,49,6,47,6
+                ¡45,6,46,6,42,6,40,6
+                ¡42,24,45,6,46,6,49,6
+                ¡54,6
+                
+                ¡53,6,51,6,48,6,46,6
+                ¡44,6,45,6,41,6,39,6
+                ¡41,24,44,6,45,6,46,6
+                ¡48,6,53,6,56,3,58,3
+                ¡53,6,51,6,53,12,57,12
+                ¡53,6,51,6,53,12
+                ¡51,6,49,6,51,12
+                
+                ¡52,4,53,8,58,12
+                ¡52,6,51,6,49,6,46,6
+                ¡52,3,53,9,51,12,49,12
+                ¡46,12,46,6,44,6,41,6
+                ¡48,6,49,6,51,6,52,6
+                ¡51,6,49,6,46,6,49,6
+                ¡44,6,45,6,46,6,49,6
+                ¡53,6
+                
+                ¡54,6,53,6,54,12,58,6
+                ¡57,6,58,12,61,6,60,6
+                ¡61,12,66,24
+                ¡52,6,53,6,56,6,52,6
+                ¡51,6,49,6,46,6,52,6
+                ¡51,6,49,6,46,6,44,6
+                ¡46,6,39,3,40,3
+                
+                ¡TRANSPOSE,0
+                ¡GOSUB
+                ¢TOPB
+                
+                ¡STOP
+                
+TOPB:           ¡GATE_CON,1
+                ¡GATE,32
+                ¡FILTER,35,0
+                ¢$4A0
+                ¡CLAIM
+                ¡52,12,53,12,GATE,0,53,12
+                ¡GATE,32,53,12,52,12,53,12
+                ¡56,24,54,24,53,12,49,12
+                ¡46,12,49,12,GATE,0,49,12
+                ¡GATE,32,51,12,52,12
+                ¡53,12,GATE,0,53,12
+                ¡GATE,32,53,12,52,12,53,12
+                ¡56,24,57,3,58,21,56,12
+                ¡53,12,49,12,52,6,51,6
+                ¡49,12,51,12,52,12
+                ¡53,12,GATE,0,53,12
+                ¡GATE,32,53,12,52,12,53,12
+                ¡56,24,54,24,53,12,49,12
+                ¡46,12,52,6,51,6,49,12
+                ¡51,12,52,12
+                ¡53,12,49,12,54,12,52,12
+                ¡53,12,49,12,46,12,44,12
+                ¡54,12,52,24,53,48
+                ¡RETURN
+;.....................................
+                
+TIM_C:          ¡GOSUB
+                ¢TOPC
+                ¡GOSUB
+                ¢TOPC
+                ¡48,12
+                ¡GATE,33
+                ¡SEND
+                ¡19,$00
+                ¡20,$4F
+                ¡23,%01000010
+                ¡END,GATE_CON,1
+                ¡FOR,16
+                ¡54,4,49,4,46,4,NEXT
+                ¡FOR,16
+                ¡51,4,48,4,45,4,NEXT
+                ¡FOR,16
+                ¡53,4,49,4,46,4,NEXT
+                ¡FOR,8
+                ¡54,4,49,4,46,4,NEXT
+                ¡FOR,4
+                ¡52,4,49,4,46,4,NEXT
+                ¡FOR,3
+                ¡51,4,48,4,42,4,NEXT
+                ¡GOSUB
+                ¢TOPC
+                
+                ¡STOP
+                
+TOPC:           ¡GATE_CON,34
+                ¡PULSE,90
+                ¢0
+                ¡SEND
+                ¡23,%01000010
+                ¡19,$01
+                ¡20,$3F
+                ¡END
+                ¡GATE,64
+                ¡43,12
+                ¡44,48,47,36,46,60,46,24
+                ¡42,12,43,12
+                ¡44,48,47,36,46,60,46,24
+                ¡42,12,43,12
+                ¡44,48,47,48,46,48,46,48
+                ¡GATE_CON,1
+                ¡SEND
+                ¡23,%01000110
+                ¡19,$02
+                ¡20,$AD
+                ¡END
+                ¡GATE,32
+                ¡56,24,58,12,56,24
+                ¡GATE,0,56,36,GATE,32
+                ¡46,36,44,48
+                ¡RETURN
+;.....................................
+                
+BOTDATA:        
+                
+;=====================================
+                
+                

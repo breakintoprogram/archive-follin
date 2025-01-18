@@ -1,0 +1,25 @@
+; INTURLACE MASCS WIV GRAFIXES
+                
+                
+                ORG 8000H
+                OUTS 
+                
+                LD DE,40960 ; MIXD
+                LD IX,50000 ; GRAFIX
+                LD HL,60000 ; MASKS
+                LD BC,2040  ; LENGTH (of 1)
+                
+LOOP:           
+                LDI
+                LD A,(IX+0)
+                LD (DE),A
+                INC IX
+                INC DE
+                LD A,B
+                OR C
+                JR NZ,LOOP
+                RET
+                
+                END
+                
+                

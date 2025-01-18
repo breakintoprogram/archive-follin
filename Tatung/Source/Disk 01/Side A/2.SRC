@@ -1,0 +1,205 @@
+;**************************************
+                
+; Z80 AY MUSIC DRIVER
+                
+;**************************************
+                
+                
+                ORG 40000
+                LOAD 0C000H
+                
+;======================================
+                
+ASCII:          EQU 23560
+                
+TESTER:         PUSH AF
+                PUSH BC
+                PUSH DE
+                PUSH HL
+                
+                XOR A
+                LD (ASCII),A
+                LD (MINS),A
+                LD (SECS),A
+                
+                
+                CALL TUNEOFF
+                CALL STACKMESS
+                
+                DB CLS
+                DB AT,0,0
+                DB INK,01010111B
+                DB "'AY' MUSIC DRIVE"
+                DB "R V1  BY S.RUDDY"
+                DB INK,01010110B
+; Music name
+                DB "RENEGADE        "
+                DB "                "
+                DB INK,64+6,AT,0,3
+                DB "DRIVER 0000:DATA"
+                DB " 0000:TOTAL=0000"
+                DB INK,64+2
+                DB "EFFECT 00:TUNE 0"
+                DB "0:TIME 00:00    "
+                DB INK,64+8+7
+                DB AT,0,6
+                DB "            CH.A"
+                DB "  CH.B  CH.C    "
+                DB AT,0,7
+                DB INK,64+4
+                DB "NOTE            "
+                DB "                "
+                DB INK,64+4
+; DB   "LENGTH          "
+; DB   "                "
+                DS 32,32
+                DB INK,64+4
+                DB "COUNT           "
+                DB "                "
+                DB INK,64+4
+                DB "TRANS           "
+                DB "                "
+                DB INK,64+5
+; DB   "FOR             "
+; DB   "                "
+                DS 32,32
+                DB INK,64+5
+                DB "NEXT            "
+                DB "                "
+                DB INK,64+4
+                DB "FREQ            "
+                DB "                "
+                DB INK,64+4
+                DB "DIST            "
+                DB "                "
+                DB INK,64+6
+                DB "WOB-SET         "
+                DB "                "
+                DB INK,64+6
+                DB "WOB-VAR         "
+                DB "                "
+                DB INK,64+7
+                DB "VIB-DEL         "
+                DB "                "
+                DB INK,64+7
+                DB "VIB-RAT         "
+                DB "                "
+                DB INK,64+7
+                DB "VIB-LIM         "
+                DB "                "
+                DB INK,64+7
+                DB "VIB-DIR         "
+                DB "                "
+                DB INK,64+4
+                DB "SET-LEN         "
+                DB "                "
+                DB INK,64+5
+                DB "VOLUME          "
+                DB "                "
+                DB 255
+                
+                LD HL,CALC1
+                PUSH HL
+                LD A,H
+                LD DE,4067H
+                CALL HEX
+                POP HL
+                LD A,L
+                LD DE,4069H
+                CALL HEX
+                
+                LD HL,(CALC2)
+                PUSH HL
+                LD A,H
+                LD DE,4071H
+                CALL HEX
+                POP HL
+                LD A,L
+                LD DE,4073H
+                CALL HEX
+                
+                LD HL,CALC1
+                LD DE,(CALC2)
+                ADD HL,DE
+                PUSH HL
+                LD A,H
+                LD DE,407CH
+                CALL HEX
+                POP HL
+                LD A,L
+                LD DE,407EH
+                CALL HEX
+                
+LOOP:           
+                HALT 
+                CALL UPDATE
+                LD A,2
+                OUT (254),A
+                CALL REFRESH
+                XOR A
+                OUT (254),A
+                CALL CLOCK
+                CALL KEYSCAN
+                LD A,07FH
+                IN A,(254)
+                AND 1
+                JP NZ,LOOP
+                LD BC,65533
+                LD A,7
+                OUT (C),A
+                LD BC,49149
+                LD A,63
+                OUT (C),A
+                
+                POP HL
+                POP DE
+                POP BC
+                POP AF
+                RET
+                
+KEYSCAN:        LD A,(ASCII)
+                OR A
+                RET Z
+KEYSCAN1:       CP 32
+                JR NC,KEYSCAN2
+                CP 8
+                JP Z,KEYwait
+                CP 9
+                JP Z,KEYfast
+                CP 13
+                JR NZ,GOout
+                CALL TUNEOFF
+                LD A,6
+                OUT (254),A
+                JR GOout
+KEYSCAN2:       CP 48
+                JR C,GOout
+                CP 58
+                JR NC,DOeffect
+                AND 15
+                LD E,A
+                LD A,(Tunes)
+                CP E
+                JR Z,GOout
+                JR C,GOout
+                LD A,E
+                PUSH AF
+                LD DE,408FH
+                CALL HEX
+                POP AF
+                CALL TUNE
+                LD HL,0
+                LD (MINS),HL
+                JR GOout
+DOeffect:       CP 61H
+                JR C,GOout
+                CP 61H+26
+                JR NC,GOout
+                SUB 061H
+                LD E,A
+                LD A,(Effects)
+                CP E
+                JR Z,GOout
+                JR C,GOout
+                LD A,E
+                PUSH AF

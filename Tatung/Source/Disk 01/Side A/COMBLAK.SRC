@@ -1,0 +1,723 @@
+                NC BC
+                LD A,(BC)
+                LD (V_DIR_A),A
+                INC BC
+                JP DO_A
+                
+A_IGNORE:       LD A,255
+                LD (IGNORE_A),A
+                JP DO_A
+                
+A_EFFECT:       LD A,(BC)
+                LD (E_TIME_A),A
+                INC BC
+                OR A
+                JP NZ,A_SETEFF
+                LD A,(REGISTER)
+                AND 00001001B
+                LD E,A
+                LD A,(REGISTER2)
+                AND 11110110B
+                OR E
+                LD (REGISTER2),A
+                PUSH BC
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+                POP BC
+                JP DO_A
+A_SETEFF:       LD A,(BC)
+                LD (E_BITS_A),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_A),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_A+1),A
+                INC BC
+                JP DO_A
+;--------------------------------------
+                
+JUMP_B:         DW B_FOR
+                DW B_NEXT
+                DW B_LENGTH
+                DW B_STOP
+                DW B_GOSUB
+                DW B_RETURN
+                DW B_TRANS
+                DW B_DISTORT
+                DW B_SEND
+                DW B_ADSR
+                DW B_ENVON
+                DW B_WOBBLE
+                DW B_PORT
+                DW B_VIBRATO
+                DW B_IGNORE
+                DW B_EFFECT
+                
+;--------------------------------------
+                
+B_FOR:          LD A,(BC)
+                LD (REPEAT_B),A
+                INC BC
+                LD (STACK_B),BC
+                JP DO_B
+                
+B_NEXT:         LD HL,REPEAT_B
+                DEC (HL)
+                JP Z,DO_B
+                LD BC,(STACK_B)
+                JP DO_B
+                
+B_LENGTH:       LD A,(BC)
+                LD (LENGTH_B),A
+                INC BC
+                JP DO_B
+                
+B_STOP:         LD HL,STOP_B
+                INC (HL)
+                JP CHANNEL_C
+                
+B_GOSUB:        LD A,(BC)
+                LD E,A
+                INC BC
+                LD A,(BC)
+                INC BC
+                LD (RETURN_B),BC
+                LD C,E
+                LD B,A
+                JP DO_B
+                
+B_RETURN:       LD BC,(RETURN_B)
+                JP DO_B
+                
+B_TRANS:        LD A,(BC)
+                LD (TRANS_B),A
+                INC BC
+                JP DO_B
+                
+B_DISTORT:      LD A,(BC)
+                LD (DISTORT_B),A
+                INC BC
+                JP DO_B
+                
+B_SEND:         LD A,(BC)
+                LD L,A
+                INC BC
+                LD A,(BC)
+                INC BC
+                PUSH BC
+                LD C,A
+                LD A,L
+                CP 7
+                JP NZ,B_NOT_IO
+                LD B,C
+                LD (REGISTER),BC
+B_NOT_IO:       CALL OUT_CA_AY
+                POP BC
+                JP DO_B
+                
+B_ADSR:         LD A,(BC)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                LD (A_INIT_B),A
+                LD A,(BC)
+                AND 15
+                LD (A_SUS_B),A
+                INC BC
+                LD A,(BC)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                LD (A_ATT_B),A
+                LD A,(BC)
+                AND 15
+                LD (A_DEC_B),A
+                INC BC
+                LD A,(BC)
+                LD (A_CYC_B),A
+                INC BC
+                JP DO_B
+                
+B_ENVON:        LD A,(BC)
+                LD (A_CONT_B),A
+                INC BC
+                JP DO_B
+                
+B_WOBBLE:       LD A,(BC)
+                LD (W_DELAY_B),A
+                INC BC
+                LD A,(BC)
+                LD (W_OFF_B),A
+                INC BC
+                JP DO_B
+                
+B_PORT:         LD A,(BC)
+                LD (PORT_B),A
+                INC BC
+                JP DO_B
+                
+B_VIBRATO:      LD A,(BC)
+                LD (V_DEL_B),A
+                INC BC
+                LD A,(BC)
+                LD (V_RATE_B),A
+                INC BC
+                LD A,(BC)
+                LD (V_LIM2_B),A
+                INC BC
+                LD A,(BC)
+                LD (V_DIR_B),A
+                INC BC
+                JP DO_B
+                
+B_IGNORE:       LD A,255
+                LD (IGNORE_B),A
+                JP DO_B
+                
+B_EFFECT:       LD A,(BC)
+                LD (E_TIME_B),A
+                INC BC
+                OR A
+                JP NZ,B_SETEFF
+                LD A,(REGISTER)
+                AND 00010010B
+                LD E,A
+                LD A,(REGISTER2)
+                AND 00101101B
+                OR E
+                LD (REGISTER2),A
+                PUSH BC
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+                POP BC
+                JP DO_B
+B_SETEFF:       LD A,(BC)
+                LD (E_BITS_B),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_B),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_B+1),A
+                INC BC
+                JP DO_B
+;--------------------------------------
+JUMP_C:         DW C_FOR
+                DW C_NEXT
+                DW C_LENGTH
+                DW C_STOP
+                DW C_GOSUB
+                DW C_RETURN
+                DW C_TRANS
+                DW C_DISTORT
+                DW C_SEND
+                DW C_ADSR
+                DW C_ENVON
+                DW C_WOBBLE
+                DW C_PORT
+                DW C_VIBRATO
+                DW C_IGNORE
+                DW C_EFFECT
+                
+;--------------------------------------
+                
+C_FOR:          LD A,(BC)
+                LD (REPEAT_C),A
+                INC BC
+                LD (STACK_C),BC
+                JP DO_C
+                
+C_NEXT:         LD HL,REPEAT_C
+                DEC (HL)
+                JP Z,DO_C
+                LD BC,(STACK_C)
+                JP DO_C
+                
+C_LENGTH:       LD A,(BC)
+                LD (LENGTH_C),A
+                INC BC
+                JP DO_C
+                
+C_STOP:         LD HL,STOP_C
+                INC (HL)
+                RET
+                
+C_GOSUB:        LD A,(BC)
+                LD E,A
+                INC BC
+                LD A,(BC)
+                INC BC
+                LD (RETURN_C),BC
+                LD C,E
+                LD B,A
+                JP DO_C
+                
+C_RETURN:       LD BC,(RETURN_C)
+                JP DO_C
+                
+C_TRANS:        LD A,(BC)
+                LD (TRANS_C),A
+                INC BC
+                JP DO_C
+                
+C_DISTORT:      LD A,(BC)
+                LD (DISTORT_C),A
+                INC BC
+                JP DO_C
+                
+C_SEND:         LD A,(BC)
+                LD L,A
+                INC BC
+                LD A,(BC)
+                INC BC
+                PUSH BC
+                LD C,A
+                LD A,L
+                CP 7
+                JP NZ,C_NOT_IO
+                LD B,C
+                LD (REGISTER),BC
+C_NOT_IO:       CALL OUT_CA_AY
+                POP BC
+                JP DO_C
+                
+C_ADSR:         LD A,(BC)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                LD (A_INIT_C),A
+                LD A,(BC)
+                AND 15
+                LD (A_SUS_C),A
+                INC BC
+                LD A,(BC)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                LD (A_ATT_C),A
+                LD A,(BC)
+                AND 15
+                LD (A_DEC_C),A
+                INC BC
+                LD A,(BC)
+                LD (A_CYC_C),A
+                INC BC
+                JP DO_C
+                
+C_ENVON:        LD A,(BC)
+                LD (A_CONT_C),A
+                INC BC
+                JP DO_C
+                
+C_WOBBLE:       LD A,(BC)
+                LD (W_DELAY_C),A
+                INC BC
+                LD A,(BC)
+                LD (W_OFF_C),A
+                INC BC
+                JP DO_C
+                
+C_PORT:         LD A,(BC)
+                LD (PORT_C),A
+                INC BC
+                JP DO_C
+                
+C_VIBRATO:      LD A,(BC)
+                LD (V_DEL_C),A
+                INC BC
+                LD A,(BC)
+                LD (V_RATE_C),A
+                INC BC
+                LD A,(BC)
+                LD (V_LIM2_C),A
+                INC BC
+                LD A,(BC)
+                LD (V_DIR_C),A
+                INC BC
+                JP DO_C
+                
+C_IGNORE:       LD A,255
+                LD (IGNORE_C),A
+                JP DO_C
+                
+C_EFFECT:       LD A,(BC)
+                LD (E_TIME_C),A
+                INC BC
+                OR A
+                JP NZ,C_SETEFF
+                LD A,(REGISTER)
+                AND 00100100B
+                LD E,A
+                LD A,(REGISTER2)
+                AND 00011011B
+                OR E
+                LD (REGISTER2),A
+                PUSH BC
+                LD C,A
+                LD A,7
+                CALL OUT_CA_AY
+                POP BC
+                JP DO_C
+C_SETEFF:       LD A,(BC)
+                LD (E_BITS_C),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_C),A
+                INC BC
+                LD A,(BC)
+                LD (E_FREQ_C+1),A
+                INC BC
+                JP DO_C
+;--------------------------------------
+; This routine will send the contents
+; of C to the AY register pointed to
+; by A.
+                
+OUT_CA_AY:      
+;Speccy
+                LD E,C
+                LD BC,65533
+                OUT (C),A
+                LD BC,49149
+                LD A,E
+                OUT (C),A
+                RET
+;Amstrad
+;    LD   B,0F4H
+;    OUT  (C),A
+;    LD   B,0F6H
+;    IN   A,(C)
+;    OR   0C0H
+;    OUT  (C),A
+;    AND  03FH
+;    OUT  (C),A
+;    LD   B,0F4H
+;    OUT  (C),C
+;    LD   B,0F6H
+;    LD   C,A
+;    OR   080H
+;    OUT  (C),A
+;    OUT  (C),C
+;    RET
+                
+                
+                
+;--------------------------------------
+NOTES:          DW 0EEEH,0E18H
+                DW 0EEEH,0E18H,0D4DH
+                DW 0C8EH,0BDAH
+                DW 0B2FH,0A8FH,09F7H
+                DW 0968H,08E1H
+                DW 0861H,07E9H,0777H
+                DW 070CH,06A7H
+                DW 0647H,05EDH,0598H
+                DW 0547H,04FCH
+                DW 04B4H,0470H,0431H
+                DW 03F4H,03BCH
+                DW 0386H,0353H,0324H
+                DW 02F6H,02CCH
+                DW 02A4H,027EH,025AH
+                DW 0238H,0218H
+                DW 01FAH,01DEH,01C3H
+                DW 01AAH,0192H
+                DW 017BH,0166H,0152H
+                DW 013FH,012DH
+                DW 011CH,010CH,00FDH
+                DW 00EFH,00E1H
+                DW 0D5H,0C9H,0BEH,0B3H,0A9H
+                DW 09FH,096H,08EH,086H,07FH
+                DW 077H,071H,06AH,064H,05FH
+                DW 059H,054H,050H,04BH,047H
+                DW 043H,03FH,03CH,038H,035H
+                DW 032H,02FH,02DH,02AH,028H
+                DW 026H,024H,022H,020H,01EH
+                DW 01CH,01BH,019H,018H,016H
+                DW 015H,014H,013H,012H,011H
+                DW 010H,010H,010H,010H,010H
+                
+CODE_BOT:       
+;--------------------------------------
+DATA_TOP:       
+                
+; MUSIC
+                
+TUNES_A:        DW TEST_A
+                
+TUNES_B:        DW TEST_B
+                
+TUNES_C:        DW TEST_C
+                
+;--------------------------------------
+                
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+                
+GOTO:           EQU GOSUB
+;======================================
+TEST_A:         DB ADSR,000H,0FFH,1
+                DB SEND,7,56,ENVON,1,8,48
+                DB VIB,1,9,2,0
+                DB ADSR,00FH,030H,0,8,48
+                DB ADSR,0C0H,001H,1
+                DB EFFECT,2,00000000B
+                DW 700
+CYTA:           DB FOR,16
+                DB 8,12,20,12,GOSUB
+                DW DRUM
+                DB 20,6,20,12,20,6,23,6
+                DB 23,6,GOSUB
+                DW DRUM
+                DB 18,12
+                DB 8,6,8,6,20,12,GOSUB
+                DW DRUM
+                DB 20,6,20,6,18,12,15,6
+                DB 15,6,GOSUB
+                DW DRUM
+                DB GOSUB
+                DW DRUM2
+                DB 18,6
+                DB NEXT
+                DB SEND,7,48,VIB,1,28,0,1
+                DB ADSR,0C0H,0,1
+                DB SEND,6,10,FOR,4
+                DB 44,5,42,5,42,5,NEXT
+                DB ADSR,0C0H,001H,1
+                DB 42,30,44,15
+                DB 44,10,41,5,VIB,1,9,2,0
+                DB SEND,7,56,SEND,6,25
+                DB TRANS,3,FOR,12
+                DB 8,15,20,10,18,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,8,15
+                DB 18,5,20,10,20,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,15,5,NEXT
+                DB TRANS,3,FOR,4
+                DB 11,15,23,10,21,5
+                DB GOSUB
+                DW MURD
+                DB 23,5,21,10,17,5,13,10
+                DB 23,5,25,10,25,5
+                DB GOSUB
+                DW MURD
+                DB 25,5,23,10,18,5
+                DB 8,15,20,10,18,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,8,15
+                DB 18,5,20,10,20,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,15,5,NEXT
+                
+                DB SEND,7,48,VIB,0,0,0,0
+                DB ADSR,0C0H,001H,1
+                DB FOR,2
+                DB SEND,6,30,8,6
+                DB SEND,6,1
+                DB VIB,0,0,0,0,95,6,95,6
+                DB 95,6,SEND,6,10
+                DB VIB,1,28,0,1,44,12
+                DB SEND,6,1
+                DB VIB,0,0,0,0,95,6,95,6
+                DB NEXT
+                DB VIB,1,28,0,1,SEND,6,10
+                DB FOR,16,44,6,NEXT
+                
+                DB VIB,1,9,2,0,TRANS,0
+                DB SEND,7,56,SEND,6,25
+                DB GOTO
+                DW CYTA
+                
+                DB STOP
+;======================================
+TEST_B:         DB ADSR,0C4H,000H,1,ENVON,1
+                DB VIB,5,20,0,1
+                DB EFFECT,1,00000000B
+                DW 200
+                DB FOR,5
+                DB 90,6,90,12,90,12,90,6
+                DB 90,6,90,12,90,6,90,12
+                DB 90,12,90,6,90,6,NEXT
+                DB VIB,6,20,0,0
+                DB FOR,2
+                DB 44,6,42,6,44,6,42,6
+                DB 47,12,44,6,47,12,44,6
+                DB 49,6,50,12,51,6,47,12
+                DB 44,6,42,6,44,6,42,6
+                DB 47,12,44,6,47,12,44,6
+                DB 42,12,32,24
+                DB NEXT,WOBBLE,1,5
+                DB VIB,0,0,0,0,TRANS,7
+                DB LENGTH,6,FOR,4
+                DB 32,32,34,32,35,32,34,32
+                DB 32,32,34,32,35,32,34,35
+                DB NEXT,TRANS,0,LENGTH,0
+                DB WOBBLE,0,0,VIB,7,2,3,0
+                DB ADSR,0C0H,000H,1
+                DB FOR,4,37,6,PORT,2
+                DB 39,6,42,12,39,6
+                DB 42,12,39,6,42,12,42,6
+                DB 44,6,44,12,44,12,NEXT
+                DB ADSR,0A0H,022H,1,PORT,0
+                DB FOR,2
+                DB 49,12,48,24,49,12,46,24
+                DB 49,12,51,24,49,12,48,24
+                DB 46,12,44,12,42,12
+                DB NEXT
+                DB WOBBLE,1,12
+                DB FOR,2
+                DB 49,12,48,24,49,12,46,24
+                DB 49,12,51,24,49,12,48,24
+                DB 46,12,44,12,42,12
+                DB NEXT,WOBBLE,0,0
+                DB ADSR,0A0H,02DH,1
+                DB VIB,0,0,0,0,FOR,2
+                DB 51,12,PORT,1,56,36
+                DB PORT,0,WOBBLE,3,2
+                DB 54,48,WOBBLE,3,1,53,48
+                DB WOBBLE,3,5,51,48
+                DB WOBBLE,0,0,NEXT
+                DB FOR,2
+                DB 59,12,PORT,1,56,36
+                DB PORT,0,WOBBLE,3,2
+                DB 54,48,WOBBLE,3,1,53,48
+                DB WOBBLE,3,5,51,48
+                DB WOBBLE,0,0,NEXT,56,48
+                DB ADSR,080H,000H,1
+                DB TRANS,244,FOR,36,PORT,0
+                DB 84,1,PORT,3,71,9,NEXT
+                DB ADSR,0A0H,003H,1,PORT,0
+                DB WOBBLE,2,8,FOR,2
+                DB 54,30,56,40,57,5,56,10
+                DB 54,5,56,10,54,5
+                DB 56,10,57,5,NEXT,TRANS,0
+                DB FOR,2
+                DB 54,30,56,40,57,5,56,10
+                DB 54,5,56,10,54,5
+                DB 56,10,57,5,NEXT
+                DB FOR,2,WOBBLE,0,0
+                DB 47,15,PORT,1,54,60
+                DB PORT,0,52,5,54,5,52,5
+                DB 57,5,23,10,DISTORT,2
+                DB VIB,8,1,4,0,62,15
+                DB DISTORT,0,VIB,0,0,0,0
+                
+                DB 59,15,PORT,1,66,60
+                DB PORT,0,64,5,66,5,64,5
+                DB 69,5,71,5,75,5,PORT,0
+                DB WOBBLE,4,1,76,15
+                DB WOBBLE,0,0,NEXT
+                DB ADSR,0A0H,005H,1
+                DB TRANS,0,FOR,2,DISTORT,0
+                DB 59,10,57,5,62,10,59,5
+                DB 64,5,65,5,64,5,62,10
+                DB 59,5,64,5,65,5,69,5
+                DB 71,10,76,5
+                DB 75,30,TRANS,244,NEXT
+                DB ADSR,0CAH,001H,1
+                DB PORT,0,VIB,3,0,0,0
+                DB WOBBLE,1,19,FOR,2
+                DB 78,15,76,10,74,5,76,10
+                DB 74,15,77,5,78,15
+                DB 76,10,74,5,76,10,74,15
+                DB 76,5,71,60,83,55
+                DB 81,5,83,15,81,10,78,5
+                DB 81,10,78,15,77,5,76,15
+                DB 74,10,76,5,77,10,76,5
+                DB 74,10,69,5,71,60,59,60
+                DB TRANS,232,NEXT,TRANS,0
+                DB ADSR,065H,0,1
+                DB PORT,1,TRANS,0
+                DB FOR,2,82,48,20,48,NEXT
+                DB PORT,0,WOBBLE,0,0
+                DB VIB,0,0,0,0
+                
+                DB GOTO
+                DW TEST_B
+;======================================
+TEST_C:         DB STOP
+;======================================
+                
+DRUM:           DB SEND,7,48,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,12,VIB,1,9,2,0
+                DB SEND,7,56,SEND,6,25
+                DB RETURN
+                
+DRUM2:          DB SEND,7,48,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,6,VIB,1,9,2,0
+                DB SEND,7,56,SEND,6,25
+                DB RETURN
+                
+MURD:           DB SEND,7,48,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,10,VIB,1,9,2,0
+                DB SEND,7,56,SEND,6,25
+                DB RETURN
+                
+; SOUND FX
+                
+FX_TAB:         DW SMELL
+                DW CACK
+                
+SMELL:          DB 4
+                DW SMELLY
+                DB 255
+                
+CACK:           DB 4
+                DW CACKY
+                DB 255
+                
+SMELLY:         DB ADSR,0F0H,001H,1
+                DB ENVON,1
+                DB WOBBLE,0,0,LENGTH,0
+                DB VIB,1,100,0,1
+                DB 70,24
+                DB STOP
+                
+CACKY:          DB ADSR,0EFH,0,0
+                DB VIB,0,0,0,0
+                DB ENVON,1,WOBBLE,2,19
+                DB LENGTH,4,50,54,57,59
+                DB 56,52
+                DB ADSR,000H,0,1,52
+                DB STOP
+                
+                
+                
+DATA_BOT:       
+                
+CALC1:          EQU CODE_BOT-CODE_TOP
+CALC2:          EQU DATA_BOT-DATA_TOP
+                
+                
+                END

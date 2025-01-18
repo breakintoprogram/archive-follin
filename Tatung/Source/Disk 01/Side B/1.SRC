@@ -1,0 +1,1371 @@
+                AL),A
+                
+                LD A,E
+                LD HL,500DH
+                ADD A
+                CALL ADD_A_HL ;Scrad
+                
+                PUSH HL
+                CALL BLANK_INI
+                POP HL
+                
+                LD IX,INITIAL
+                CALL BIG_PRN
+                
+NAME_PNT:       LD DE,000
+                LD HL,INITIALS
+                LD BC,3
+                LDIR 
+                RET
+                
+                
+BLANK_INI:      ; Blank  2X2 box scrad in HL
+                PUSH HL
+                CALL BINI2
+                POP HL
+                LD BC,32
+                ADD HL,BC
+BINI2:          
+                LD B,8
+                LD A,85
+BINI3:          
+                RLCA 
+                LD (HL),A
+                INC L
+                LD (HL),A
+                DEC L
+                INC H
+                DJNZ BINI3
+                RET
+                
+INITIALS:       DB "MSF",0
+INITIAL:        DB "*",0
+;=====================================
+HI_SCORES:      
+                
+;BORD_VERT enter HL= scrad C=column height
+;BORD_HORZ    "  " "  "    C= row length
+;CHARCOL+1 and RSN+1 = char address
+                
+                XOR A
+                LD (CHAR_COL+1),A
+                CALL CLAT
+                
+                
+; build up  plaque from  characters
+                
+                LD HL,DUMMY
+                LD (BORDSM0+1),HL
+                
+                LD HL,HICHAR0
+                LD (RSN+1),HL
+                LD HL,4805H
+                LD B,22
+PLAK:           
+                PUSH BC
+                PUSH HL
+                LD C,14
+                CALL BORD_VERT
+                POP HL
+                INC L
+                POP BC
+                DJNZ PLAK
+;....................................
+                
+PAP:            
+; Put border round plaque
+                LD HL,HICHAR2
+                LD (RSN+1),HL
+                LD HL,40E4H
+                LD C,24
+                CALL BORD_HORZ
+                
+                LD HL,HICHAR3
+                LD (RSN+1),HL
+                LD HL,50C4H
+                LD C,24
+                CALL BORD_HORZ
+                
+                LD HL,HICHAR4
+                LD (RSN+1),HL
+                LD HL,4804H
+                LD C,14
+                CALL BORD_VERT
+                
+                LD HL,HICHAR5
+                LD (RSN+1),HL
+                LD HL,481BH
+                LD C,14
+                CALL BORD_VERT
+                
+                
+                CALL AND_PLOT
+                
+AGE:            LD A,17
+                ADD 8
+                LD (AGE+1),A
+                LD B,A
+                LD C,18
+PLIT:           
+                EXX
+                CALL RAND
+                
+                CP 64
+                JR C,NO_PLOT
+                CP 176
+                JR NC,NO_PLOT
+                LD B,A
+                LD A,H
+                CP 32+8
+                JR C,NO_PLOT
+                CP 255-31-8
+                JR NC,NO_PLOT
+                LD C,A
+                CALL PLOT
+NO_PLOT:        
+                EXX
+                DJNZ PLIT
+                
+                LD A,C
+                CP 9
+                CALL Z,OR_PLOT
+                DEC C
+                JR NZ,PLIT
+                
+                CALL OR_PLOT
+;....................................
+;Put text on the tablet
+                
+                LD IX,BLACK_MES
+                LD HL,4806H
+                CALL BIG_PRN
+                
+                LD IX,HISC_MES
+                LD HL,5086H
+                CALL BIG_PRN
+                
+                LD IX,ORD_MES
+                LD B,5
+                LD HL,4866H
+                CALL ORDER
+                LD B,3
+                LD HL,5006H
+                CALL ORDER
+                
+                LD IX,NAME_MES
+                LD B,5
+                LD HL,486EH
+                CALL ORDER
+                LD B,3
+                LD HL,500EH
+                CALL ORDER
+                
+                LD HL,SCORES+4
+                LD (STORE2),HL
+                LD HL,8
+                LD B,8
+HIM:            
+                PUSH HL
+                PUSH BC
+                CALL SWAN0
+                LD HL,(STORE2)
+                LD DE,4
+                ADD HL,DE
+                LD (STORE2),HL
+                POP BC
+                POP HL
+                INC L
+                INC L
+                DJNZ HIM
+                
+;.................................
+                LD HL,RSN
+                LD (BORDSM0+1),HL
+                
+                LD A,2
+                CALL CLAT
+                
+                LD HL,100H
+                LD (STORE),HL
+                
+; Now print up the torches and flicker
+                
+                LD IY,LAMP_COLS
+                
+                LD HL,4800H
+                CALL PR_LAMP
+                LD HL,481CH
+                CALL PR_LAMP
+STAY:           
+                HALT 
+                HALT 
+                
+ST_XOR:         LD A,00
+                XOR 1
+                LD (ST_XOR+1),A
+                JR Z,SKIP_ATTR
+                
+                CALL WOT_COLR?
+                CALL COLR_TABT
+;         CALL COLR_BORD
+                CALL COLR_LAMP
+                CALL COLR_FLAM
+SKIP_ATTR:      
+                CALL PR_FLAMES
+                
+                CALL WAIT_ABIT
+                JR STAY
+                
+                
+LAMP_COLS:      DB 2,2+64,5,5+64
+                DB 6,6+64,7,7+64
+                
+;:::::::::::::::::::::::::::::::::::
+                
+WOT_COLR?:      
+                
+                LD A,(LAMP_COL1+2)
+                LD E,A
+                LD A,(LAMP_COL2+2)
+                ADD E
+                AND 00001000B
+                ADD A
+                ADD A
+                ADD A
+                OR 48
+                LD (TABT_COLR+1),A
+                
+                CALL RAND
+                AND 7
+                LD L,A
+                LD (LAMP_COL1+2),A
+                LD A,H
+                AND 7
+                LD (LAMP_COL2+2),A
+                
+                RET
+                
+                
+;:::::::::::::::::::::::::::::::::::
+COLR_TABT:      
+                LD B,14
+                LD C,22
+                LD HL,5905H
+TABT_COLR:      LD A,3
+                JP AREA
+                
+;:::::::::::::::::::::::::::::::::::
+COLR_BORD:      
+                LD HL,58E4H ; top
+                LD C,24
+                LD B,1
+                LD A,(FLAM_COL1+1)
+                AND 255-64
+                LD E,A
+                LD A,(FLAM_COL2+1)
+                AND 255-64
+                ADD E
+                SRL A
+                OR 64
+                LD (METAL+1),A
+                CALL AREA
+                
+                LD HL,5AC4H ; bottom
+                LD C,24
+                LD B,1
+METAL:          LD A,42
+                CALL AREA
+                
+                LD HL,5904H ; left
+                LD B,14
+                LD C,1
+                LD A,(FLAM_COL1+1)
+                CALL AREA
+                
+                LD HL,591BH ;right
+                LD B,14
+                LD C,1
+                LD A,(FLAM_COL2+1)
+                JP AREA
+                
+                
+;:::::::::::::::::::::::::::::::::::
+COLR_LAMP:      
+LAMP_COL1:      LD A,(IY+000)
+                LD (FLAM_COL2+1),A
+                EX AF,AF
+                CALL COL_1LAMP
+LAMP_COL2:      LD A,(IY+000)
+                LD (FLAM_COL1+1),A
+                EX AF,AF
+                
+                
+COL_1LAMP:      LD A,1CH
+                XOR 1EH
+                LD (COL_1LAMP+1),A
+                LD L,A
+                LD H,59H
+                LD C,2
+                LD B,9
+                EX AF,AF
+                JP AREA
+                
+;:::::::::::::::::::::::::::::::::::
+COLR_FLAM:      
+FLAM_COL1:      LD A,00
+                EX AF,AF
+                CALL COL_1FLAM
+FLAM_COL2:      LD A,00
+                EX AF,AF
+                
+                
+COL_1FLAM:      LD A,7DH
+                XOR 1CH
+                LD (COL_1FLAM+1),A
+                LD L,A
+                LD H,59H
+                LD C,2
+                LD B,3
+                EX AF,AF
+                JP AREA
+                
+;:::::::::::::::::::::::::::::::::::
+                
+COLUMN:         
+                LD B,3
+COL1:           
+                PUSH HL
+                PUSH BC
+                LD C,16
+                CALL BORD_VERT
+                POP BC
+                POP HL
+                INC L
+                DJNZ COL1
+DUMMY:          RET
+                
+;...............
+                
+AREA:           ; colour an area start HL
+; height= B  length= C   Colour=A
+                
+                LD D,A ; save color
+                LD A,32
+                SUB C
+                LD E,A ; wrap add
+                LD A,D
+AR0:            
+                LD D,C ; length
+AR1:            
+                LD (HL),A
+                INC HL
+                DEC D
+                JR NZ,AR1
+                ADD HL,DE
+                DJNZ AR0
+                RET
+                
+ORDER:          
+                PUSH HL
+                PUSH BC
+                CALL DO_STRING
+                POP BC
+                POP HL
+                LD DE,32
+                ADD HL,DE
+                DJNZ ORDER
+                RET
+                
+;___________________________________
+SHADER:         
+; Enter B=hite C=width
+; A=xstart A'=ystart
+                
+                LD (SHSM1+1),A
+                EX AF,AF
+                LD (SHSM2+1),A
+                LD A,B
+                LD (H_LOOP+1),A
+                
+H_LOOP:         
+                LD B,2
+V_LOOP:         
+                PUSH BC
+                LD A,B
+SHSM1:          ADD 42
+                LD B,A
+                LD A,C
+SHSM2:          ADD 42
+                LD C,A
+                CALL PLOT
+                
+                POP BC
+                DJNZ V_LOOP
+                DEC C
+                JR NZ,H_LOOP
+                RET
+                
+                
+;++++++++++++++++++++++++++++++++++++
+PR_FLAMES:      
+                LD DE,4861H
+                CALL PR_FLAME
+                LD DE,487DH
+                
+PR_FLAME:       
+                
+                CALL RAND
+                AND 48
+                LD L,A
+                ADD A
+                ADD L
+                LD L,A
+                LD H,0
+                LD BC,FLAMES
+                ADD HL,BC
+                EX DE,HL
+                LD A,3
+                EX AF,AF
+                LD A,2
+                JP PRINT_IT
+                
+;++++++++++++++++++++++++++++++++++++
+PR_LAMP:        ; Enter HL =scrad
+                PUSH HL
+                LD A,8
+                EX AF,AF; Char hite
+                LD A,4  ; Char width
+                LD DE,LAMP
+                CALL PRINT_IT
+                POP HL
+                LD A,H
+                ADD 8
+                LD H,A
+                LD A,1
+                EX AF,AF
+                LD C,4
+                CALL PRIT2
+                
+                
+                LD HL,LAMP
+                LD A,68
+                EX AF,AF
+                LD A,4
+                JP FORE_FLIP
+                
+                
+PRINT_IT:       
+; enter DE=grad HL=screen A'=charhite
+; A=width
+                LD (PRWID+1),A
+                EX AF,AF
+PRIT3:          
+                EX AF,AF
+                LD C,8
+PRIT2:          
+PRWID:          LD B,4
+                PUSH HL
+PRIT1:          
+                LD A,(DE)
+                LD (HL),A
+                INC DE
+                INC HL
+                DJNZ PRIT1
+                
+                POP HL
+                INC H
+                DEC C
+                JR NZ,PRIT2
+                
+                LD A,L
+                ADD 32
+                LD L,A
+                LD A,H
+                SUB 8
+                LD H,A
+                EX AF,AF
+                DEC A
+                JP NZ,PRIT3
+                RET
+                
+                
+;=====================================
+INFO:           
+;         CALL BCD_TO_ST
+                CALL BORDER
+;         CALL WORDS
+;         RET
+                
+                
+WORDS:          
+                LD IX,TOPMES
+                LD HL,4001H
+                CALL DO_STRING
+                LD HL,5081H
+                CALL DO_STRING
+                LD HL,50C1H
+                CALL DO_STRING
+                
+                
+; reprint scores for p1,2
+                LD A,1
+                CALL SCINC
+                LD A,2
+                JP SCINC
+                
+BCD_TO_ST:      
+; copy score to string
+                LD B,4
+                LD HL,SCORE0
+;         LD   DE,SCOSTRING-2
+                LD A,30H
+INF:            
+                RRD
+                LD (DE),A
+                DEC DE
+                RRD
+                LD (DE),A
+                DEC DE
+                RRD
+                INC HL
+                DJNZ INF
+                RET
+                
+;####################################
+                
+DO_MESAGE:      
+                POP IX
+                CALL DO_STRING
+                JP (IX)
+                
+DO_STRING:      
+; enter with IX=string, EOS = 0
+; HL = screen address
+                
+                LD A,(IX+0)
+                INC IX
+                OR A
+                RET Z
+                EX DE,HL
+                CALL GETCHAR
+                EX DE,HL
+                PUSH HL
+                CALL RST16
+                POP HL
+                INC L
+                JR DO_STRING
+                
+GETNUM:         ADD 30H
+GETCHAR:        
+                LD L,A
+                LD H,0
+                ADD HL,HL
+                ADD HL,HL
+                ADD HL,HL
+CHAR_SET:       LD BC,15360
+                ADD HL,BC
+                RET
+                
+RST16:          
+                CALL MAKE_MASK
+                EX DE,HL
+                PUSH DE
+                LD A,4
+                ADD D
+                LD D,A
+                CALL RS1
+                POP DE
+                LD A,E
+                ADD 32
+                LD E,A
+                JR NC,RS1
+                LD A,8
+                ADD D
+                LD D,A
+                
+RS1:            
+                LD B,4
+RS2:            
+                LD A,(DE) ; screen
+                EXX
+                OR (HL)   ; and mask
+                INC HL
+                EXX
+                XOR (HL)   ; or letter
+                LD (DE),A ; ] screen
+                INC HL
+                INC D
+                DJNZ RS2
+                RET
+                
+                
+;`````````````````````````````````
+MAKE_MASK:      
+                PUSH DE ; char addr
+                EXX
+                POP HL
+                PUSH HL
+; original image in centre posn
+                LD BC,8
+                LD DE,CHAR_BUF
+                LDIR 
+                XOR A
+                LD (DE),A ; 0
+                
+                POP HL
+                LD DE,CHAR_BUF2
+                LD C,8
+                LDIR 
+                LD (DE),A
+                
+; upper image
+                LD DE,CHAR_BUF2-1
+                CALL OR_EM
+; lower image
+                LD DE,CHAR_BUF2+1
+                CALL OR_EM
+; left image 1
+                LD B,8
+                LD HL,CHAR_BUF2
+LM1:            
+                RLC (HL)
+                INC HL
+                DJNZ LM1
+                LD DE,CHAR_BUF2
+                CALL OR_EM
+                
+; left image 2
+                LD B,8
+                LD HL,CHAR_BUF2
+LM2:            
+                RLC (HL)
+                INC HL
+                DJNZ LM2
+                LD DE,CHAR_BUF2
+                CALL OR_EM
+                
+; right image
+                LD B,8
+                LD HL,CHAR_BUF2
+RM1:            
+                RRC (HL)
+                RRC (HL)
+                RRC (HL)
+                INC HL
+                DJNZ RM1
+                LD DE,CHAR_BUF2
+                CALL OR_EM
+                
+                LD B,8
+                LD HL,CHAR_BUF2
+RM2:            
+                RRC (HL)
+                INC HL
+                DJNZ RM2
+                LD DE,CHAR_BUF2
+                CALL OR_EM
+                
+                LD HL,CHAR_BUF
+                EXX
+                RET
+                
+OR_EM:          
+                LD HL,CHAR_BUF
+                LD B,8
+SUJ:            LD A,(DE)
+                OR (HL)
+                LD (HL),A
+                INC HL
+                INC DE
+                DJNZ SUJ
+                RET
+                
+;________
+                
+SCINC:          ; ADD SCOREAD TO SCORE
+; A=PLAYER NUMBER      (7 DIGITS BCD  )
+                CP 3
+                RET NC
+                
+                PUSH DE
+                PUSH BC
+                ADD A
+                LD L,A
+                ADD A
+                LD C,A
+                ADD A
+                ADD L
+                LD L,A
+                LD H,0
+;         LD   DE,SPRITES+FLAGS-10
+;         ADD  HL,DE
+;         BIT  7,(HL)
+;         JR   Z,NO_SCORE
+                
+                LD B,0
+                LD HL,SCORE0
+                ADD HL,BC
+                LD DE,SCOREAD
+                
+                LD B,4
+SW1:            
+                LD A,(DE)
+                ADC (HL)
+                DAA
+                LD (HL),A
+                INC DE
+                INC HL
+                DJNZ SW1
+                LD (STORE2),HL;SCOR HIDIG+1
+                CALL SWAN ; PRINT NUMBER
+;
+; NOW UPDATE HISCORE IF NECESSARY
+                
+; HL NOW POINTS LOW DIGIT OF SCORE-1
+                LD DE,4
+                ADD HL,DE ; POINT HIDIG
+                PUSH HL
+                LD DE,SCORE0+3;HISCORE HI
+                LD B,4
+CHI:            
+                LD A,(DE)
+                CP (HL)
+                JR Z,NUTHER; ANOTHER CHANCE
+                JR C,NEWHI
+                JP NONEW
+NUTHER:         DEC HL
+                DEC DE
+                DJNZ CHI
+NEWHI:          
+                POP HL ; HIDIG
+                LD DE,SCORE0+3
+                LDD
+                LDD
+                LDD
+                LDD
+                LD HL,SCORE0+4
+                LD (STORE2),HL
+                LD C,0
+                CALL SWAN
+                PUSH HL ; DUMMY
+NONEW:          
+                POP HL ; USELESS
+NO_SCORED:      
+                POP BC
+                POP DE
+                RET
+                
+NO_SCORE:       
+                CALL SIG
+                JR NO_SCORED
+SIG:            
+                LD HL,0
+                LD (SCOREAD),HL
+                LD (SCOREAD+2),HL
+                RET
+                
+;STORE is used for  screen address
+;STORE2 cointains pointer to BCD number
+;(MSB thereof) e.g. point to 00 so that
+;56 34 21 00 prints as 123456
+                
+SWAN:           
+                CALL SIG ;Set scad to 0,H=0
+                LD L,C
+                SRL L
+                
+SWAN0:          ; Enter HL=2*index to NUMTAB
+; and STORE2 pointing MSB+1
+;NUMTAB is a table of screen addresses
+                LD DE,NUMTAB
+                ADD HL,DE
+                LD A,(HL) ; CORRESPONDING
+                INC HL     ; SCREEN ADDRESS
+                LD H,(HL)
+                LD L,A
+                DEC L
+                LD (STORE),HL ; SCRAD
+SWAN1:          ;Enter here with STORE,STORE2
+                LD HL,(STORE2)
+                DEC HL  ; HIGHEST DIGIT
+                LD A,200 ; RET Z
+                LD (RST20+2),A ;no lead 0's
+                XOR A
+                LD B,4
+SW0:            
+                PUSH BC
+                RLD
+                PUSH HL
+                PUSH AF
+                CALL GETNUM
+                EX DE,HL
+                CALL RST20
+                POP AF
+                POP HL
+                RLD
+                PUSH HL
+                PUSH AF
+                CALL GETNUM
+                EX DE,HL
+                CALL RST20
+                POP AF
+                POP HL
+                RLD
+                DEC HL
+                POP BC
+                DJNZ SW0
+                RET
+RST20:          
+                CP 48
+                RET Z
+                XOR A
+                LD (RST20+2),A
+                LD HL,(STORE)
+                CALL RST16
+                LD HL,STORE
+                INC (HL)
+                RET
+                
+;==================================
+EXPAND:         
+; EXPAND ONE BY ONE TO TWO BY TWO
+; enter HL = char matrix
+                
+                LD IY,CHAR_BUF
+                LD E,8
+BG1:            
+                LD D,(HL)
+                INC HL
+                CALL BG2
+                CALL BG2
+                LD A,(IY-2)
+                LD (IY+0),A
+                INC IY
+                LD A,(IY-2)
+                LD (IY+0),A
+                INC IY
+                DEC E
+                JR NZ,BG1
+                RET
+BG2:            
+                LD B,4
+BG3:            
+                RLC D
+                RLA
+                RRC D
+                RLA
+                RL D
+                DJNZ BG3
+                LD (IY+0),A
+                INC IY
+                RET
+                
+BIG_MASK:       
+; Make mask for 2x2  grafic in CHARBUF
+                
+; Copy into CHAR_BUF1
+                LD HL,CHAR_BUF
+                LD DE,CHAR_BUF1
+                LD BC,32
+                LDIR 
+                
+                LD HL,CHAR_BUF1-2
+                CALL BIG_OR
+                LD HL,CHAR_BUF1+2
+                CALL BIG_OR
+                
+                CALL BIG_RITE
+                LD HL,CHAR_BUF1
+                CALL BIG_OR
+                
+                LD HL,CHAR_BUF1
+                LD B,16
+BIG_LEFT:       
+                LD A,(HL)
+                INC HL
+                LD C,(HL)
+                SLA C
+                RLA
+                SLA C
+                RLA
+                LD (HL),C
+                DEC HL
+                LD (HL),A
+                INC HL
+                INC HL
+                DJNZ BIG_LEFT
+                
+                LD HL,CHAR_BUF1
+                CALL BIG_OR
+                
+                JP BIG_RITE
+                
+BIG_OR:         
+                LD DE,CHAR_BUF
+                LD B,32
+BOR1:           
+                LD A,(DE)
+                OR (HL)
+                LD (DE),A
+                INC HL
+                INC DE
+                DJNZ BOR1
+                RET
+                
+BIG_RITE:       
+                LD HL,CHAR_BUF1
+                LD B,16
+BIG_RR:         SRL (HL)
+                INC HL
+                RR (HL)
+                INC HL
+                DJNZ BIG_RR
+                RET
+                
+                
+;___________________________________
+                
+TITLEPAGE:      ; print blacklamp for now
+                XOR A
+                CALL CLS
+                
+                LD DE,TITLER
+                PUSH DE
+                
+TITLE_XOR:      LD A,1
+                XOR 1
+                LD (TITLE_XOR+1),A
+                JR Z,TPAGE1
+                JR TPAGE2
+TITLER:         
+                CALL BOW_ON
+                
+                LD HL,800
+                LD (STORE),HL
+HANG_ON:        
+                HALT 
+                CALL WAIT_ABIT
+                JR HANG_ON
+                
+;.................................
+                
+TPAGE1:         
+                LD HL,4006H
+                CALL BIG_PRN0
+BLACK_MES:      DB "BLACK LAMP",0
+                
+                LD HL,40AEH
+                CALL BIG_PRN0
+                DB "BY",0
+                
+                LD HL,4808H
+                CALL BIG_PRN0
+                DB "SOFTWARE ",0
+                
+                LD HL,4847H
+                CALL BIG_PRN0
+                DB "CREATIONS ",0
+                
+                LD HL,48C6H
+                CALL BIG_PRN0
+                DB "PROGRAM BY",0
+                
+                LD HL,5007H
+                CALL BIG_PRN0
+                DB "M. FOLLIN",0
+                
+                LD HL,50C8H
+                CALL BIG_PRN0
+                DB "FIREBIRD",0
+                RET
+                
+TPAGE2:         
+                LD HL,4006H
+                LD IX,BLACK_MES
+                CALL BIG_PRN
+                
+                LD HL,40A6H
+                CALL BIG_PRN0
+                DB "1/2 PLAYER",0
+                
+                LD HL,4806H
+                CALL BIG_PRN0
+                DB "3=KEYBOARD",0
+                
+                LD HL,4866H
+                CALL BIG_PRN0
+                DB "4=SINCLAIR",0
+                
+                LD HL,48C6H
+                CALL BIG_PRN0
+                DB "5=KEMPSTON",0
+                
+                LD HL,5026H
+                CALL BIG_PRN0
+                DB "6='CURSOR'",0
+                
+                RET
+                
+;::::::::::::::::::::::::::::::::::
+                
+CLS:            
+                LD HL,16384
+                LD DE,16385
+                LD BC,6144
+                LD (HL),L
+                LDIR 
+CLAT:           
+                LD HL,5800H
+                LD BC,3
+                JP FULLER
+                
+                
+BIG_PRN0:       
+                POP IX
+                CALL BIG_PRN
+                JP (IX)
+BIG_PRN:        
+                LD A,(IX+0)
+                INC IX
+                OR A
+                RET Z
+                PUSH HL
+                CALL GETCHAR
+                CALL EXPAND
+                CALL BIG_MASK
+                LD HL,CHAR_BUF1
+                POP DE;Scrad to DE for print
+                PUSH DE
+                EXX
+                LD HL,CHAR_BUF
+                EXX
+                CALL PROR_2X2
+                POP HL
+                INC HL
+                INC HL
+                LD (STORE),HL
+                JR BIG_PRN
+                
+;...............
+                
+PROR_2X2:       
+                PUSH DE
+                CALL PRINT_2X1
+                POP DE
+                EX DE,HL
+                LD C,32
+                ADD HL,BC
+                EX DE,HL
+PRINT_2X1:      
+                LD B,8
+                
+                LD A,(DE)
+                EXX
+                OR (HL)
+                INC HL
+                EXX
+                XOR (HL)
+                LD (DE),A
+                INC HL
+                INC E
+                
+                LD A,(DE)
+                EXX
+                OR (HL)
+                INC HL
+                EXX
+                XOR (HL)
+                LD (DE),A
+                INC HL
+                DEC E
+                
+                INC D
+                DJNZ PRINT_2X1+2
+                RET
+                
+;___________________________________
+BORDER:         ; pretty border around screen
+                LD HL,BORD_CHAR
+                LD (RSN+1),HL
+                LD A,3
+                LD (CHAR_COL+1),A
+                
+                LD HL,4041H
+                CALL BORD1
+                LD HL,5061H
+                CALL BORD1
+                
+; now do vertical strips
+                
+                LD HL,4061H ; scrad start
+                LD C,16  ; column height
+BORD_VERT:      
+                PUSH HL
+                CALL RSN   ; Left hand char
+                POP HL
+                PUSH HL
+                LD DE,29
+                ADD HL,DE
+BORDSM0:        CALL RSN   ; Right hand char
+                POP HL
+                LD A,L
+                ADD 32
+                LD L,A
+                JR NC,BORD5
+                AND 31
+                LD L,A
+                LD A,H
+                ADD 8
+                LD H,A
+BORD5:          
+                DEC C
+                JR NZ,BORD_VERT
+                RET
+                
+                
+BORD1:          ;a horizontal strip of bordeR
+                LD C,30
+BORD_HORZ:      
+                PUSH HL
+                CALL RSN
+                POP HL
+                INC L
+                DEC C
+                JR NZ,BORD_HORZ
+                RET
+                
+                
+RSN:            LD DE,BORD_CHAR
+RSL:            
+                LD B,8
+RSM:            
+                LD A,(DE)
+                LD (HL),A
+                INC H
+                INC DE
+                DJNZ RSM
+                DEC H
+                CALL SCR_TO_AT
+CHAR_COL:       LD (HL),3
+                RET
+                
+                
+                
+SCR_TO_AT:      
+                LD A,H
+                RRA
+                RRA
+                RRA
+                AND 3
+                OR 58H
+                LD H,A
+                RET
+                
+                
+;___________________________________
+PR_NUMBS:       
+                LD HL,50D2H
+                LD (STORE),HL
+                LD A,(LOCATION)
+                CALL HELP
+                
+                LD HL,50D8H
+                LD (STORE),HL
+                LD A,(SPRITES+X)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                CALL HELP
+                
+                LD HL,50DEH
+                LD (STORE),HL
+                LD A,(SPRITES+Y)
+                RRA
+                RRA
+                RRA
+                RRA
+                AND 15
+                
+HELP:           
+                LD DE,0-1
+                LD C,100
+HUNDIV:         
+                INC D
+                SUB C
+                JR NC,HUNDIV
+                ADD C
+                LD C,10
+TENDIV:         
+                INC E
+                SUB C
+                JR NC,TENDIV
+                ADD C
+;D is 100's E is 10's A is 1's
+                PUSH DE
+                CALL GETNUM
+                EX DE,HL
+                CALL VSL
+                
+                POP DE
+                PUSH DE
+                LD A,E
+                CALL GETNUM
+                EX DE,HL
+                CALL VSL
+                
+                POP DE
+                LD A,D
+                CALL GETNUM
+                EX DE,HL
+                
+VSL:            
+                LD HL,(STORE)
+                CALL RSL
+                LD HL,STORE
+                DEC (HL)
+                RET
+                
+;___________________________________
+                
+                
+TOPMES:         DB "HIGH SCORE: 20000000"
+                DB "   ONE UP.",0
+                
+MIDMES:         DB "PLAYER ONE:  ",0
+                
+BOTMES:         DB "PLAYER TWO:  ",0
+                
+                
+NUMTAB:         DW 400EH,508EH,50CEH,0
+                DW 4873H,4893H,48B3H,48D3H
+                DW 48F3H,5013H,5033H,5053H
+                
+STORE:          DW 0
+STORE2:         DW 0
+                
+                
+CHAR_BUF:       DS 32
+CHAR_BUF1:      DS 34
+CHAR_BUF2:      EQU CHAR_BUF+9
+                
+BORD_CHAR:      
+                DBB 11000011
+                DBB 00111100
+                DBB 01100110
+                DBB 10011001
+                DBB 10011001
+                DBB 01100110
+                DBB 00111100
+                DBB 11000011
+                
+HICHAR0:        
+                DBB 01010101
+                DBB 10101010
+                DBB 01010101
+                DBB 10101010
+                DBB 01010101
+                DBB 10101010
+                DBB 01010101
+                DBB 10101010
+                
+HICHAR1:        
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                DBB 11001100
+                
+HICHAR2:        
+                DBB 10101010
+                DBB 11111111
+                DBB 11111111
+                DBB 11111111
+                DBB 10101010
+                DBB 00000000
+                DBB 10101010
+                DBB 11111111
+HICHAR3:        
+                DBB 11111111
+                DBB 10101010
+                DBB 00000000
+                DBB 10101010
+                DBB 11111111
+                DBB 11111111
+                DBB 11111111
+                DBB 10101010
+HICHAR4:        
+                DBB 10111110
+                DBB 11011100
+                DBB 10111110
+                DBB 11011100
+                DBB 10111110
+                DBB 11011100
+                DBB 10111110
+                DBB 11011100
+HICHAR5:        
+                DBB 01111101
+                DBB 00111011
+                DBB 01111101
+                DBB 00111011
+                DBB 01111101
+                DBB 00111011
+                DBB 01111101
+                DBB 00111011
+                
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                
+                
+                
+HISC_MES:       DB "HIGH-SCORE",0
+ORD_MES:        DB "First..",0
+                DB "Second.",0
+                DB "Third..",0
+                DB "Fourth.",0
+                DB "Fifth..",0
+                DB "Sixth..",0
+                DB "Seventh",0
+                DB "Eighth.",0
+                
+SCORES:         DBH 78563412
+                DBH 77777707
+                DBH 22000400
+                DBH 88880000
+                DBH 44440000
+                DBH 22220000
+                DBH 07000000
+                DBH 02000000
+                DBH 00000000
+NAME_MES:       
+                DB "ABC",0
+                DB "DEF",0
+                DB "GHI",0
+                DB "JKL",0
+                DB "MNO",0
+                DB "PQR",0
+                DB "STU",0
+                DB "VWX",0
+                DB "YZ+",0
+                
+                
+SCORE0:         DBH 00000020
+SCORE1:         DBH 00005500
+SCORE2:         DS 4,0
+SCOREAD:        DS 4,0
+                
+KEY_ASCII:      
+                DB 128+"C","ZXCV"
+                DB "ASDFGQWERT12345"
+                DB "09876POIUY"
+                DB 128+"E","LKJH"
+                DB 128+" ",128+"S","MNB"
+                
+                
+DUM_MES:        DB " *",0
+                
+;=====================================
+                

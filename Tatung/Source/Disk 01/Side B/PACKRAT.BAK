@@ -1,0 +1,179 @@
+=
+;DO FILTERING THINGS
+
+MUSIC:          LDA  #0
+                BNE  MUS3
+MUS0:           LDA  CUTOFF
+                SEC  
+                SBC  FILTRATE
+                STA  CUTOFF
+                BCS  MUS1
+                DEC  CUTOFF+1
+                BMI  MUS2
+MUS1:           LDA  CUTOFF+1
+                BNE  CHANSTART
+                LDA  CUTOFF
+                CMP  #50
+                BCS  CHANSTART
+MUS2:           DEC  MUSIC+1
+MUS3:           LDA  CUTOFF
+                CLC  
+                ADC  FILTRATE
+                STA  CUTOFF
+                BCC  MUS4
+                INC  CUTOFF+1
+MUS4:           LDA  CUTOFF+1
+                CMP  #4
+                BCC  CHANSTART
+                LDA  CUTOFF
+                CMP  #205
+                BCC  CHANSTART
+                INC  MUSIC+1
+                JMP  MUS0
+CHANSTART:      LDA  CUTOFF
+                STA  SID+21
+                LDA  CUTOFF
+                LSR  A
+                LSR  A
+                LSR  A
+                STA  TEMP
+                LDA  CUTOFF+1
+                LSR  A
+                ROR  A
+                ROR  A
+                ROR  A
+                ORA  TEMP
+                STA  SID+22
+                RTS  
+
+
+NOTES_LO:       DB   12,28,45,62,81,102,123
+                DB   145,169,195,221,250,24
+                DB   56,90,125,163,204,246
+                DB   35,83,134,187,244,48
+                DB   112,180,251,71,152,237
+                DB   71,167,12,119,233,97
+                DB   225,104,247,143,48,218
+                DB   143,78,24,239,210,195
+                DB   195,209,239,31,96,181
+                DB   30,156,49,223,165,135
+                DB   134,162,223,62,193,107
+                DB   60,57,99,190,75,15,12
+                DB   69,191,125,131,214,121
+                DB   115,199,124,151,30,24
+                DB   139,126,250,6,172,243
+                DB   230,143,248,46
+
+NOTES_HI:       DB   1,1,1,1,1,1,1,1,1,1,1,1
+                DB   2,2,2,2,2,2,2,3,3,3,3,3
+                DB   4,4,4,4,5,5,5,6,6
+                DB   7,7,7,8,8,9,9,10,11,11
+                DB   12,13,14,14,15,16,17,18
+                DB   19,21,22,23,25,26,28,29
+                DB   31,33,35,37,39,42,44,47
+                DB   50,53,56,59,63,67,71,75
+                DB   79,84,89,94,100,106,112
+                DB   119,126,134,142,150,159
+                DB   168,179,189,200,212,225
+                DB   238,253
+
+BOT:            
+
+;=====================================
+
+;DATA FOR MUSIC THING         EXTRAS
+
+GATE_CON:       EQU  $83;               <1>
+SEND:           EQU  $85;               <n>
+END:            EQU  $FF;
+FOR:            EQU  $82;               <1>
+NEXT:           EQU  $81;               <0>
+KILL:           EQU  $84;               <0>
+STOP:           EQU  $86;               <0>
+PULSE:          EQU  $80;               <3>
+FREQS:          EQU  $87;               <0>
+NOFREQS:        EQU  0
+FILTER:         EQU  $88;               <3>
+CLAIM:          EQU  $89;               <0>
+GOSUB:          EQU  $8A;               <2>
+GOTO:           EQU  $8A;               <2>
+RETURN:         EQU  $8B;               <0>
+TRANSPOSE:      EQU  $8C;               <1>
+GATE:           EQU  $8D;               <1>
+;+++++++++++++++++++++++++++++++++++++
+
+TOPDATA:        
+;.....................................
+
+TIM_A:          DB   GATE_CON,1
+                DB   SEND
+                DB   5,0
+                DB   6,$FF
+                DB   12,0
+                DB   13,$FF
+                DB   19,0
+                DB   20,$FF
+                DB   23,%11110111
+                DB   24,%00101111
+                DB   END
+                DB   CLAIM
+                DB   FILTER,60,255
+                DW   50
+                DB   GATE,64
+                DB   PULSE,30
+                DW   50
+                DB   TRANSPOSE,255-11
+                DB   GOTO
+                DW   PLAY
+;.....................................
+
+TIM_B:          DB   GATE_CON,1
+                DB   TRANSPOSE,0
+                DB   GATE,64
+                DB   PULSE,60
+                DW   50
+                DB   GOTO
+                DW   PLAY
+;.....................................
+
+TIM_C:          DB   GATE_CON,1
+                DB   TRANSPOSE,12
+                DB   GATE,64
+                DB   PULSE,120
+                DW   50
+                DB   GOTO
+                DW   PLAY
+;.....................................
+
+PLAY:           DB   FILTER,90,255
+                DW   50
+                DB   40,24
+                DB   FILTER,150,255
+                DW   50
+                DB   42,8
+                DB   FILTER,110,255
+                DW   50
+                DB   40,16,38,16
+                DB   FILTER,50,255
+                DW   50
+                DB   34,48
+                DB   GATE,128
+                DB   SEND
+                DB   5,$20
+                DB   6,$F4
+                DB   12,$20
+                DB   13,$F4
+                DB   19,$20
+                DB   20,$F4
+                DB   END
+                DB   FILTER,110,255
+                DW   50
+                DB   GATE_CON,15
+                DB   FOR,8
+                DB   40,25
+                DB   NEXT
+                DB   STOP
+
+;=====================================
+BOTDATA:        
+;=====================================

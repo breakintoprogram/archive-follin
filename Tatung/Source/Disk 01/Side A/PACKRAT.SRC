@@ -1,0 +1,347 @@
+; RENEGADE DATA ONLY.
+                
+                
+                
+                ORG 0C000H
+                LOAD 0C000H
+                
+TUNES_A:        DW TEST_A
+                
+TUNES_B:        DW TEST_B
+                
+TUNES_C:        DW TEST_C
+                
+FX_TAB:         DW SMELL
+                DW CACK
+                DW FLOOR
+                DW BIKES
+                DW GUN
+                DW SPLASH
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+                
+GOTO:           EQU GOSUB
+;======================================
+TEST_A:         DB ADSR,000H,0FFH,1
+                DB SEND,7,00001000B
+                DB ENVON,1,8,48
+                DB VIB,1,9,2,0
+                DB ADSR,00FH,030H,0,8,48
+                DB ADSR,0C0H,001H,1
+                DB EFFECT,2,00000000B
+                DW 700
+CYTA:           DB FOR,16
+                DB 8,12,20,12,GOSUB
+                DW DRUM
+                DB 20,6,20,12,20,6,23,6
+                DB 23,6,GOSUB
+                DW DRUM
+                DB 18,12
+                DB 8,6,8,6,20,12,GOSUB
+                DW DRUM
+                DB 20,6,20,6,18,12,15,6
+                DB 15,6,GOSUB
+                DW DRUM
+                DB GOSUB
+                DW DRUM2
+                DB 18,6
+                DB NEXT
+                DB SEND,7,0
+                DB VIB,1,28,0,1
+                DB ADSR,0C0H,0,1
+                DB SEND,6,10,FOR,4
+                DB 44,5,42,5,42,5,NEXT
+                DB ADSR,0C0H,001H,1
+                DB 42,30,44,15
+                DB 44,10,41,5,VIB,1,9,2,0
+                DB SEND,7,8,SEND,6,25
+                DB TRANS,3,FOR,12
+                DB 8,15,20,10,18,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,8,15
+                DB 18,5,20,10,20,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,15,5,NEXT
+                DB TRANS,3,FOR,4
+                DB 11,15,23,10,21,5
+                DB GOSUB
+                DW MURD
+                DB 23,5,21,10,17,5,13,10
+                DB 23,5,25,10,25,5
+                DB GOSUB
+                DW MURD
+                DB 25,5,23,10,18,5
+                DB 8,15,20,10,18,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,8,15
+                DB 18,5,20,10,20,5
+                DB GOSUB
+                DW MURD
+                DB 20,5,18,10,15,5,NEXT
+                
+                DB SEND,7,0,VIB,0,0,0,0
+                DB ADSR,0C0H,001H,1
+                DB FOR,2
+                DB SEND,6,30,8,6
+                DB SEND,6,1
+                DB VIB,0,0,0,0,95,6,95,6
+                DB 95,6,SEND,6,10
+                DB VIB,1,28,0,1,44,12
+                DB SEND,6,1
+                DB VIB,0,0,0,0,95,6,95,6
+                DB NEXT
+                DB VIB,1,28,0,1,SEND,6,10
+                DB FOR,16,44,6,NEXT
+                
+                DB VIB,1,9,2,0,TRANS,0
+                DB SEND,7,56,SEND,6,25
+                DB GOTO
+                DW CYTA
+                
+                DB STOP
+;======================================
+TEST_B:         DB ADSR,0C4H,000H,1,ENVON,1
+                DB SEND,7,00010000B
+                DB VIB,5,20,0,1
+                DB EFFECT,1,00000000B
+                DW 200
+                DB FOR,5
+                DB 90,6,90,12,90,12,90,6
+                DB 90,6,90,12,90,6,90,12
+                DB 90,12,90,6,90,6,NEXT
+                DB VIB,6,20,0,0
+                DB FOR,2
+                DB 44,6,42,6,44,6,42,6
+                DB 47,12,44,6,47,12,44,6
+                DB 49,6,50,12,51,6,47,12
+                DB 44,6,42,6,44,6,42,6
+                DB 47,12,44,6,47,12,44,6
+                DB 42,12,32,24
+                DB NEXT,WOBBLE,1,5
+                DB VIB,0,0,0,0,TRANS,7
+                DB LENGTH,6,FOR,4
+                DB 32,32,34,32,35,32,34,32
+                DB 32,32,34,32,35,32,34,35
+                DB NEXT,TRANS,0,LENGTH,0
+                DB WOBBLE,0,0,VIB,7,2,3,0
+                DB ADSR,0C0H,000H,1
+                DB FOR,4,37,6,PORT,2
+                DB 39,6,42,12,39,6
+                DB 42,12,39,6,42,12,42,6
+                DB 44,6,44,12,44,12,NEXT
+                DB ADSR,0A0H,022H,1,PORT,0
+                DB FOR,2
+                DB 49,12,48,24,49,12,46,24
+                DB 49,12,51,24,49,12,48,24
+                DB 46,12,44,12,42,12
+                DB NEXT
+                DB WOBBLE,1,12
+                DB FOR,2
+                DB 49,12,48,24,49,12,46,24
+                DB 49,12,51,24,49,12,48,24
+                DB 46,12,44,12,42,12
+                DB NEXT,WOBBLE,0,0
+                DB ADSR,0A0H,02DH,1
+                DB VIB,0,0,0,0,FOR,2
+                DB 51,12,PORT,1,56,36
+                DB PORT,0,WOBBLE,3,2
+                DB 54,48,WOBBLE,3,1,53,48
+                DB WOBBLE,3,5,51,48
+                DB WOBBLE,0,0,NEXT
+                DB FOR,2
+                DB 59,12,PORT,1,56,36
+                DB PORT,0,WOBBLE,3,2
+                DB 54,48,WOBBLE,3,1,53,48
+                DB WOBBLE,3,5,51,48
+                DB WOBBLE,0,0,NEXT,56,48
+                DB ADSR,080H,000H,1
+                DB TRANS,244,FOR,36,PORT,0
+                DB 84,1,PORT,3,71,9,NEXT
+                DB ADSR,0A0H,003H,1,PORT,0
+                DB WOBBLE,2,8,FOR,2
+                DB 54,30,56,40,57,5,56,10
+                DB 54,5,56,10,54,5
+                DB 56,10,57,5,NEXT,TRANS,0
+                DB FOR,2
+                DB 54,30,56,40,57,5,56,10
+                DB 54,5,56,10,54,5
+                DB 56,10,57,5,NEXT
+                DB FOR,2,WOBBLE,0,0
+                DB 47,15,PORT,1,54,60
+                DB PORT,0,52,5,54,5,52,5
+                DB 57,5,23,10,DISTORT,2
+                DB VIB,8,1,4,0,62,15
+                DB DISTORT,0,VIB,0,0,0,0
+                
+                DB 59,15,PORT,1,66,60
+                DB PORT,0,64,5,66,5,64,5
+                DB 69,5,71,5,75,5,PORT,0
+                DB WOBBLE,4,1,76,15
+                DB WOBBLE,0,0,NEXT
+                DB ADSR,0A0H,005H,1
+                DB TRANS,0,FOR,2,DISTORT,0
+                DB 59,10,57,5,62,10,59,5
+                DB 64,5,65,5,64,5,62,10
+                DB 59,5,64,5,65,5,69,5
+                DB 71,10,76,5
+                DB 75,30,TRANS,244,NEXT
+                DB ADSR,0BAH,001H,1
+                DB PORT,0,VIB,3,0,0,0
+                DB WOBBLE,1,19,FOR,2
+                DB 78,15,76,10,74,5,76,10
+                DB 74,15,77,5,78,15
+                DB 76,10,74,5,76,10,74,15
+                DB 76,5,71,57,82,3,83,55
+                DB 81,5,83,15,81,10,78,5
+                DB 81,10,78,15,77,5,76,15
+                DB 74,10,76,5,77,10,76,5
+                DB 74,10,69,5,71,60,59,60
+                DB TRANS,232,NEXT,TRANS,0
+                DB ADSR,076H,0,1
+                DB PORT,1,TRANS,0
+                DB 82,48,20,48
+                DB PORT,0,WOBBLE,0,0
+                DB VIB,0,0,0,0
+                
+                DB GOTO
+                DW TEST_B
+;======================================
+TEST_C:         DB STOP
+;======================================
+                
+DRUM:           DB SEND,7,0,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,12,VIB,1,9,2,0
+                DB SEND,7,8,SEND,6,25
+                DB RETURN
+                
+DRUM2:          DB SEND,7,0,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,6,VIB,1,9,2,0
+                DB SEND,7,8,SEND,6,25
+                DB RETURN
+                
+MURD:           DB SEND,7,0,VIB,1,28,0,1
+                DB SEND,6,10
+                DB IGNORE,44,10,VIB,1,9,2,0
+                DB SEND,7,8,SEND,6,25
+                DB RETURN
+                
+;======================================
+; SOUND FX
+                
+SMELL:          DB 4
+                DW SMELLY
+                DB 255
+                
+CACK:           DB 4
+                DW CACKY
+                DB 255
+                
+FLOOR:          DB 4
+                DW FELL
+                DB 255
+                
+BIKES:          DB 2
+                DW MOTOR
+                DB 255
+                
+GUN:            DB 4
+                DW SHOT
+                DB 255
+                
+SPLASH:         DB 4
+                DW WET
+                DB 255
+                
+                
+SMELLY:         DB ADSR,0F0H,000H,1
+                DB ENVON,1,EFFECT,0
+                DB SEND,7,00000000B
+                DB SEND,6,10,10,3
+                DB WOBBLE,0,0,LENGTH,0
+                DB ENVON,0,SEND,6,15,10,3
+                DB SEND,7,28,ENVON,1
+                DB ADSR,0,0,2,25,1
+                DB STOP
+                
+CACKY:          DB ADSR,0F0H,0,1
+                DB SEND,6,7,EFFECT,0
+                DB SEND,7,00000100B
+                DB VIB,1,50,0,1
+                DB ENVON,1,25,5
+                DB ADSR,0,0,2,25,1
+                DB STOP
+                
+FELL:           DB ADSR,0F0H,0,1
+                DB SEND,6,30
+                DB SEND,7,00000000B
+                DB VIB,0,0,0,0
+                DB ENVON,1,25,5,25,5
+                DB ADSR,0,0,2,25,1
+                DB STOP
+                
+MOTOR:          DB ADSR,0DCH,0,1
+                DB EFFECT,0,SEND,6,0
+                DB SEND,7,00010000B
+                DB VIB,1,4,0,0,ENVON,1
+MCYCLE:         DB 6,120,ENVON,0
+                DB VIB,1,4,0,0
+                DB 2,120
+                DB VIB,1,6,0,1
+                DB 4,60
+                DB VIB,1,7,0,0
+                DB 3,110
+                DB GOTO
+                DW MCYCLE
+                
+SHOT:           DB ADSR,0F0H,0,2
+                DB SEND,6,15
+                DB SEND,7,00000100B
+                DB VIB,0,0,0,0
+                DB ENVON,1,25,2
+                DB ADSR,0A0H,002H,1
+                DB SEND,6,23,25,32
+                DB ADSR,0,0,2
+                DB 1,1
+                DB STOP
+                
+WET:            DB ADSR,0F0H,002H,1
+                DB SEND,7,00000100B
+                DB VIB,0,0,0,0
+                DB ENVON,1
+                DB SEND,6,30,25,1
+                DB SEND,6,28,25,1
+                DB SEND,6,26,25,1
+                DB SEND,6,24,25,1
+                DB SEND,6,22,25,1
+                DB SEND,6,20,25,1
+                DB SEND,6,18,25,1
+                DB SEND,6,16,25,1
+                DB SEND,6,14,25,1
+                DB SEND,6,12,25,1
+                DB SEND,6,10,25,1
+                DB SEND,6,8,25,1
+                DB SEND,6,6,25,32
+                DB ADSR,0,0,2,2,1
+                DB STOP
+                
+                END

@@ -1,0 +1,75 @@
+2,52,6,51,6
+                DB   49,12,51,12,52,12
+                DB   53,12,GATE,0,53,12
+                DB   GATE,32,53,12,52,12,53,12
+                DB   56,24,54,24,53,12,49,12
+                DB   46,12,52,6,51,6,49,12
+                DB   51,12,52,12
+                DB   53,12,49,12,54,12,52,12
+                DB   53,12,49,12,46,12,44,12
+                DB   54,12,52,24,53,48
+                DB   RETURN
+;.....................................
+
+TIM_C:          DB   STOP
+;TIM_C   DB   GOSUB
+                DW   TOPC
+                DB   GOSUB
+                DW   TOPC
+                DB   48,12
+                DB   GATE,33
+                DB   SEND
+                DB   19,$00
+                DB   20,$4F
+                DB   23,%01000010
+                DB   END,GATE_CON,1
+                DB   FOR,16
+                DB   54,4,49,4,46,4,NEXT
+                DB   FOR,16
+                DB   51,4,48,4,45,4,NEXT
+                DB   FOR,16
+                DB   53,4,49,4,46,4,NEXT
+                DB   FOR,8
+                DB   54,4,49,4,46,4,NEXT
+                DB   FOR,4
+                DB   52,4,49,4,46,4,NEXT
+                DB   FOR,3
+                DB   51,4,48,4,42,4,NEXT
+                DB   GOSUB
+                DW   TOPC
+
+                DB   STOP
+
+TOPC:           DB   GATE_CON,34
+                DB   PULSE,90
+                DW   0
+                DB   SEND
+                DB   23,%01000010
+                DB   19,$01
+                DB   20,$3F
+                DB   END
+                DB   GATE,64
+                DB   43,12
+                DB   44,48,47,36,46,60,46,24
+                DB   42,12,43,12
+                DB   44,48,47,36,46,60,46,24
+                DB   42,12,43,12
+                DB   44,48,47,48,46,48,46,48
+                DB   GATE_CON,1
+                DB   SEND
+                DB   23,%01000110
+                DB   19,$02
+                DB   20,$AD
+                DB   END
+                DB   GATE,32
+                DB   56,24,58,12,56,24
+                DB   GATE,0,56,36,GATE,32
+                DB   46,36,44,48
+                DB   RETURN
+;.....................................
+
+BOTDATA:        
+
+;=====================================
+
+
