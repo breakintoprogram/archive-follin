@@ -1,1 +1,347 @@
-                ORG 50000                LOAD 0C000H                TUNES:          EQU 1EFFECTS:        EQU 13                                ;--------------------------------------                DW CALC                DB TUNES                DB EFFECTS;--------------------------------------                DATA_TOP:                                       KEY 3"|J|\A|M"                KEY 4"|J|\A|M|J|\O|M"                KEY 5"|J|\O|M"                KEY 7"|\SZXFX"                                TUNES_A:        DW HIGH_A                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_B:        DW HIGH_B                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                TUNES_C:        DW HIGH_C                DW 2                DW 3                DW 4                DW 5                DW 6                DW 7                DW 8                DW 9                DW 10                FX_TAB:         DW JUMP,JUMP,TINK,THROW                DW BADDY,EXPLO,SKELL                DW BONES,RAIN,DRY,ARMO                DW BOING,PICK;--------------------------------------FOR:            EQU 080HNEXT:           EQU 081HLENGTH:         EQU 082HSTOP:           EQU 083HGOSUB:          EQU 084HRETURN:         EQU 085HTRANS:          EQU 086HDISTORT:        EQU 087HSEND:           EQU 088HADSR:           EQU 089HENVON:          EQU 08AHWOBBLE:         EQU 08BHPORT:           EQU 08CHVIB:            EQU 08DHIGNORE:         EQU 08EHEFFECT:         EQU 08FHGOTO:           EQU 090HGATE_CON:       EQU 091HENDIT:          EQU 092H                ;======================================; SOUND FX DATA                JUMP:           DB 2                DW XJUMP                DB 0FFH                TINK:           DB 0                DW XTINKA                DB 2                DW XTINKB                DB 0FFH                THROW:          DB 0                DW XTHROW                DB 0FFH                BADDY:          DB 0                DW XBADDYA                DB 2                DW XBADDYB                DB 4                DW XBADDYC                DB 0FFH                EXPLO:          DB 2                DW XEXPLO                DB 0FFH                SKELL:          DB 0                DW XSKELL                DB 0FFH                BONES:          DB 0                DW XBONESA                DB 2                DW XBONESB                DB 4                DW XBONESC                DB 0FFH                RAIN:           DB 4                DW XRAIN                DB 0FFH                DRY:            DB 4                DW XDRY                DB 0FFH                ARMO:           DB 0                DW XARMA                DB 2                DW XARMB                DB 0FFH                BOING:          DB 2                DW XBOINA                DB 4                DW XBOINB                DB 0FFH                PICK:           DB 0                DW XPICKA                DB 2                DW XPICKB                DB 0FFH                XJUMP:          DB GATE_CON,255,ENDIT,1                DB SEND,7,00000010B                DB ENVON,1,ADSR,080H,0,1                DB SEND,6,3,60,2                DB SEND,6,5                DB STOP                XTINKA:         DB GATE_CON,255,ENDIT,1                DB VIB,0,0,0,0                DB SEND,7,0                DB ENVON,1,SEND,6,5                DB ADSR,0A0H,0,1,89,1                DB SEND,7,00001000B                DB ADSR,090H,0,1,89,1                DB ADSR,070H,0,1,89,1                DB ADSR,050H,0,1,89,1                DB ADSR,030H,0,1,89,1                DB ADSR,010H,0,1,89,2                DB STOPXTINKB:         DB GATE_CON,255,ENDIT,1                DB VIB,0,0,0,0,TRANS,0                DB SEND,7,00010000B                DB ENVON,1                DB ADSR,0A0H,0,1,79,1                DB ADSR,090H,0,1,79,1                DB ADSR,070H,0,1,79,1                DB ADSR,050H,0,1,79,1                DB ADSR,030H,0,1,79,1                DB ADSR,010H,0,1,79,2                DB STOP                XTHROW:         DB GATE_CON,255,ENDIT,1                DB SEND,7,00000001B                DB ENVON,1,SEND,6,8                DB ADSR,070H,0,1,9,1                DB ADSR,090H,0,1,9,1                DB ADSR,0B0H,0,1,9,1                DB ADSR,090H,0,1,9,1                DB ADSR,070H,0,1,9,1                DB ADSR,050H,0,1,9,2                DB SEND,6,5                DB STOP                XBADDYA:        DB SEND,7,00001000B                DB ADSR,080H,0,2                DB GOTO                DW BADYXBADDYB:        DB SEND,7,00010010B                DB SEND,7,00010000B                DB TRANS,24                DB ADSR,080H,0,2                DB GOTO                DW BADYXBADDYC:        DB SEND,7,00100100B                DB 5,2                DB SEND,7,00100000B                DB ADSR,060H,0,2BADY:           DB VIB,0,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1                DB 31,2,34,2,38,2                DB 43,2,46,2,50,2                DB 55,2,58,2,62,2                DB 67,2,70,2,74,2                DB 79,2,77,2,73,2                DB 70,2,65,2,61,2                DB 58,2,53,2,49,2                DB 46,2,41,2,37,2                DB 34,2,ENDIT,1,29,3                DB TRANS,0,STOP                XEXPLO:         DB GATE_CON,255,ENDIT,1                DB VIB,0,0,0,0,TRANS,0                DB SEND,7,00000000B                DB ENVON,1,ADSR,0A0H,01H,1                DB SEND,6,5,35,1,ENVON,0                DB SEND,6,8,30,1                DB SEND,6,11,25,1                DB SEND,6,14,20,1                DB SEND,6,17,15,1                DB SEND,6,20,10,2                DB SEND,6,5                DB STOP                XSKELL:         DB GATE_CON,255,ENDIT,1                DB SEND,7,00001000B                DB ENVON,1,ADSR,080H,02H,1                DB VIB,1,120,1,0                DB 30,24                DB STOP                XBONESA:        DB SEND,7,00001000B                DB ADSR,0A0H,0,1                DB GOTO                DW BONYXBONESB:        DB SEND,7,00010010B                DB 50,5                DB SEND,7,00010000B                DB ADSR,080H,0,1                DB GOTO                DW BONYXBONESC:        DB SEND,7,00100100B                DB 50,10                DB SEND,7,00100000B                DB ADSR,060H,0,1BONY:           DB VIB,0,0,0,0                DB GATE_CON,255,ENDIT,255                DB ENVON,1,TRANS,0                DB 70,2,71,2,72,2                DB 67,2,68,2,69,2                DB 64,2,65,2,66,2                DB 61,2,62,2,63,2                DB 58,2,59,2,ENDIT,1,60,3                DB STOP                XRAIN:          DB GATE_CON,255,ENDIT,255                DB TRANS,0                DB SEND,7,00000100B                DB ENVON,1,SEND,6,5XRACY:          DB ADSR,050H,030H,0,50,12                DB ADSR,080H,0,2,50,50                DB ADSR,070H,0,2,50,2                DB ADSR,080H,0,2,50,50                DB ADSR,086H,006H,1,50,30                DB ADSR,050H,020H,0,50,6                DB ADSR,070H,0,2,50,5                DB ADSR,075H,002H,1,50,20                DB ADSR,050H,020H,0,50,6                DB ADSR,070H,0,2,50,20                DB ADSR,075H,002H,1,50,20                DB GOTO                DW XRACY                DB STOP                XDRY:           DB GATE_CON,255,ENDIT,255                DB TRANS,0,ENVON,1                DB SEND,7,00000100B                DB ADSR,060H,005H,1,50,60                DB STOP                XARMA:          DB GATE_CON,255,ENDIT,1                DB ENVON,1,ADSR,090H,0,1                DB VIB,0,0,0,0,TRANS,0                DB SEND,7,00001000B,84,1                DB ENVON,0                DB 85,1,86,1,87,1                DB 88,1,89,1,90,2                DB STOPXARMB:          DB GATE_CON,255,ENDIT,1                DB VIB,0,0,0,0,TRANS,0                DB ENVON,1,ADSR,090H,0,1                DB SEND,7,00010000B,72,1                DB ENVON,0                DB 73,1,74,1,75,1                DB 76,1,77,1,78,2                DB STOP                XBOINA:         DB GATE_CON,255,ENDIT,255                DB ENVON,1,ADSR,090H,0,1                DB SEND,7,00010000B                DB VIB,1,25,1,0,TRANS,0                DB 40,20                DB STOPXBOINB:         DB GATE_CON,255,ENDIT,1                DB VIB,0,0,0,0,TRANS,0                DB ENVON,1,ADSR,090H,0,1                DB SEND,7,00100000B                DB 30,20                DB STOP                XPICKA:         DB GATE_CON,255,ENDIT,255                DB VIB,1,1,1,0,TRANS,0                DB ADSR,070H,002H,1                DB SEND,7,00001000B,ENVON,1                DB 91,2,93,2,95,2,96,30                DB STOPXPICKB:         DB GATE_CON,255,ENDIT,255                DB VIB,0,0,0,0,TRANS,0                DB ADSR,070H,002H,1                DB SEND,7,00010000B,ENVON,1                DB 72,2,74,2,76,2,77,30                DB STOP                ;======================================                HIGH_A:         DB STOP;......................................                HIGH_B:         DB STOP;......................................                HIGH_C:         DB STOP                ;======================================                DATA_BOT:       CALC:           EQU DATA_BOT-DATA_TOP                                                END                
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 1
+EFFECTS:        EQU 13
+                
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+                
+DATA_TOP:       
+                
+                KEY 3"|J|\A|M"
+                KEY 4"|J|\A|M|J|\O|M"
+                KEY 5"|J|\O|M"
+                KEY 7"|\SZXFX"
+                
+                
+TUNES_A:        DW HIGH_A
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_B:        DW HIGH_B
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+TUNES_C:        DW HIGH_C
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                DW 10
+                
+FX_TAB:         DW JUMP,JUMP,TINK,THROW
+                DW BADDY,EXPLO,SKELL
+                DW BONES,RAIN,DRY,ARMO
+                DW BOING,PICK
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+                
+;======================================
+; SOUND FX DATA
+                
+JUMP:           DB 2
+                DW XJUMP
+                DB 0FFH
+                
+TINK:           DB 0
+                DW XTINKA
+                DB 2
+                DW XTINKB
+                DB 0FFH
+                
+THROW:          DB 0
+                DW XTHROW
+                DB 0FFH
+                
+BADDY:          DB 0
+                DW XBADDYA
+                DB 2
+                DW XBADDYB
+                DB 4
+                DW XBADDYC
+                DB 0FFH
+                
+EXPLO:          DB 2
+                DW XEXPLO
+                DB 0FFH
+                
+SKELL:          DB 0
+                DW XSKELL
+                DB 0FFH
+                
+BONES:          DB 0
+                DW XBONESA
+                DB 2
+                DW XBONESB
+                DB 4
+                DW XBONESC
+                DB 0FFH
+                
+RAIN:           DB 4
+                DW XRAIN
+                DB 0FFH
+                
+DRY:            DB 4
+                DW XDRY
+                DB 0FFH
+                
+ARMO:           DB 0
+                DW XARMA
+                DB 2
+                DW XARMB
+                DB 0FFH
+                
+BOING:          DB 2
+                DW XBOINA
+                DB 4
+                DW XBOINB
+                DB 0FFH
+                
+PICK:           DB 0
+                DW XPICKA
+                DB 2
+                DW XPICKB
+                DB 0FFH
+                
+XJUMP:          DB GATE_CON,255,ENDIT,1
+                DB SEND,7,00000010B
+                DB ENVON,1,ADSR,080H,0,1
+                DB SEND,6,3,60,2
+                DB SEND,6,5
+                DB STOP
+                
+XTINKA:         DB GATE_CON,255,ENDIT,1
+                DB VIB,0,0,0,0
+                DB SEND,7,0
+                DB ENVON,1,SEND,6,5
+                DB ADSR,0A0H,0,1,89,1
+                DB SEND,7,00001000B
+                DB ADSR,090H,0,1,89,1
+                DB ADSR,070H,0,1,89,1
+                DB ADSR,050H,0,1,89,1
+                DB ADSR,030H,0,1,89,1
+                DB ADSR,010H,0,1,89,2
+                DB STOP
+XTINKB:         DB GATE_CON,255,ENDIT,1
+                DB VIB,0,0,0,0,TRANS,0
+                DB SEND,7,00010000B
+                DB ENVON,1
+                DB ADSR,0A0H,0,1,79,1
+                DB ADSR,090H,0,1,79,1
+                DB ADSR,070H,0,1,79,1
+                DB ADSR,050H,0,1,79,1
+                DB ADSR,030H,0,1,79,1
+                DB ADSR,010H,0,1,79,2
+                DB STOP
+                
+XTHROW:         DB GATE_CON,255,ENDIT,1
+                DB SEND,7,00000001B
+                DB ENVON,1,SEND,6,8
+                DB ADSR,070H,0,1,9,1
+                DB ADSR,090H,0,1,9,1
+                DB ADSR,0B0H,0,1,9,1
+                DB ADSR,090H,0,1,9,1
+                DB ADSR,070H,0,1,9,1
+                DB ADSR,050H,0,1,9,2
+                DB SEND,6,5
+                DB STOP
+                
+XBADDYA:        DB SEND,7,00001000B
+                DB ADSR,080H,0,2
+                DB GOTO
+                DW BADY
+XBADDYB:        DB SEND,7,00010010B
+                DB SEND,7,00010000B
+                DB TRANS,24
+                DB ADSR,080H,0,2
+                DB GOTO
+                DW BADY
+XBADDYC:        DB SEND,7,00100100B
+                DB 5,2
+                DB SEND,7,00100000B
+                DB ADSR,060H,0,2
+BADY:           DB VIB,0,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1
+                DB 31,2,34,2,38,2
+                DB 43,2,46,2,50,2
+                DB 55,2,58,2,62,2
+                DB 67,2,70,2,74,2
+                DB 79,2,77,2,73,2
+                DB 70,2,65,2,61,2
+                DB 58,2,53,2,49,2
+                DB 46,2,41,2,37,2
+                DB 34,2,ENDIT,1,29,3
+                DB TRANS,0,STOP
+                
+XEXPLO:         DB GATE_CON,255,ENDIT,1
+                DB VIB,0,0,0,0,TRANS,0
+                DB SEND,7,00000000B
+                DB ENVON,1,ADSR,0A0H,01H,1
+                DB SEND,6,5,35,1,ENVON,0
+                DB SEND,6,8,30,1
+                DB SEND,6,11,25,1
+                DB SEND,6,14,20,1
+                DB SEND,6,17,15,1
+                DB SEND,6,20,10,2
+                DB SEND,6,5
+                DB STOP
+                
+XSKELL:         DB GATE_CON,255,ENDIT,1
+                DB SEND,7,00001000B
+                DB ENVON,1,ADSR,080H,02H,1
+                DB VIB,1,120,1,0
+                DB 30,24
+                DB STOP
+                
+XBONESA:        DB SEND,7,00001000B
+                DB ADSR,0A0H,0,1
+                DB GOTO
+                DW BONY
+XBONESB:        DB SEND,7,00010010B
+                DB 50,5
+                DB SEND,7,00010000B
+                DB ADSR,080H,0,1
+                DB GOTO
+                DW BONY
+XBONESC:        DB SEND,7,00100100B
+                DB 50,10
+                DB SEND,7,00100000B
+                DB ADSR,060H,0,1
+BONY:           DB VIB,0,0,0,0
+                DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,TRANS,0
+                DB 70,2,71,2,72,2
+                DB 67,2,68,2,69,2
+                DB 64,2,65,2,66,2
+                DB 61,2,62,2,63,2
+                DB 58,2,59,2,ENDIT,1,60,3
+                DB STOP
+                
+XRAIN:          DB GATE_CON,255,ENDIT,255
+                DB TRANS,0
+                DB SEND,7,00000100B
+                DB ENVON,1,SEND,6,5
+XRACY:          DB ADSR,050H,030H,0,50,12
+                DB ADSR,080H,0,2,50,50
+                DB ADSR,070H,0,2,50,2
+                DB ADSR,080H,0,2,50,50
+                DB ADSR,086H,006H,1,50,30
+                DB ADSR,050H,020H,0,50,6
+                DB ADSR,070H,0,2,50,5
+                DB ADSR,075H,002H,1,50,20
+                DB ADSR,050H,020H,0,50,6
+                DB ADSR,070H,0,2,50,20
+                DB ADSR,075H,002H,1,50,20
+                DB GOTO
+                DW XRACY
+                DB STOP
+                
+XDRY:           DB GATE_CON,255,ENDIT,255
+                DB TRANS,0,ENVON,1
+                DB SEND,7,00000100B
+                DB ADSR,060H,005H,1,50,60
+                DB STOP
+                
+XARMA:          DB GATE_CON,255,ENDIT,1
+                DB ENVON,1,ADSR,090H,0,1
+                DB VIB,0,0,0,0,TRANS,0
+                DB SEND,7,00001000B,84,1
+                DB ENVON,0
+                DB 85,1,86,1,87,1
+                DB 88,1,89,1,90,2
+                DB STOP
+XARMB:          DB GATE_CON,255,ENDIT,1
+                DB VIB,0,0,0,0,TRANS,0
+                DB ENVON,1,ADSR,090H,0,1
+                DB SEND,7,00010000B,72,1
+                DB ENVON,0
+                DB 73,1,74,1,75,1
+                DB 76,1,77,1,78,2
+                DB STOP
+                
+XBOINA:         DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,0,1
+                DB SEND,7,00010000B
+                DB VIB,1,25,1,0,TRANS,0
+                DB 40,20
+                DB STOP
+XBOINB:         DB GATE_CON,255,ENDIT,1
+                DB VIB,0,0,0,0,TRANS,0
+                DB ENVON,1,ADSR,090H,0,1
+                DB SEND,7,00100000B
+                DB 30,20
+                DB STOP
+                
+XPICKA:         DB GATE_CON,255,ENDIT,255
+                DB VIB,1,1,1,0,TRANS,0
+                DB ADSR,070H,002H,1
+                DB SEND,7,00001000B,ENVON,1
+                DB 91,2,93,2,95,2,96,30
+                DB STOP
+XPICKB:         DB GATE_CON,255,ENDIT,255
+                DB VIB,0,0,0,0,TRANS,0
+                DB ADSR,070H,002H,1
+                DB SEND,7,00010000B,ENVON,1
+                DB 72,2,74,2,76,2,77,30
+                DB STOP
+                
+;======================================
+                
+HIGH_A:         DB STOP
+;......................................
+                
+HIGH_B:         DB STOP
+;......................................
+                
+HIGH_C:         DB STOP
+                
+;======================================
+                
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                
+                END
+                
