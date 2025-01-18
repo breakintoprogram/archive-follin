@@ -1,0 +1,655 @@
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 1
+EFFECTS:        EQU 1
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+DATA_TOP:       
+                
+                
+TUNES_A:        DW TITLE_A
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+TUNES_B:        DW TITLE_B
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+TUNES_C:        DW TITLE_C
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+FX_TAB:         DW FIRE
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+;======================================
+; SOUND FX DATA
+                
+                
+FIRE:           DB 0
+                DW FIRE
+                DB 0FFH
+                
+SILENT:         DB STOP
+                
+;=====================================
+                
+TITLE_A:        DB GATE_CON,255,ENDIT,255
+;         DB   SEND,7,00001001B
+;         DB   SEND,5,$24,6,$0F
+;         DB   12,$00,13,$63
+;         DB   19,0,20,$B4
+;         DB   23,%11110100
+;         DB   24,%00011111,END
+                DB ENVON,1,ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7,FOR,6
+                DB 78,6,78,6,78,6,78,6
+                DB NEXT,GOSUB
+                DW HASS12
+                DB ENDIT,3
+                DB ADSR,0A9H,005,1
+                DB SEND,7,00001000B
+                DB VIB,6,2,2,0,FOR,2
+                DB 56,6,56,6,59,6,56,18
+                DB 63,18,59,18,56,36
+                DB 59,12,61,12,66,18,68,18
+                DB 66,36,64,12,61,12
+                DB 59,6,59,6,59,12,59,6
+                DB 59,12,59,6,59,12,58,6
+                DB 56,18,58,12
+                DB VIB,0,0,0,0
+                DB WOBBLE,244,2,3,59,6,59,6
+                DB 59,12,56,6,58,12,56,6
+                DB 59,12,NEXT,WOBBLE,0,0,0
+                DB SEND,7,00001001B,11,12
+                DB SEND,7,00001000B
+                DB ENDIT,1
+                DB ADSR,0A1H,023H,1
+                DB VIB,6,2,3,0
+                DB 71,6,71,6,71,6,71,6
+                DB 75,12,71,6,73,18,75,6
+                DB 80,6,78,12,80,6,75,6
+                DB 78,6,80,6,83,6,80,6
+                DB 86,3,87,9,83,6,80,18
+                DB 83,6,80,6,86,3,87,3
+                DB 87,6,87,12,85,6,86,3
+                DB 87,3,83,6,80,6
+                DB 80,6,78,12,80,6,75,18
+                DB 79,3,80,3,73,8,75,4
+                DB 78,8,75,4,73,6,71,12
+                DB 70,6,68,6
+                DB SEND,7,00001001B,6,6
+                DB SEND,7,00001000B
+                DB 68,6,75,18,68,6
+                DB SEND,7,00001001B,6,6
+                DB SEND,7,00001000B
+                DB 68,6,80,18,82,2,83,4
+                DB 80,12,78,6,TRANS,244
+                DB 75,12,71,6,73,18,75,6
+                DB 80,6,83,6,80,6,83,6
+                DB 85,6,80,6,83,12,80,6
+                DB 86,3,87,9,83,6,87,3
+                DB 88,15,80,6,86,3,87,3
+                DB 87,6,87,12,85,6,86,3
+                DB 87,3,83,6,80,6,78,6
+                DB 80,12,75,2,76,2,77,2
+                DB 78,2,79,2,80,2,83,16
+                DB 80,8,85,16,82,8,87,16
+                DB 83,8,88,12,83,2,84,2
+                DB 85,2,86,2,87,2,88,2
+                DB 90,24,WOBBLE,2,3,3
+                DB 92,48,WOBBLE,0,0,0
+                DB TRANS,0,FOR,2
+                DB ADSR,0A0H,0,2
+                DB 61,6,61,6,61,6,61,6
+                DB ADSR,0A0H,0,1
+                DB VIB,6,5,0,1
+                DB 61,24,VIB,0,0,0,0
+                DB ADSR,0A0H,0,2
+                DB GATE_CON,3,61,6
+                DB GATE_CON,6,61,12
+                DB GATE_CON,3,61,6,61,6
+                DB 61,6,61,6,61,6
+                DB WOBBLE,8,2,4
+                DB GATE_CON,3
+                DB 62,6,62,6,62,6,62,6
+                DB GATE_CON,6
+                DB 62,24
+                DB ADSR,0A0H,0,2
+                DB GATE_CON,3,62,6
+                DB GATE_CON,6,62,12
+                DB GATE_CON,3,62,6,62,6
+                DB 62,6,62,6,62,6
+                DB WOBBLE,12,2,2,NEXT
+                DB WOBBLE,0,0,0
+                DB VIB,6,4,0,1
+                DB 73,48
+                DB GATE_CON,255,ENDIT,255
+                DB VIB,0,0,0,0
+                DB GOSUB
+                DW HASS12
+                DB ADSR,0A0H,0,1
+                DB 61,6,61,6,61,6,61,6
+                DB 61,6,61,6,FOR,2,GOSUB
+                DW BIGA
+                DB NEXT,TRANS,253
+                DB FOR,2,GOSUB
+                DW BIGA
+                DB NEXT,TRANS,0
+                DB LENGTH,6
+                DB 58,58,58,58,58,58,58,58
+                DB 58,58,58,58,58,58,58,58
+                DB 59,59,59,59,59,59,59,59
+                DB 59,59,59,59,59,59,59,59
+                DB 61,61,61,61,61,61,61,61
+                DB 61,61,61,61,61,61,61,61
+                DB LENGTH,0
+                DB VIB,0,0,0,0
+                DB GOTO
+                DW TITLE_A
+                
+                
+                DB STOP
+;.....................................
+                
+TITLE_B:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00010000B
+                DB ENVON,1,ADSR,060H,023H,1
+                DB VIB,12,7,3,0
+                DB 37,24,42,24
+                DB ADSR,070H,023H,1
+                DB 44,24,47,24
+                DB ADSR,080H,023H,1
+                DB 49,24,54,24
+                DB ADSR,090H,027H,1
+                DB WOBBLE,5,2,2
+                DB 54,48,WOBBLE,0,0,0
+                DB FOR,4,GOSUB
+                DW BRIM
+                DB NEXT,TRANS,251
+                DB FOR,4,GOSUB
+                DW BRIM
+                DB NEXT,TRANS,0
+                DB FOR,4,GOSUB
+                DW BRIM3
+                DB NEXT,TRANS,7
+                DB FOR,4,GOSUB
+                DW BRIM3
+                DB NEXT,TRANS,0
+                DB FOR,4,GOSUB
+                DW BRIM4
+                DB NEXT,TRANS,7
+                DB FOR,4,GOSUB
+                DW BRIM4
+                DB NEXT,TRANS,0
+                DB FOR,4,GOSUB
+                DW BRIM2
+                DB NEXT,TRANS,7
+                DB FOR,4,GOSUB
+                DW BRIM2
+                DB NEXT,TRANS,0
+                DB LENGTH,6,FOR,2
+                DB SEND,7,00000010B
+                DB SEND,6,7,LENGTH,6
+                DB ADSR,0B0H,0,1
+                DB 78,78,78,78,78
+                DB ADSR,080H,0,1
+                DB 88,88,88
+                DB ADSR,0B0H,0,1
+                DB 78,78,78,78,78,78,78,78
+                DB LENGTH,0
+                DB SEND,7,00010000B
+                DB ADSR,0B0H,0,1
+                DB 46,6,46,6,46,6,46,6
+                DB 46,24,46,6,46,12
+                DB 46,6,46,6,46,6,46,6,46,6
+                DB NEXT
+                
+                DB GATE_CON,255,ENDIT,1
+                DB WOBBLE,0,0,0
+                DB VIB,0,0,0,0
+                DB TRANS,12,GOSUB
+                DW BOM444
+                DB TRANS,7,GOSUB
+                DW BOM444
+                DB TRANS,3,GOSUB
+                DW BOM444
+                DB TRANS,0,GOSUB
+                DW BOM444
+                DB TRANS,0,GOSUB
+                DW BIK12
+                DB ADSR,091H,0,1
+                DB ENDIT,255
+                DB SEND,7,00010000B
+                DB ADSR,0A0H,0,1
+                DB VIB,0,0,0,0
+                DB 61,6,61,6,59,6,59,6
+                
+                DB 57,6,57,6,FOR,2,GOSUB
+                DW BIGB
+                DB NEXT,TRANS,253
+                DB FOR,2,GOSUB
+                DW BIGB
+                DB NEXT,TRANS,0
+                DB FOR,2,ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 34,6,34,6,34,6,34,6
+                DB GOSUB
+                DW BISS12
+                DB ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 34,6,34,6,NEXT
+                DB FOR,2,ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 35,6,35,6,35,6,35,6
+                DB GOSUB
+                DW BISS12
+                DB ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 35,6,35,6,NEXT
+                DB FOR,2,ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 37,6,37,6,37,6,37,6
+                DB GOSUB
+                DW BISS12
+                DB ADSR,0A0H,0,1
+                DB SEND,7,00010000B
+                DB 37,6,37,6,NEXT
+                DB GOTO
+                DW TITLE_B
+                
+                DB STOP
+;.....................................
+                
+TITLE_C:        DB GATE_CON,255,ENDIT,255
+                DB SEND,7,00100000B
+                DB ENVON,1,ADSR,0B1H,0,1
+                DB FOR,3
+                DB SEND,7,00100000B
+                DB 25,12
+                DB SEND,7,00100100B,5,18
+                DB SEND,7,00100000B
+                DB 20,6,20,6,20,6
+                DB NEXT
+                DB GATE_CON,6,32,12
+                DB GATE_CON,3,32,6,32,6
+                DB 32,6,GATE_CON,6,32,18
+                DB TRANS,244,FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,239
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,0
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,251
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,0
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,251
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,244
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,239
+                DB FOR,4,GOSUB
+                DW CLEF1
+                DB NEXT,TRANS,0
+                DB ENDIT,1
+                DB SEND,7,00100000B
+                DB ADSR,0C0H,0,1
+                DB FOR,2,GATE_CON,3
+                DB 37,6,37,6,37,6,37,6
+                DB VIB,6,4,0,1
+                DB GATE_CON,6
+                DB 37,24,VIB,6,4,1,1
+                DB GATE_CON,3,37,6
+                DB GATE_CON,6,37,12
+                DB GATE_CON,3,37,6,37,6
+                DB 37,6,37,6,37,6
+                DB WOBBLE,9,2,4
+                DB GATE_CON,3
+                DB 32,6,32,6,32,6,32,6
+                DB GATE_CON,6
+                DB 32,24
+                DB GATE_CON,3,32,6
+                DB GATE_CON,6,32,12
+                DB GATE_CON,3,32,6,32,6
+                DB 32,6,32,6,32,6
+                DB WOBBLE,0,0,0,NEXT
+                DB WOBBLE,0,0,0
+                DB VIB,6,3,0,1
+                DB 49,48
+                DB GATE_CON,255,ENDIT,1
+                DB SEND,7,00100100B,12,12
+                DB SEND,7,00100000B
+                DB VIB,6,4,1,1
+                DB 49,6,49,6,52,6,52,6
+                DB 54,6,54,6
+                DB FOR,2,GOSUB
+                DW BIGC
+                DB NEXT,TRANS,253
+                DB FOR,2,GOSUB
+                DW BIGC
+                DB NEXT,TRANS,0
+                DB LENGTH,6
+                DB 58,58,58,58,56,56,56,56
+                DB 54,54,54,54,53,53,53,53
+                DB 59,59,59,59,57,57,57,57
+                DB 55,55,55,55,54,54,54,54
+                DB 61,61,61,61,59,59,59,59
+                DB 57,57,57,57,56,56,56,56
+                DB LENGTH,0
+                DB VIB,0,0,0,0
+                DB GOTO
+                DW TITLE_C
+                
+                DB STOP
+;.....................................
+                
+BIGA:           DB ENVON,1,ADSR,0B0H,0,1
+                DB SEND,7,00001000B,64,6
+                DB ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7
+                DB 87,6,84,6
+                DB ADSR,0B0H,003H,1
+                DB SEND,7,00001000B,63,12
+                DB ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7
+                DB 87,6,84,6
+                DB 87,6
+                DB ADSR,0B0H,0,1
+                DB SEND,7,00001000B,64,6
+                DB ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7,87,6,84,6
+                DB ADSR,0B0H,003H,1
+                DB SEND,7,00001000B,63,12
+                DB ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7,87,6,84,6,87,6
+                DB ADSR,0B0H,0,1
+                DB SEND,7,00001000B,59,6
+                DB 61,6,ADSR,080H,0,1
+                DB SEND,7,00000001B
+                DB SEND,6,7,87,6,84,6,87,6
+                DB 84,6,GOSUB
+                DW HASS24
+                DB ADSR,0B0H,0,1
+                DB SEND,7,00001000B
+                DB 61,6,61,6,61,6
+                DB 61,6,61,6,61,6,RETURN
+                
+BIGB:           DB ENVON,1,ADSR,080H,0,1
+                DB SEND,7,00010000B
+                DB 57,6,ADSR,080H,0,2
+                DB 73,6,69,4,64,4
+                DB 61,4,GOSUB
+                DW BISS12
+                DB SEND,7,00010000B
+                DB ADSR,080H,0,2
+                DB 61,4,64,4,69,4
+                DB ADSR,080H,0,1,57,6
+                DB ADSR,080H,0,2
+                DB 73,6,69,4,64,4
+                DB 61,4,GOSUB
+                DW BISS12
+                DB ADSR,080H,0,2
+                DB SEND,7,00010000B
+                DB 61,4,64,4,69,4
+                DB WOBBLE,12,1,1
+                DB 71,6,73,6
+                DB SEND,7,00010010B,11,12
+                DB WOBBLE,0,0,0,GOSUB
+                DW BISS12
+                DB GOSUB
+                DW BOM66
+                DB SEND,7,00010000B
+                DB ADSR,090H,0,1
+                DB 83,6,85,6
+                DB SEND,7,00010010B,11,12
+                DB GOSUB
+                DW BISS12
+                DB GOSUB
+                DW BOM444
+                DB RETURN
+                
+BIGC:           DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ENVON,1,ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,21,6,21,6,21,6
+                DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,33,6,33,6,33,6
+                DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,21,6,33,6,33,6
+                DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,45,6,33,6,33,6
+                DB 35,6,37,6,37,6,37,6
+                DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,25,6,25,6,25,6
+                DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C1H,0,1
+                DB SEND,7,00100000B
+                DB ENDIT,3,30,6,32,6,35,6
+                DB 37,6,35,6,32,6,37,6
+                DB RETURN
+                
+BRIM:           DB ENVON,1,ADSR,090H,0,2
+                DB SEND,7,00010000B
+                DB 49,3,52,3
+                DB 56,3,59,3,61,3,56,3
+                DB 61,3,56,3
+                DB GOSUB
+                DW BISS12
+                DB ADSR,090H,0,2
+                DB SEND,7,00010000B
+                DB 68,3,64,3,68,3,64,3
+                DB RETURN
+                
+BRIM3:          DB ENVON,1,ADSR,090H,0,2
+                DB GOSUB
+                DW BIK12
+                DB SEND,7,00010000B
+                DB ENVON,1,ADSR,080H,0,2
+                DB 49,3,52,3,56,3,59,3
+                DB GOSUB
+                DW BISS12
+                DB ADSR,090H,0,2
+                DB SEND,7,00010000B
+                DB 68,3,64,3,68,3,64,3
+                DB RETURN
+                
+BRIM4:          DB ENVON,1,ADSR,090H,0,2
+                DB GOSUB
+                DW BIK12
+                DB SEND,7,00010000B
+                DB ENVON,1,ADSR,080H,0,2
+                DB 49,3,52,3,56,3,59,3
+                DB GOSUB
+                DW BIK12
+                DB ADSR,090H,0,2
+                DB SEND,7,00010000B
+                DB 68,3,64,3,68,3,64,3
+                DB RETURN
+                
+BRIM2:          DB ENVON,1,ADSR,080H,0,2
+                DB SEND,7,00010000B
+                DB 49,3,52,3
+                DB 56,3,59,3,61,3,64,3
+                DB 68,3,71,3,GOSUB
+                DW BISS6
+                DB ENVON,1,ADSR,080H,0,2
+                DB SEND,7,00010000B
+                DB 68,3,64,3
+                DB 61,3,59,3,56,3,52,3
+                DB RETURN
+                
+CLEF1:          DB ENDIT,1,GOSUB
+                DW CIK6
+                DB ADSR,0C3H,0,1
+                DB ENDIT,3
+                DB SEND,7,00100000B
+                DB 37,6,32,6,35,6
+                DB 37,6,32,6,35,6,37,6
+                DB RETURN
+                
+BOM444:         DB ENVON,1,ADSR,0A0H,0,1
+                DB VIB,1,5,0,1
+                DB SEND,7,00010000B
+                DB 64,4,61,4,59,4
+                DB VIB,0,0,0,0,RETURN
+                
+BOM66:          DB ENVON,1,ADSR,0A0H,0,1
+                DB VIB,1,4,0,1
+                DB SEND,7,00010000B
+                DB 61,6,61,6
+                DB VIB,0,0,0,0,RETURN
+                
+BOM33:          DB ENVON,1,ADSR,0A0H,0,1
+                DB VIB,1,4,0,1
+                DB SEND,7,00010000B
+                DB 59,3,56,3
+                DB VIB,0,0,0,0,RETURN
+                
+HASS24:         DB ENVON,1,ADSR,0A3H,001H,1
+                DB VIB,1,30,0,1
+                DB SEND,7,00000000B
+                DB SEND,6,7
+                DB VIB,1,8,0,0
+                DB 42,4,ENVON,0
+                DB SEND,7,00000001B
+                DB 40,20,ENVON,1
+                DB VIB,0,0,0,0
+                DB RETURN
+                
+HASS12:         DB ENVON,1,ADSR,0A0H,001H,1
+                DB VIB,1,30,0,1
+                DB SEND,7,00000000B
+                DB SEND,6,7
+                DB VIB,1,8,0,0
+                DB 42,3,ENVON,0
+                DB SEND,7,00000001B
+                DB 40,9,ENVON,1
+                DB VIB,0,0,0,0
+                DB RETURN
+                
+BISS6:          DB ENVON,1,ADSR,090H,0,1
+                DB VIB,1,30,0,1
+                DB SEND,7,00000000B
+                DB SEND,6,7
+                DB VIB,1,8,0,0
+                DB 42,2,ENVON,0
+                DB SEND,7,00000010B
+                DB 40,4,ENVON,1
+                DB VIB,0,0,0,0
+                DB RETURN
+                
+                
+BISS12:         DB ENVON,1,ADSR,0A0H,001H,1
+                DB VIB,1,30,0,1
+                DB SEND,7,00000000B
+                DB SEND,6,7
+                DB VIB,1,8,0,0
+                DB 42,2,ENVON,0
+                DB SEND,7,00000010B
+                DB 40,10,ENVON,1
+                DB VIB,0,0,0,0
+                DB RETURN
+                
+CIK6:           DB ENVON,1,ADSR,0A0H,002H,1
+                DB SEND,7,00100000B
+                DB 40,1,PORT,4
+                DB 7,5,PORT,0
+                DB RETURN
+                
+BIK12:          DB ENVON,1,ADSR,0C0H,001H,1
+                DB SEND,7,00010000B
+                DB 13,12
+                DB RETURN
+                
+                
+;=====================================
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                END
+                
+;=====================================
+CALC:           = !-TOPCALC
+                
+                ORG $2000
+                ENT
+                END 
+                
+;==================================
+                
+;B O T T O M      O F       F I L E
+                
+;==================================
+                
+                
+                END 

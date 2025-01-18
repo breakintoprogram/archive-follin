@@ -1,0 +1,158 @@
+                ORG 50000
+                LOAD 0C000H
+                
+TUNES:          EQU 1
+EFFECTS:        EQU 1
+                
+;--------------------------------------
+                DW CALC
+                DB TUNES
+                DB EFFECTS
+;--------------------------------------
+DATA_TOP:       
+                
+                
+TUNES_A:        DW TWIX_A
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+TUNES_B:        DW TWIX_B
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+TUNES_C:        DW TWIX_C
+                DW 1
+                DW 2
+                DW 3
+                DW 4
+                DW 5
+                DW 6
+                DW 7
+                DW 8
+                DW 9
+                
+FX_TAB:         DW FIRE
+;--------------------------------------
+FOR:            EQU 080H
+NEXT:           EQU 081H
+LENGTH:         EQU 082H
+STOP:           EQU 083H
+GOSUB:          EQU 084H
+RETURN:         EQU 085H
+TRANS:          EQU 086H
+DISTORT:        EQU 087H
+SEND:           EQU 088H
+ADSR:           EQU 089H
+ENVON:          EQU 08AH
+WOBBLE:         EQU 08BH
+PORT:           EQU 08CH
+VIB:            EQU 08DH
+IGNORE:         EQU 08EH
+EFFECT:         EQU 08FH
+GOTO:           EQU 090H
+GATE_CON:       EQU 091H
+ENDIT:          EQU 092H
+;======================================
+; SOUND FX DATA
+                
+                
+FIRE:           DB 0
+                DW FIRE
+                DB 0FFH
+                
+SILENT:         DB STOP
+                
+;=====================================
+                
+TWIX_A:         DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,001H,1
+                DB SEND,7,00001000B
+                DB FOR,2,GOSUB
+                DW MARSE
+                DB NEXT,TRANS,1
+                DB FOR,2,GOSUB
+                DW MARSE
+                DB NEXT,TRANS,0,GOTO
+                DW TWIX_A
+                DB STOP
+;.....................................
+                
+TWIX_B:         DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,070H,0,2
+                DB SEND,7,00010000B
+                DB VIB,12,3,2,0
+                DB FOR,2,GOSUB
+                DW BIT
+                DB NEXT,TRANS,1
+                DB FOR,2,GOSUB
+                DW BIT
+                DB NEXT,TRANS,0,GOTO
+                DW TWIX_B
+                
+                DB STOP
+;.....................................
+                
+TWIX_C:         DB GATE_CON,255,ENDIT,255
+                DB ENVON,1,ADSR,090H,002H,1
+                DB SEND,7,00100000B
+                DB FOR,2,GOSUB
+                DW FUNC
+                DB NEXT,TRANS,1
+                DB FOR,2,GOSUB
+                DW FUNC
+                DB NEXT,TRANS,0,GOTO
+                DW TWIX_C
+                
+                DB STOP
+;.....................................
+                
+BIT:            DB ADSR,0A0H,007H,1,55,24
+                DB ADSR,080H,0,2
+                DB 51,6,53,6
+                DB 48,6,44,6,51,6,53,6
+                DB 48,6,44,6
+                DB ADSR,0A0H,007H,1,56,24
+                DB RETURN
+                
+FUNC:           DB 29,6,29,12,29,6,29,12
+                DB 34,6,36,12,29,6,29,12
+                DB 34,6,36,6,39,6,41,6
+                DB RETURN
+                
+MARSE:          DB 65,6,65,12,65,6,65,12
+                DB 65,6,65,12,65,6,65,12
+                DB 65,6,65,6,65,6,65,6
+                DB RETURN
+                
+;=====================================
+DATA_BOT:       
+CALC:           EQU DATA_BOT-DATA_TOP
+                
+                END
+                
+                ORG $2000
+                ENT
+                END 
+                
+;==================================
+                
+;B O T T O M      O F       F I L E
+                
+;==================================
+                
+                
+                END 
