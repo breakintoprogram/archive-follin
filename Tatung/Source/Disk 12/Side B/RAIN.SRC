@@ -1,0 +1,33 @@
+;.....................................
+
+TITLE_A:        DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,$DF
+                DB   6,$4F
+                DB   12,$00
+                DB   13,$0F
+                DB   19,0,20,$0F
+                DB   20,$0F
+                DB   23,%11110010
+                DB   24,%00011111,END
+                DB   GATE,129,95,42
+                DB   SEND,5,0,END
+                DB   VIB,1,57,0,0,95,86
+                DB   VIB,1,60,0,0,93,128
+                DB   VIB,0,0,0,0
+                DB   FOR,4,90,128,NEXT
+                DB   90,165,FOR,2,90,160,NEXT
+
+                DB   GATE,0,STOP
+;.....................................
+
+TITLE_C:        DB   GATE_CON,255,ENDIT,1
+                DB   WOBBLE,12,1,1
+                DB   GATE,1,FOR,3,80,40
+                DB   GATE,16,50,28,85,15
+                DB   SEND,19,$01,END,90,25
+                DB   SEND,19,0,END,87,45
+                DB   70,20,60,15,65,50,80,60
+                DB   SEND,19,$01,END,80,25
+                DB   SEND,19,0,END,63,45
+                DB   85,17,44,45,22,26,80,15
+                DB   NEXT

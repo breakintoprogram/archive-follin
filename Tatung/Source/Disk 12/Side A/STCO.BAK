@@ -1,0 +1,189 @@
+;:::::::::::::::::::::::::::::::::::::
+;
+; BIONIC COMMANDO MUSIC DATA BY
+;
+; BIMBO FOLLIN HEAD TRIBESMAN JIM
+;
+; FOR THE RAY FRENCH CLAN
+;
+;:::::::::::::::::::::::::::::::::::::
+
+                ORG  $2000
+                LOAD $C500
+
+                ENT  
+
+                JMP  $2004
+
+;=====================================
+;NUMBER OF TUNES AVAILABLE
+
+TUNES:          EQU  1
+
+                DB   TUNES
+
+;=====================================
+;display message for peeping goons...
+
+                ORG  $26E6
+                DB   "BGM4                "
+                DB   "                    "
+;Use all the chars OK
+
+;=====================================
+
+                ORG  $33F5
+
+TOPDATA:        
+
+A_LO:           DB   <GAME_A
+A_HI:           DB   >GAME_A
+
+B_LO:           DB   <GAME_B
+B_HI:           DB   >GAME_B
+
+C_LO:           DB   <GAME_C
+C_HI:           DB   >GAME_C
+
+NORMAL:         
+
+                ORG  $2795
+                DW   A_LO
+
+                ORG  $279A
+                DW   A_HI
+
+                ORG  $279F
+                DW   B_LO
+
+                ORG  $27A4
+                DW   B_HI
+
+                ORG  $27A9
+                DW   C_LO
+
+                ORG  $27AE
+                DW   C_HI
+
+                ORG  $207E
+                DB   <BOTDATA
+
+                ORG  $2081
+                DB   <TOPDATA
+
+                ORG  $2085
+                DB   >BOTDATA
+
+                ORG  $2087
+                DB   >TOPDATA
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+FREQS:          EQU  $87
+NOFREQS:        EQU  0
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+GOTO:           EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+
+                ORG  NORMAL
+
+;=====================================
+;GAME TUNE
+;=====================================
+
+GAME_A:         DB   GATE,0,GATE_CON,255
+                DB   SEND
+                DB   5,$02
+                DB   6,$9F
+                DB   12,$0A
+                DB   13,$0F
+                DB   19,$22
+                DB   20,$F2
+                DB   24,%00001111
+                DB   END,32,15,32,15,32,15
+                DB   GATE,64
+                DB   PULSE,30
+                DW   $7A0
+                DB   56,5,56,10,55,10,54,10
+                DB   WOBBLE,2,12,LENGTH,5
+                DB   GOSUB
+                DW   ARP
+                DB   TRANS,5,GOSUB
+                DW   ARP
+                DB   TRANS,2,GOSUB
+                DW   PRA
+                DB   WOBBLE,0,0,LENGTH,0
+                DB   GATE,128,90,1,PORT,2
+                DB   20,39
+
+                DB   GATE,0,STOP
+;.....................................
+
+GAME_B:         DB   GATE,64,GATE_CON,255
+                DB   ENDIT,1
+                DB   PULSE,60
+                DW   $7A0
+                DB   EFFECT,1,128,255,255
+
+                DB   20,15,20,15,20,15,20,5
+                DB   20,10,22,10,24,10
+
+                DB   GOSUB
+                DW   DED
+                DB   TRANS,5,GOSUB
+                DW   DED
+                DB   TRANS,2,GOSUB
+                DW   DED
+                DB   TRANS,0,25,50
+
+                DB   GATE,0,STOP
+;.....................................
+
+GAME_C:         DB   GATE,0,GATE_CON,255
+                DB   ENDIT,2
+                DB   PULSE,50
+                DW   $100
+                DB   32,15,32,15,32,15
+                DB   GATE,64
+                DB   53,5,53,10,56,10,58,10
+                DB   61,45
+                DB   56,5,58,10,61,10,63,10
+                DB   66,45
+                DB   63,5,61,10,63,10,66,10
+                DB   70,10,68,5,66,5,68,10
+                DB   66,10,65,10,66,10,68,10
+                DB   70,10,73,40
+
+                DB   GATE,0,STOP
+;.....................................
+
+DED:            DB   25,15,25,15,25,15,25,5
+                DB   25,10,25,10,25,10
+                DB   RETURN
+
+ARP:            DB   61,65,56,61,53,56,49,53
+                DB   44,49,53,56,53,61,56,65
+                DB   RETURN
+
+PRA:            DB   61,64,56,61,52,56,49,52
+                DB   44,49,52,56,52,61,56,64
+                DB   RETURN
+
+BOTDATA:        END  

@@ -1,0 +1,255 @@
+
+                LOAD $6000
+                ORG  $4000
+
+TUNES:          EQU  3
+EFFECTS:        EQU  0
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,2,30,0
+
+                DB   "SOME  ^     GHOULS A"
+                DB   "ND GHOSTS    ^  BITS"
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <OVER_A
+                DB   <CONT_A
+                DB   <STAG_A
+                DC   A_LO+10-!,0
+
+A_HI:           DB   >OVER_A
+                DB   >CONT_A
+                DB   >STAG_A
+                DC   A_HI+10-!,0
+
+
+B_LO:           DB   <OVER_B
+                DB   <CONT_B
+                DB   <STAG_B
+                DC   B_LO+10-!,0
+
+B_HI:           DB   >OVER_B
+                DB   >CONT_B
+                DB   >STAG_B
+                DC   B_HI+10-!,0
+
+
+C_LO:           DB   <OVER_C
+                DB   <CONT_C
+                DB   <STAG_C
+                DC   C_LO+10-!,0
+
+C_HI:           DB   >OVER_C
+                DB   >CONT_C
+                DB   >STAG_C
+                DC   C_HI+10-!,0
+
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <FIRE
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >FIRE
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+GOTO:           EQU  $87
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+SETPWM:         EQU  $94
+
+;=====================================
+; SOUND EFFECT DATA
+
+FIRE:           DB   4
+                DW   FIRE
+                DB   $FF
+
+;=====================================
+
+OVER_A:         DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,$30,6,$F2
+                DB   12,$09,13,$0F
+                DB   19,0,20,$3F
+                DB   23,%11110010
+                DB   24,%00011111,END
+                DB   TRANS,7
+                DB   VIB,12,100,2,0
+                DB   GATE,16
+                DB   GOSUB
+                DW   FLT
+                DB   ENDIT,1,66,24,ENDIT,6
+                DB   70,12,ENDIT,255
+                DB   GOSUB
+                DW   FLT
+                DB   ENDIT,1,66,36
+
+                DB   GATE,0,STOP
+;.....................................
+
+OVER_B:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,1,50,144,50,144
+                DB   FILTER,0,0
+                DW   0,0,0
+                DB   GATE,64,PULSE,40
+                DW   $400
+                DB   FOR,3,20,72,NEXT
+                DB   SEND,12,$0A,END
+                DB   24,12,22,12,20,12,18,36
+                DB   20,48
+
+                DB   GATE,0,STOP
+;.....................................
+
+OVER_C:         DB   ENDIT,255,GATE_CON,255
+                DB   GATE,1,50,144
+                DB   GATE,17,TRANS,12
+                DB   LENGTH,6
+                DB   51,49,48,46,44,44
+                DB   49,48,46,44,42,42
+                DB   44,46,48,49,51,53
+                DB   54,53,54,56,58,61
+                DB   60,56,54,53,51,51
+                DB   49,51,53,54,56,58
+                DB   55,53,51,53,48,51
+                DB   54,53,49,48,46,49
+                DB   51,49,48,46,44,44
+                DB   49,48,46,44,42,42
+                DB   44,46,48,49,51,53
+                DB   54,53,54,53,54,53
+                DB   51,51,51
+
+                DB   GATE,0,STOP
+;.....................................
+
+FLT:            DB   73,12,71,4,73,4,71,4
+                DB   ENDIT,6,68,12,ENDIT,99
+                DB   70,12,ENDIT,3
+                DB   66,12,ENDIT,1,63,12
+                DB   ENDIT,99,65,12,66,12
+                DB   ENDIT,6,68,12,ENDIT,99
+                DB   66,12,61,4,63,4,61,4
+                DB   ENDIT,2,59,12,ENDIT,99
+                DB   61,12,ENDIT,6,63,12,65,12
+                DB   ENDIT,99,63,12,59,12,58,4
+                DB   59,4,58,4,ENDIT,2,56,12
+                DB   ENDIT,6,61,12,65,12
+                DB   RETURN
+
+;=====================================
+
+CONT_A:         DB   GATE_CON,255,ENDIT,1
+                DB   SEND,5,$0A,6,$0F
+                DB   12,$0A,13,$0F
+                DB   19,$0A,20,$0F
+                DB   24,15,END
+                DB   GATE,16,LENGTH,50
+                DB   VIB,1,20,3,0
+                DB   80,79,78,77,76,75,74,75
+                DB   LENGTH,0,71,100
+
+                DB   GATE,0,STOP
+;.....................................
+
+CONT_B:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,0,50,17
+                DB   GATE,16,LENGTH,50
+                DB   VIB,1,20,3,0
+                DB   83,83,83,80,80,80,77
+                DB   LENGTH,0,79,34,75,100
+
+                DB   GATE,0,STOP
+;.....................................
+
+CONT_C:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,0,50,33
+                DB   GATE,16,LENGTH,50
+                DB   VIB,1,20,3,0
+                DB   87,87,87,85,85,83,82
+                DB   LENGTH,0,82,17,80,100
+
+                DB   GATE,0,STOP
+;=====================================
+
+STAG_A:         DB   GATE_CON,255,ENDIT,1
+                DB   SEND,5,$10,6,$F0
+                DB   12,$10,13,$F0
+                DB   19,$0B,20,$0F
+                DB   23,%11110100
+                DB   24,%00011111,END
+                DB   GATE,16
+                DB   VIB,6,100,2,0
+                DB   70,12,68,6,67,6,68,12
+                DB   67,6,65,6,67,12,65,6
+                DB   63,6,65,12,63,6,62,6
+                DB   63,24,GATE,0,63,2
+                DB   SEND,5,$05,6,$0F
+                DB   12,$05,13,$0F,END
+                DB   GATE,16,LENGTH,4
+                DB   53,56,60,63,67,70
+                DB   LENGTH,0,74,50
+
+                DB   GATE,0,STOP
+;.....................................
+
+STAG_B:         DB   GATE_CON,255,ENDIT,1
+                DB   GATE,16
+                DB   VIB,6,100,2,0
+                DB   63,12,60,6,58,6,60,12
+                DB   58,6,56,6,58,12,56,6
+                DB   55,6,56,12,55,6,53,6
+                DB   55,24,LENGTH,4
+                DB   51,55,58,62,65,68,72
+                DB   SEND,5,$09,12,$09,END
+                DB   LENGTH,0,75,50
+
+                DB   GATE,0,STOP
+;.....................................
+
+STAG_C:         DB   GATE_CON,255,ENDIT,1
+                DB   FILTER,0,0
+                DW   0,0,0
+                DB   GATE,64,PULSE,40
+                DW   $500
+                DB   39,24,36,24,34,24,22,24
+                DB   27,48,15,24
+
+                DB   GATE,0,STOP
+;.....................................
+
+
+;=====================================
+
+CALC:           EQU  !-TOPCALC
+
+                ORG  $2000
+                ENT  
+
+                END  

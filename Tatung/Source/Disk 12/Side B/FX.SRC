@@ -1,0 +1,534 @@
+
+
+                LOAD $C000
+                ORG  $4000
+
+TUNES:          EQU  1
+EFFECTS:        EQU  19
+
+                DB   TUNES
+                DB   EFFECTS
+                DW   CALC
+
+TITLE:          DB   31,0,1,2,30,0
+
+                DB   " FX   ^    GHOULS AN"
+                DB   "D GHOSTS     ^  FX  "
+
+                DB   30,0,16
+
+
+TOPCALC:        
+;=====================================
+A_LO:           DB   <TUNE
+                DC   A_LO+10-!,0
+
+A_HI:           DB   >TUNE
+                DC   A_HI+10-!,0
+
+
+B_LO:           DB   <TUNE
+                DC   B_LO+10-!,0
+
+B_HI:           DB   >TUNE
+                DC   B_HI+10-!,0
+
+
+C_LO:           DB   <TUNE
+                DC   C_LO+10-!,0
+
+C_HI:           DB   >TUNE
+                DC   C_HI+10-!,0
+
+;=====================================
+;Tables for sound effects.
+
+FX_TAB1:        DB   <JUMP
+                DB   <LAND
+                DB   <WALL
+                DB   <THROW
+                DB   <BADAP
+                DB   <KILL1
+                DB   <KILL2
+                DB   <SKELL
+                DB   <BONES
+                DB   <RAON
+                DB   <DRIP
+                DB   <RAOF
+                DB   <ARMO
+                DB   <TURT
+                DB   <PICK
+                DB   <CHEST
+                DB   <MAGIC
+                DB   <SPELL
+                DB   <QUACK
+                DC   FX_TAB1+26-!,0
+
+FX_TAB2:        DB   >JUMP
+                DB   >LAND
+                DB   >WALL
+                DB   >THROW
+                DB   >BADAP
+                DB   >KILL1
+                DB   >KILL2
+                DB   >SKELL
+                DB   >BONES
+                DB   >RAON
+                DB   >DRIP
+                DB   >RAOF
+                DB   >ARMO
+                DB   >TURT
+                DB   >PICK
+                DB   >CHEST
+                DB   >MAGIC
+                DB   >SPELL
+                DB   >QUACK
+                DC   FX_TAB2+26-!,0
+
+;=====================================
+
+GATE_CON:       EQU  $83
+SEND:           EQU  $85
+END:            EQU  $FF
+FOR:            EQU  $82
+NEXT:           EQU  $81
+LENGTH:         EQU  $84
+STOP:           EQU  $86
+PULSE:          EQU  $80
+GOTO:           EQU  $87
+FILTER:         EQU  $88
+CLAIM:          EQU  $89
+GOSUB:          EQU  $8A
+RETURN:         EQU  $8B
+TRANS:          EQU  $8C
+GATE:           EQU  $8D
+VIB:            EQU  $8E
+EFFECT:         EQU  $8F
+ENDIT:          EQU  $90
+WOBBLE:         EQU  $91
+PORT:           EQU  $92
+IGNORE:         EQU  $93
+SETPWM:         EQU  $94
+
+;=====================================
+; SOUND EFFECT DATA
+
+JUMP:           DB   0
+                DW   XJUMP
+                DB   $FF
+
+LAND:           DB   0
+                DW   XLAND
+                DB   $FF
+
+WALL:           DB   2
+                DW   XWALLA
+                DB   4
+                DW   XWALLB
+                DB   $FF
+
+THROW:          DB   0
+                DW   XTHROW
+                DB   $FF
+
+BADAP:          DB   0
+                DW   XBADA
+                DB   2
+                DW   XBADB
+                DB   4
+                DW   XBADC
+                DB   $FF
+
+KILL1:          DB   2
+                DW   XKILL1
+                DB   $FF
+
+KILL2:          DB   2
+                DW   XKILL2
+                DB   $FF
+
+SKELL:          DB   2
+                DW   XSKELL
+                DB   $FF
+
+BONES:          DB   0
+                DW   XBONEA
+                DB   2
+                DW   XBONEB
+                DB   4
+                DW   XBONEC
+                DB   $FF
+
+RAON:           DB   2
+                DW   XRAONA
+                DB   4
+                DW   XRAONB
+                DB   $FF
+
+DRIP:           DB   2
+                DW   XRAONA
+                DB   $FF
+
+RAOF:           DB   2
+                DW   XRAOFA
+                DB   4
+                DW   XRAOFB
+                DB   $FF
+
+ARMO:           DB   0
+                DW   XARMO
+                DB   $FF
+
+TURT:           DB   2
+                DW   XTURT
+                DB   $FF
+
+PICK:           DB   0
+                DW   XPICKA
+                DB   2
+                DW   XPICKB
+                DB   $FF
+
+CHEST:          DB   2
+                DW   XCHEST
+                DB   $FF
+
+MAGIC:          DB   0
+                DW   XMAGICA
+                DB   2
+                DW   XMAGICB
+                DB   $FF
+
+SPELL:          DB   2
+                DW   XSPELL
+                DB   $FF
+
+QUACK:          DB   0
+                DW   XQUACKA
+                DB   2
+                DW   XQUACKB
+                DB   $FF
+
+;:::::::::::::::::::::::::::::::::::
+
+XJUMP:          DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$0F,END
+                DB   GATE,128,70,4,GATE,1
+                DB   STOP
+
+XLAND:          DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$3F,END
+                DB   GATE,0,50,1,GATE,129
+                DB   SEND,5,$04,6,$0F,END
+                DB   40,1,45,1,50,3,45,1
+                DB   40,1,GATE,1
+                DB   STOP
+
+XWALLA:         DB   GATE_CON,255,ENDIT,255
+                DB   WOBBLE,0,0,0
+                DB   VIB,0,0,0,0
+                DB   SEND,12,$09,13,$0F
+                DB   19,$07,20,$0F,END
+                DB   GATE,16,TRANS,0
+                DB   90,42,GATE,1
+                DB   STOP
+XWALLB:         DB   GATE_CON,255,ENDIT,255
+                DB   GATE,%00010100
+                DB   68,15,GATE,1
+                DB   STOP
+
+XTHROW:         DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$20,END
+                DB   GATE,0,50,1,GATE,129
+                DB   45,1,50,1,55,1,60,1
+                DB   55,1,50,1,45,1,40,1
+                DB   SEND,5,0,6,$0F,END
+                DB   GATE,1
+                DB   STOP
+
+XBADA:          DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$6F
+                DB   12,0,13,$3F
+                DB   19,0,20,$3F,END
+                DB   GATE,16
+                DB   GOSUB
+                DW   SCALE
+                DB   STOP
+XBADB:          DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0
+                DB   WOBBLE,0,0,0
+                DB   GATE,16,TRANS,19
+                DB   GOSUB
+                DW   SCALE
+                DB   STOP
+XBADC:          DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0
+                DB   GATE,0,50,8,GATE,17
+                DB   GOSUB
+                DW   SCALE
+                DB   SEND,6,$0F,13,$0F
+                DB   20,$0F,END
+                DB   GATE,1,STOP
+SCALE:          DB   40,5,43,5,47,5,52,5,55,5
+                DB   59,5,64,5,67,5,71,5,76,5
+                DB   74,5,70,5,67,5,62,5,58,5
+                DB   55,5,50,5,46,5,43,5,38,5
+                DB   GATE,1
+                DB   RETURN
+
+XKILL1:         DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$8F,END
+                DB   GATE,0,50,1,TRANS,0
+                DB   SEND,12,$09,13,$0F,END
+                DB   FOR,16,GATE,129,80,1
+                DB   GATE,17,45,1,GATE,129
+                DB   70,1,GATE,17,41,1
+                DB   GATE,129,60,1,GATE,17
+                DB   37,1,GATE,129,50,1
+                DB   GATE,17,33,1,NEXT
+                DB   SEND,13,$0F,END
+                DB   GATE,1
+                DB   STOP
+
+XKILL2:         DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$AF,END
+                DB   GATE,0,50,1
+                DB   TRANS,0,GATE,129,45,1
+                DB   GATE,17
+                DB   45,1,41,1,37,1,33,1
+                DB   29,1,25,1,21,1
+                DB   SEND,13,$0F,END
+                DB   GATE,1
+                DB   STOP
+
+XSKELL:         DB   GATE_CON,255,ENDIT,255
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$8F,END
+                DB   GATE,0,50,1,TRANS,0
+                DB   SEND,12,$0A,13,$0F,END
+                DB   GATE,17
+                DB   VIB,1,250,4,0,38,8
+                DB   VIB,1,220,4,0,38,8
+                DB   VIB,1,190,4,0,38,8
+                DB   VIB,1,160,4,0,38,8
+                DB   SEND,12,$09,END
+                DB   VIB,1,130,4,0,38,8
+                DB   VIB,1,100,4,0,38,8
+                DB   VIB,1,70,4,0,38,8
+                DB   VIB,1,40,4,0,38,8
+                DB   GATE,1
+                DB   STOP
+
+XBONEA:         DB   SEND,5,0,12,0,19,0
+                DB   6,$F0,13,$90,20,$40,END
+                DB   GOTO
+                DW   DIECH
+XBONEB:         DB   GATE,0,50,9,TRANS,0
+                DB   VIB,0,0,0,0
+                DB   WOBBLE,0,0,0
+                DB   GOTO
+                DW   DIECH
+XBONEC:         DB   GATE,0,50,18
+                DB   VIB,0,0,0,0
+                DB   GOTO
+                DW   DIECH
+DIECH:          DB   PULSE,70
+                DW   $7A0
+                DB   GATE_CON,255,ENDIT,255
+                DB   GATE,%01010000
+                DB   LENGTH,4
+                DB   60,61,62,55,56,57
+                DB   50,51,52,45,46,47
+                DB   40,41,42,35,36,37
+                DB   GATE,1,37
+                DB   LENGTH,0,STOP
+
+XRAONA:         DB   GATE_CON,255,ENDIT,1
+                DB   TRANS,0
+                DB   VIB,0,0,0,0
+                DB   SEND,12,0,13,$0F,END
+                DB   WOBBLE,12,1,1
+                DB   GATE,1,80,30
+RACYA:          DB   GATE,16,50,28,85,15
+                DB   SEND,19,$01,END,90,25
+                DB   SEND,19,0,END,87,45
+                DB   70,20,60,15,65,50,80,60
+                DB   SEND,19,$01,END,80,25
+                DB   SEND,19,0,END,63,45
+                DB   85,17,44,45,22,26,80,15
+                DB   SEND,19,$01,END,70,25
+                DB   SEND,19,0,END
+                DB   88,39,50,12,67,46,46,64
+                DB   GOTO
+                DW   RACYA
+XRAONB:         DB   GATE_CON,255,ENDIT,1
+                DB   SEND,19,0,20,0,END
+                DB   GATE,0,50,2,ENDIT,255
+                DB   SEND,19,$DF,20,$4F,END
+                DB   GATE,129,95,38
+                DB   SEND,19,0,END
+                DB   VIB,1,57,0,0,95,86
+                DB   VIB,1,60,0,0,93,128
+                DB   VIB,0,0,0,0
+RACYB:          DB   90,128,GOTO
+                DW   RACYB
+
+XRAOFA:         DB   GATE_CON,255,ENDIT,255
+                DB   SEND,12,0,13,$0F
+                DB   19,$0A,20,$0F,END
+                DB   GATE,1,STOP
+XRAOFB:         DB   GATE_CON,255,ENDIT,255
+                DB   GATE,129,90,128
+                DB   GATE,1,STOP
+
+XARMO:          DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,0,END
+                DB   PULSE,80,0,0
+                DB   GATE,0,50,1,GATE,64
+                DB   SEND,5,$28,6,$0F,END
+                DB   64,1,65,1,66,1,67,1,68,2
+                DB   69,2,70,2,71,3,72,3,73,3
+                DB   GATE,1
+                DB   STOP
+
+XTURT:          DB   GATE_CON,255,ENDIT,255
+                DB   TRANS,0
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$8F,END
+                DB   PULSE,0
+                DW   $7A0
+                DB   GATE,0,50,1,GATE,129
+                DB   SEND,12,$09,13,$0F,END
+                DB   60,1,GATE,65
+                DB   VIB,1,200,1,0,30,4
+                DB   VIB,1,170,1,0,30,4
+                DB   VIB,1,140,1,0,30,4
+                DB   VIB,1,110,1,0,30,4
+                DB   VIB,1,80,1,0,30,4
+                DB   VIB,1,50,1,0,30,4
+                DB   VIB,1,20,1,0,30,4
+                DB   VIB,0,0,0,0,30,8
+                DB   GATE,1
+                DB   STOP
+
+XPICKA:         DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$50
+                DB   12,0,13,$20,END
+                DB   GATE,16
+                DB   60,10,61,5,62,15,60,10
+                DB   57,5,55,10,53,5,52,10
+                DB   53,5,ENDIT,3,60,15
+                DB   ENDIT,255
+                DB   60,20,GATE,1
+                DB   STOP
+XPICKB:         DB   GATE_CON,255,ENDIT,255
+                DB   WOBBLE,0,0,0
+                DB   VIB,1,200,2,0
+                DB   GATE,16,TRANS,19
+                DB   60,10,61,5,62,15,60,10
+                DB   57,5,55,10,53,5,52,10
+                DB   53,5,ENDIT,3,60,15
+                DB   ENDIT,255
+                DB   60,20,GATE,1
+                DB   STOP
+
+XCHEST:         DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0,TRANS,0
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$70,END
+                DB   GATE,0,50,1,GATE,17
+                DB   50,3,51,3,52,3,53,3,54,3
+                DB   55,3
+                DB   GATE,1
+                DB   STOP
+
+XMAGICA:        DB   GATE_CON,255,ENDIT,255
+                DB   WOBBLE,0,0,0
+                DB   SEND,5,0,6,$20
+                DB   12,0,13,$40,END
+                DB   GATE,0,35,2
+                DB   GOTO
+                DW   MASK
+XMAGICB:        DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0,TRANS,0
+                DB   WOBBLE,0,0,0
+                DB   GATE,0,35,1
+MASK:           DB   PULSE,0
+                DW   $2A0
+                DB   GATE,65
+                DB   GOSUB
+                DW   MAGAR
+                DB   TRANS,254,GOSUB
+                DW   MAGAR
+                DB   TRANS,252,GOSUB
+                DW   MAGAR
+                DB   TRANS,250,GOSUB
+                DW   MAGAR
+                DB   TRANS,248,GOSUB
+                DW   MAGAR
+                DB   GATE,1,TRANS,0
+                DB   STOP
+MAGAR:          DB   40,1,44,1,48,1,52,1
+                DB   56,1,60,1,64,1,68,1,72,1
+                DB   76,1,80,1,84,1,RETURN
+
+XSPELL:         DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0,TRANS,0
+                DB   WOBBLE,0,0,0
+                DB   SEND,12,0,13,$2F,END
+                DB   GATE,0,50,2,GATE,129
+                DB   SEND,12,$08,13,$0F,END
+                DB   85,1,86,1,87,1,88,1,89,1
+                DB   90,1,91,1,92,1,93,1,94,1
+                DB   GATE,1,STOP
+
+XQUACKA:        DB   GATE_CON,255,ENDIT,255
+                DB   SEND,5,0,6,$30
+                DB   12,0,13,$10,END
+                DB   GATE,0,50,2,GATE,65
+                DB   GOTO
+                DW   QUSK
+XQUACKB:        DB   GATE_CON,255,ENDIT,255
+                DB   VIB,0,0,0,0,TRANS,0
+                DB   WOBBLE,0,0,0
+                DB   GATE,0,50,10,GATE,65
+QUSK:           DB   PULSE,0
+                DW   $1A0
+                DB   VIB,1,220,0,1,80,15
+                DB   VIB,1,10,0,0,82,10
+                DB   VIB,1,250,0,1,79,10
+                DB   GATE,1,78,5,GATE,65
+                DB   VIB,1,240,0,1,78,10
+                DB   GATE,1,78,5,GATE,65
+                DB   VIB,1,230,0,1,77,10
+                DB   GATE,1,78,5,GATE,65
+                DB   VIB,1,220,0,1,76,11
+                DB   GATE,1,78,5,GATE,65
+                DB   VIB,1,220,0,1,75,12
+                DB   GATE,1,78,5,GATE,65
+                DB   VIB,1,50,0,1,74,25
+                DB   VIB,1,10,6,0,75,20
+                DB   VIB,1,255,0,0,75,6
+                DB   VIB,0,0,0,0
+                DB   GATE,1,STOP
+
+;=====================================
+
+TUNE:           DB   SEND,24,15
+                DB   5,0,6,0
+                DB   12,0,13,0
+                DB   19,0,20,0,END
+                DB   STOP
+
+;=====================================
+CALC:           EQU  !-TOPCALC
+
+                ORG  $2000
+                ENT  
+
+                END  
+ 
