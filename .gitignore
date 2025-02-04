@@ -4,3 +4,4 @@
 *.sna
 
 /Tatung/Raw Dumps
+__pycache__
