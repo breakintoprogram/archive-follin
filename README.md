@@ -1,12 +1,8 @@
 # ARCHIVE-FOLLIN
 
-![In aid of Pancreatic Cancer UK](Resources/Images/pancreatic_cancer_uk_in_aid_of.png)
+## In memory of Geoff Follin
 
 Sadly Geoff Follin passed away in May 2024 after being diagnosed with pancreatic and liver cancer just three weeks before. I've been good friends with the Follin brothers since we worked together at Software Creations. His death has hit us all really hard. Pancreatic cancer is brutal.
-
-I've decided to run the Manchester 10K next May in his memory and in aid of Pancreatic Cancer UK.
-
-[Please visit my giving page for more details on this, and consider a small donation.](https://www.justgiving.com/page/dean-belfield-1719662311154)
 
 ## Introduction
 
